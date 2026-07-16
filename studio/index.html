@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio</title>
+<!--
+  The Studio platform shell (name TBC — deliberately neutral black & white).
+  To add a tool: drop its folder in tools/<name>/ and add one entry to TOOLS below.
+-->
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('assets/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight:100 900; font-display:swap;
+  }
+  @font-face{
+    font-family:'Porkys';
+    src:url('assets/PORKYS_.ttf') format('truetype');
+    font-display:swap;
+  }
+  :root{
+    --bg:#ffffff; --panel:#fafafa; --line:#e9e9e9; --line2:#d9d9d9;
+    --ink:#111111; --muted:#71717a; --faint:#a1a1aa;
+    --sidebar:248px; --rail:56px;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c0c0d; --panel:#131315; --line:#232326; --line2:#303034;
+    --ink:#f4f4f5; --muted:#8f8f98; --faint:#5c5c66;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+    display:flex; overflow:hidden;
+  }
+
+  /* ---------- sidebar ---------- */
+  aside{
+    width:var(--sidebar); flex:none; height:100%;
+    border-right:1px solid var(--line); background:var(--bg);
+    display:flex; flex-direction:column;
+    transition:width .28s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;
+  }
+  body.collapsed aside{width:var(--rail);}
+
+  .brand{
+    display:flex; align-items:center; gap:11px;
+    padding:20px 18px 18px; flex:none; white-space:nowrap;
+  }
+  .mark{
+    width:26px; height:26px; flex:none; border-radius:8px;
+    background:var(--ink); color:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:900; letter-spacing:-.05em;
+    user-select:none;
+  }
+  .brand .name{display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .brand .name b{font-size:14.5px; font-weight:800; letter-spacing:-0.02em;}
+  .brand .name span{
+    font-size:9px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--faint);
+  }
+
+  .navlabel{
+    padding:14px 18px 8px; font-size:9.5px; font-weight:700;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--faint);
+    white-space:nowrap;
+  }
+  nav.tools{display:flex; flex-direction:column; gap:2px; padding:0 10px; flex:none;}
+  .tool-btn{
+    display:flex; align-items:center; gap:11px;
+    padding:9px 9px; border:0; border-radius:9px;
+    background:transparent; color:var(--muted);
+    font-family:inherit; font-size:13.5px; font-weight:600; letter-spacing:-0.01em;
+    text-align:left; cursor:pointer; white-space:nowrap;
+    transition:background .15s, color .15s;
+  }
+  .tool-btn:hover{background:var(--panel); color:var(--ink);}
+  .tool-btn.active{background:var(--ink); color:var(--bg);}
+  .tool-btn .mono{
+    width:28px; height:28px; flex:none; border-radius:7px;
+    border:1px solid var(--line2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:10.5px; font-weight:800; letter-spacing:0;
+    color:var(--muted); background:var(--bg);
+    transition:border-color .15s, color .15s;
+  }
+  .tool-btn:hover .mono{color:var(--ink);}
+  .tool-btn.active .mono{border-color:transparent; background:rgba(255,255,255,.14); color:var(--bg);}
+  :root[data-theme="dark"] .tool-btn.active .mono{background:rgba(0,0,0,.22);}
+  .tool-btn .txt{display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .tool-btn .txt small{
+    font-size:10px; font-weight:500; color:var(--faint); letter-spacing:.02em;
+  }
+  .tool-btn.active .txt small{color:inherit; opacity:.55;}
+
+  .tool-btn.soon{cursor:default; color:var(--faint);}
+  .tool-btn.soon:hover{background:transparent; color:var(--faint);}
+  .tool-btn.soon .mono{border-style:dashed;}
+
+  .spacer{flex:1;}
+
+  .side-foot{
+    flex:none; padding:10px; display:flex; flex-direction:column; gap:2px;
+    border-top:1px solid var(--line);
+  }
+  .foot-btn{
+    display:flex; align-items:center; gap:11px;
+    padding:8px 9px; border:0; border-radius:9px;
+    background:transparent; color:var(--muted);
+    font-family:inherit; font-size:12.5px; font-weight:600;
+    text-align:left; cursor:pointer; text-decoration:none; white-space:nowrap;
+    transition:background .15s, color .15s;
+  }
+  .foot-btn:hover{background:var(--panel); color:var(--ink);}
+  .foot-btn .ico{
+    width:28px; flex:none; display:flex; align-items:center; justify-content:center;
+    font-size:14px;
+  }
+  /* ---------- nimble pill (top of sidebar) ---------- */
+  .nimble-slot{flex:none; padding:16px 14px 8px;}
+  .nimble-pill{
+    display:flex; align-items:center; justify-content:center;
+    height:42px; padding:0 18px; border-radius:999px;
+    color:var(--ink);
+    font-family:'Porkys',system-ui,sans-serif; font-size:21px; line-height:1.2;
+    text-transform:uppercase;
+    text-decoration:none; white-space:nowrap;
+    border:2px solid transparent;
+    background:
+      linear-gradient(var(--bg),var(--bg)) padding-box,
+      linear-gradient(120deg,#F42C04,#FF6FAE,#FCCA46,#2DC7FF,#CBA0FF,#645DD7) border-box;
+    transition:background .15s;
+  }
+  /* hover: fill the whole pill (and border) with one random palette colour
+     — the colour itself is set per-hover in JS via --pill-hover; text stays ink (b/w) */
+  .nimble-pill:hover{
+    background:var(--pill-hover,#645DD7);
+    border-color:var(--pill-hover,#645DD7);
+  }
+  .pill-full{display:inline; letter-spacing:.07em; padding-left:.07em; transform:translateY(1px);}
+  .pill-mini{display:none; transform:translateY(1px);}
+
+  /* collapsed state: drop text from layout so icons truly centre */
+  body.collapsed .brand .name,
+  body.collapsed .navlabel,
+  body.collapsed .tool-btn .txt,
+  body.collapsed .foot-btn .lbl{display:none;}
+  /* keep an 8px inset so active/hover backgrounds don't touch the rail edges */
+  body.collapsed nav.tools,
+  body.collapsed .side-foot{padding-left:8px; padding-right:8px; align-items:stretch;}
+  body.collapsed .foot-btn{gap:0; padding-left:0; padding-right:0; justify-content:center;}
+  body.collapsed .brand{padding-left:0; padding-right:0; justify-content:center;}
+  /* tool buttons become equal-sided squares, centred in the rail */
+  body.collapsed .tool-btn{
+    width:40px; height:40px; margin:0 auto; padding:0; gap:0;
+    justify-content:center; align-items:center;
+  }
+  /* nimble pill collapses to a round N chip with the rainbow border */
+  body.collapsed .nimble-slot{padding:14px 8px 8px;}
+  body.collapsed .nimble-pill{width:40px; height:40px; margin:0 auto; padding:0; font-size:22px;}
+  body.collapsed .pill-full{display:none;}
+  body.collapsed .pill-mini{display:inline;}
+
+  /* ---------- main ---------- */
+  main{flex:1; position:relative; min-width:0; background:var(--bg);}
+  main iframe{
+    position:absolute; inset:0; width:100%; height:100%;
+    border:0; display:none; background:var(--bg);
+  }
+  main iframe.visible{display:block;}
+
+  #empty{
+    position:absolute; inset:0; display:none;
+    align-items:center; justify-content:center; flex-direction:column; gap:10px;
+    color:var(--faint); font-size:13px; font-weight:500;
+  }
+
+  @media (max-width:720px){
+    :root{--sidebar:200px;}
+  }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="nimble-slot">
+    <a class="nimble-pill" href="../index.html" title="Nimble">
+      <span class="pill-full">Nimble</span><span class="pill-mini">N</span>
+    </a>
+  </div>
+
+  <div class="brand">
+    <div class="mark">S</div>
+    <div class="name">
+      <b>Studio</b>
+      <span>Working title</span>
+    </div>
+  </div>
+
+  <div class="navlabel">Tools</div>
+  <nav class="tools" id="toolNav" aria-label="Tools"></nav>
+
+  <div class="spacer"></div>
+
+  <div class="side-foot">
+    <button class="foot-btn" id="themeBtn" type="button">
+      <span class="ico" id="themeIco">☾</span><span class="lbl" id="themeLbl">Dark mode</span>
+    </button>
+    <button class="foot-btn" id="collapseBtn" type="button" title="Collapse sidebar">
+      <span class="ico" id="collapseIco">⟨</span><span class="lbl">Collapse</span>
+    </button>
+  </div>
+</aside>
+
+<main id="stage">
+  <div id="empty">Pick a tool from the sidebar</div>
+</main>
+
+<script>
+  /* ---- tool registry: add future tools here ---- */
+  const TOOLS = [
+    { id:'mash',   name:'Mash',   meta:'Mesh gradients', mono:'Ma', src:'tools/mesh-gradient/index.html' },
+    { id:'digit',  name:'Digit',  meta:'Gesture FX',    mono:'Di', src:'tools/pinch-fx/index.html' },
+    { id:'motion', name:'Motion', meta:'Motion graphics',mono:'Mo', src:'tools/motion/index.html' },
+  ];
+
+  const navEl   = document.getElementById('toolNav');
+  const stage   = document.getElementById('stage');
+  const frames  = {};   // id -> iframe (created lazily, kept alive between switches)
+  let current   = null;
+
+  /* ---- build sidebar ---- */
+  TOOLS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'tool-btn'; b.type = 'button'; b.dataset.id = t.id;
+    b.innerHTML = `<span class="mono">${t.mono}</span>
+      <span class="txt">${t.name}<small>${t.meta}</small></span>`;
+    b.addEventListener('click', () => open(t.id, true));
+    navEl.appendChild(b);
+  });
+  const soon = document.createElement('button');
+  soon.className = 'tool-btn soon'; soon.type = 'button'; soon.tabIndex = -1;
+  soon.innerHTML = `<span class="mono">+</span>
+    <span class="txt">More soon<small>New tools land here</small></span>`;
+  navEl.appendChild(soon);
+
+  /* ---- Nimble pill: random brand colour on each hover ---- */
+  const NIMBLE_PALETTE = ['#F42C04','#FF6FAE','#FCCA46','#2DC7FF','#645DD7','#CBA0FF'];
+  const nimblePill = document.querySelector('.nimble-pill');
+  if (nimblePill) nimblePill.addEventListener('pointerenter', () => {
+    const c = NIMBLE_PALETTE[Math.floor(Math.random() * NIMBLE_PALETTE.length)];
+    nimblePill.style.setProperty('--pill-hover', c);
+  });
+
+  /* ---- theme (shared key with the tools) ---- */
+  const THEME_KEY = 'nimble-theme';
+  function applyTheme(t){
+    document.documentElement.dataset.theme = t;
+    document.documentElement.style.colorScheme = t;
+    document.getElementById('themeIco').textContent = t === 'dark' ? '☀' : '☾';
+    document.getElementById('themeLbl').textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
+    Object.values(frames).forEach(f => {
+      try {
+        const d = f.contentDocument.documentElement;
+        d.dataset.theme = t; d.style.colorScheme = t;
+      } catch(e){}
+    });
+  }
+  applyTheme(localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light');
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+
+  /* ---- collapse ---- */
+  const collapseBtn = document.getElementById('collapseBtn');
+  function setCollapsed(on){
+    document.body.classList.toggle('collapsed', on);
+    document.getElementById('collapseIco').textContent = on ? '⟩' : '⟨';
+    collapseBtn.title = on ? 'Expand sidebar' : 'Collapse sidebar';
+    localStorage.setItem('studio-collapsed', on ? '1' : '0');
+  }
+  collapseBtn.addEventListener('click', () => setCollapsed(!document.body.classList.contains('collapsed')));
+  setCollapsed(localStorage.getItem('studio-collapsed') === '1');
+
+  /* ---- tool switching ---- */
+  function open(id, push){
+    const tool = TOOLS.find(t => t.id === id);
+    if (!tool || id === current) return;
+    current = id;
+
+    document.querySelectorAll('.tool-btn[data-id]').forEach(b =>
+      b.classList.toggle('active', b.dataset.id === id));
+
+    if (!frames[id]) {
+      const f = document.createElement('iframe');
+      f.src = tool.src;
+      f.title = tool.name;
+      f.allow = 'camera; microphone; fullscreen; clipboard-write; display-capture';
+      f.addEventListener('load', () => {
+        try {
+          const doc = f.contentDocument;
+          // the studio owns Nimble branding — suppress any leftover tool splash/back-pill
+          const s = doc.createElement('style');
+          s.textContent = '.tool-home-slot,#nimbleSplash{display:none !important;}';
+          doc.head.appendChild(s);
+          const t = document.documentElement.dataset.theme;
+          doc.documentElement.dataset.theme = t;
+          doc.documentElement.style.colorScheme = t;
+        } catch(e){}
+      });
+      stage.appendChild(f);
+      frames[id] = f;
+    }
+    Object.entries(frames).forEach(([k, f]) => f.classList.toggle('visible', k === id));
+    document.title = `${tool.name} — Studio`;
+    if (push) history.replaceState(null, '', '#' + id);
+    localStorage.setItem('studio-last-tool', id);
+  }
+
+  addEventListener('hashchange', () => {
+    const id = location.hash.slice(1);
+    if (TOOLS.some(t => t.id === id)) open(id, false);
+  });
+
+  /* ---- boot: hash > last used > first tool ---- */
+  const fromHash = location.hash.slice(1);
+  const last = localStorage.getItem('studio-last-tool');
+  open(
+    TOOLS.some(t => t.id === fromHash) ? fromHash :
+    TOOLS.some(t => t.id === last)     ? last     :
+    TOOLS[0].id,
+    true
+  );
+</script>
+
+</body>
+</html>

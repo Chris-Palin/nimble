@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nimble — A small design studio.</title>
+<meta name="description" content="Nimble is a design studio making small, playful, seriously capable creative tools that run right in your browser.">
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('assets/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight:100 900; font-display:swap;
+  }
+  @font-face{
+    font-family:'Porkys';
+    src:url('assets/PORKYS_.ttf') format('truetype');
+    font-display:swap;
+  }
+
+  :root{
+    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46;
+    --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF;
+    --ink:#101013; --ink2:#3c3c44; --muted:#6d6d78; --faint:#9a9aa4;
+    --bg:#ffffff; --panel:#f6f6f8; --line:#e7e7ec;
+    --radius:22px;
+    --ease-bounce:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--yellow); color:var(--ink);}
+  .porkys{font-family:'Porkys',"Arial Rounded MT Bold",sans-serif; font-weight:400;}
+
+  /* ---------- bouncy multicolour logo ---------- */
+  .logo{display:inline-flex; align-items:baseline; letter-spacing:.18em; user-select:none; text-decoration:none;}
+  .logo span{
+    display:inline-block; line-height:1; color:var(--c); transform:rotate(var(--r));
+    transition:transform .3s var(--ease-bounce);
+  }
+  .logo:hover span{transform:rotate(calc(var(--r) * -1.4)) translateY(-.08em);}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 40px;
+    background:rgba(255,255,255,.72); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s;
+  }
+  nav.scrolled{border-bottom-color:var(--line);}
+  nav .logo{font-size:23px;}
+  nav .links{display:flex; align-items:center; gap:30px;}
+  nav .links a:not(.cta){
+    font-size:13.5px; font-weight:600; color:var(--ink2); text-decoration:none;
+    transition:color .2s;
+  }
+  nav .links a:not(.cta):hover{color:var(--ink);}
+  .cta{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; text-decoration:none;
+    font-size:13.5px; font-weight:700; letter-spacing:.01em;
+    padding:11px 22px; border-radius:999px;
+    transition:transform .25s var(--ease-bounce), box-shadow .25s;
+  }
+  .cta:hover{transform:translateY(-2px); box-shadow:0 10px 28px rgba(16,16,19,.22);}
+  .cta .arr{transition:transform .25s;}
+  .cta:hover .arr{transform:translateX(3px);}
+  .cta.ghost{
+    background:transparent; color:var(--ink); border:1.5px solid var(--line);
+    box-shadow:none;
+  }
+  .cta.ghost:hover{border-color:var(--ink); box-shadow:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:140px 24px 80px;
+  }
+  .blobs{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(70px); opacity:.5;
+    animation:drift 16s ease-in-out infinite alternate;
+  }
+  .b1{width:420px;height:420px; background:var(--blue);   top:-8%;  left:-6%;  animation-delay:0s;}
+  .b2{width:380px;height:380px; background:var(--pink);   top:12%;  right:-8%; animation-delay:-4s;}
+  .b3{width:330px;height:330px; background:var(--yellow); bottom:-6%; left:16%; animation-delay:-8s;}
+  .b4{width:300px;height:300px; background:var(--lavender); bottom:4%; right:14%; animation-delay:-12s;}
+  @keyframes drift{
+    0%{transform:translate(0,0) scale(1);}
+    100%{transform:translate(60px,-50px) scale(1.15);}
+  }
+  .hero > *:not(.blobs){position:relative; z-index:1;}
+
+  .pill{
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink2); background:rgba(255,255,255,.75); border:1px solid var(--line);
+    padding:9px 18px; border-radius:999px; backdrop-filter:blur(8px);
+    margin-bottom:34px;
+  }
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:#2fd07f; animation:blip 1.5s ease-in-out infinite;}
+  @keyframes blip{
+    0%,100%{opacity:1; box-shadow:0 0 6px 1px rgba(47,208,127,.9), 0 0 2px rgba(47,208,127,1);}
+    50%{opacity:.35; box-shadow:0 0 10px 3px rgba(47,208,127,.45), 0 0 3px rgba(47,208,127,.7);}
+  }
+
+  h1{
+    font-size:clamp(50px, 9vw, 118px);
+    font-weight:860; letter-spacing:-0.045em; line-height:1;
+    max-width:15ch;
+  }
+  h1 .fun{position:relative; white-space:nowrap;}
+  h1 .fun.porkys{
+    font-family:'Porkys',"Arial Rounded MT Bold",sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.11em; padding-right:.11em;
+  }
+  h1 .fun i{
+    font-style:normal; display:inline-block;
+    transition:transform .3s var(--ease-bounce), color .3s;
+  }
+  h1 .fun:hover i{color:var(--c); transform:rotate(var(--r)) translateY(-.06em);}
+  h1 .squiggle{
+    position:absolute; left:0; right:0; bottom:-.12em; height:.22em; width:100%;
+  }
+  .hero .sub{
+    margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
+    color:var(--muted); max-width:520px; font-weight:500;
+  }
+  .hero .actions{margin-top:42px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
+  .hero .cta{font-size:15px; padding:16px 30px;}
+
+  .scrollcue{
+    margin-top:70px; font-size:10.5px; font-weight:700; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--faint);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  .scrollcue::after{
+    content:""; width:1px; height:44px;
+    background:linear-gradient(var(--faint), transparent);
+    animation:cue 1.8s ease-in-out infinite;
+  }
+  @keyframes cue{0%,100%{transform:scaleY(1); opacity:.9;}50%{transform:scaleY(.55); opacity:.4;}}
+
+  /* ---------- marquee ---------- */
+  .marquee{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:20px 0; overflow:hidden; white-space:nowrap; background:var(--bg);
+  }
+  .marquee .track{display:inline-flex; gap:0; animation:scroll 30s linear infinite;}
+  .marquee:hover .track{animation-play-state:paused;}
+  @keyframes scroll{to{transform:translateX(-50%);}}
+  .marquee span{
+    font-size:14px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink); padding:0 26px; display:inline-flex; align-items:center; gap:26px;
+  }
+  .marquee span::after{content:"✦"; color:var(--mc); font-size:15px;}
+
+  /* ---------- sections ---------- */
+  section{max-width:1180px; margin:0 auto; padding:110px 40px 30px;}
+  .kicker{
+    font-size:11.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--muted); display:flex; align-items:center; gap:12px; margin-bottom:18px;
+  }
+  .kicker::before{content:""; width:26px; height:3px; border-radius:2px; background:var(--kc, var(--ink));}
+  h2{
+    font-size:clamp(34px, 4.6vw, 56px); font-weight:840; letter-spacing:-0.035em; line-height:1.03;
+    max-width:16ch;
+  }
+  .lede{margin-top:18px; font-size:16.5px; line-height:1.65; color:var(--muted); max-width:520px; font-weight:500;}
+
+  /* ---------- tool cards ---------- */
+  .cards{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:18px; margin-top:56px;
+  }
+  .tool-card{
+    position:relative; display:flex; flex-direction:column;
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--bg); overflow:hidden; text-decoration:none; color:inherit;
+    transition:transform .3s var(--ease-bounce), box-shadow .3s, border-color .3s;
+  }
+  .tool-card:hover{transform:translateY(-6px); box-shadow:0 24px 48px -18px rgba(16,16,19,.18); border-color:#d8d8df;}
+  .tool-card .visual{
+    height:170px; position:relative; overflow:hidden;
+    background:var(--panel);
+  }
+  .tool-card .visual .wash{
+    position:absolute; inset:-30%;
+    background:radial-gradient(circle at 30% 35%, var(--c1), transparent 55%),
+               radial-gradient(circle at 72% 70%, var(--c2), transparent 55%),
+               radial-gradient(circle at 60% 20%, var(--c3), transparent 50%);
+    filter:blur(26px); opacity:.85; transform:scale(1);
+    transition:transform .6s ease;
+  }
+  .tool-card:hover .visual .wash{transform:scale(1.14) rotate(4deg);}
+  .tool-card .visual .glyph{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:52px; color:rgba(255,255,255,.95); text-shadow:0 4px 20px rgba(0,0,0,.14);
+    transition:transform .35s var(--ease-bounce);
+  }
+  .tool-card:hover .visual .glyph{transform:scale(1.12) rotate(-4deg);}
+  .tool-card .body{padding:22px 24px 24px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .tool-card .top{display:flex; align-items:center; justify-content:space-between;}
+  .tool-card h3{font-size:19px; font-weight:800; letter-spacing:-0.02em;}
+  .tool-card .go{
+    width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--muted);
+    transition:all .25s var(--ease-bounce);
+  }
+  .tool-card:hover .go{background:var(--ink); border-color:var(--ink); color:#fff; transform:rotate(-45deg);}
+  .tool-card p{font-size:13.5px; color:var(--muted); line-height:1.6; flex:1;}
+  .tool-card .meta{
+    margin-top:10px; font-size:10px; font-weight:700; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--faint);
+  }
+  .tool-card.soon{border-style:dashed; box-shadow:none;}
+  .tool-card.soon:hover{transform:none; border-color:var(--faint);}
+  .tool-card.soon .visual{background:transparent; display:flex; align-items:center; justify-content:center;}
+  .tool-card.soon .visual .plus{font-size:34px; color:var(--faint); font-weight:200;}
+
+  /* ---------- dark cover / studio section ---------- */
+  .cover-wrap{max-width:1180px; margin:110px auto 0; padding:0 40px;}
+  .cover{
+    position:relative; background:var(--ink); color:#fff;
+    border-radius:34px; padding:clamp(44px, 6vw, 84px);
+    display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
+    overflow:hidden;
+  }
+  .cover .kicker{color:#9a9aa4;}
+  .cover h2{color:#fff;}
+  .cover .lede{color:#b9b9c2;}
+  .cover .cta{background:#fff; color:var(--ink); margin-top:34px;}
+  .cover .cta:hover{box-shadow:0 12px 32px rgba(0,0,0,.5);}
+  .cover .glow{
+    position:absolute; width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, var(--indigo), transparent 65%);
+    top:-40%; right:-14%; opacity:.5; filter:blur(50px); pointer-events:none;
+  }
+
+  /* mini mockup of the studio app */
+  .mock{
+    position:relative; border-radius:18px; background:#17171b;
+    border:1px solid #2b2b32; box-shadow:0 40px 80px -30px rgba(0,0,0,.6);
+    overflow:hidden; aspect-ratio:16/10.5;
+    transition:transform .4s ease;
+  }
+  .cover:hover .mock{transform:translateY(-6px) rotate(-.5deg);}
+  .mock .titlebar{
+    height:26px; display:flex; align-items:center; gap:5px; padding:0 11px;
+    border-bottom:1px solid #26262c;
+  }
+  .mock .titlebar i{width:8px; height:8px; border-radius:50%; background:#33333b; display:block;}
+  .mock .app{display:flex; height:calc(100% - 26px);}
+  .mock .side{
+    width:31%; border-right:1px solid #26262c; padding:10px 8px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .mock .side .item{
+    height:22px; border-radius:6px; background:#212127;
+    display:flex; align-items:center; padding:0 8px; gap:6px;
+  }
+  .mock .side .item.active{background:#fff;}
+  .mock .side .item i{width:7px; height:7px; border-radius:3px; background:var(--ic); display:block; flex:none;}
+  .mock .side .item b{height:5px; border-radius:3px; background:#3a3a42; flex:1; display:block;}
+  .mock .side .item.active b{background:#c9c9d2;}
+  .mock .canvas{flex:1; padding:10px;}
+  .mock .canvas .art{
+    height:100%; border-radius:10px;
+    background:
+      radial-gradient(circle at 25% 30%, var(--pink), transparent 52%),
+      radial-gradient(circle at 75% 25%, var(--blue), transparent 55%),
+      radial-gradient(circle at 60% 80%, var(--yellow), transparent 52%),
+      radial-gradient(circle at 20% 85%, var(--indigo), transparent 55%),
+      #17171b;
+    filter:saturate(1.15);
+    animation:hueshift 10s linear infinite;
+  }
+  @keyframes hueshift{to{filter:saturate(1.15) hue-rotate(360deg);}}
+
+  /* ---------- values row ---------- */
+  .values{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:18px; margin-top:56px;
+  }
+  .value{
+    padding:28px 26px; border-radius:var(--radius); background:var(--panel);
+    display:flex; flex-direction:column; gap:12px;
+    transition:transform .3s var(--ease-bounce);
+  }
+  .value:hover{transform:translateY(-4px);}
+  .value .ico{
+    width:42px; height:42px; border-radius:13px; background:var(--vc);
+    display:flex; align-items:center; justify-content:center; font-size:19px; color:#fff;
+  }
+  .value h3{font-size:16px; font-weight:800; letter-spacing:-0.01em;}
+  .value p{font-size:13.5px; color:var(--muted); line-height:1.6;}
+
+  /* ---------- more from nimble ---------- */
+  .list{margin-top:52px; border-top:1px solid var(--line);}
+  .list a{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:26px 6px; border-bottom:1px solid var(--line);
+    text-decoration:none; color:inherit; transition:padding .25s ease, background .25s;
+  }
+  .list a:hover{padding-left:16px; background:linear-gradient(90deg, var(--panel), transparent);}
+  .list .l{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .list h3{font-size:19px; font-weight:800; letter-spacing:-0.02em;}
+  .list .note{font-size:12.5px; color:var(--muted); font-weight:500;}
+  .list .tag{
+    font-size:9.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    padding:4px 9px; border-radius:999px; background:var(--tc); color:#fff;
+  }
+  .list .arr{font-size:19px; color:var(--faint); transition:transform .25s, color .25s; flex:none;}
+  .list a:hover .arr{transform:translateX(6px); color:var(--ink);}
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:130px; border-top:1px solid var(--line);
+    padding:64px 40px 44px;
+  }
+  footer .inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; flex-direction:column; gap:44px;
+  }
+  footer .biglogo{font-size:clamp(46px, 8vw, 96px); letter-spacing:.16em;}
+  footer .row{
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    color:var(--faint); font-size:12.5px; font-weight:500;
+  }
+  footer .row a{color:var(--muted); text-decoration:none; font-weight:600;}
+  footer .row a:hover{color:var(--ink);}
+  footer .row .flinks{display:flex; gap:24px;}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important;}
+    .reveal{opacity:1; transform:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  @media (max-width:880px){
+    .cover{grid-template-columns:1fr;}
+    nav{padding:14px 20px;}
+    nav .links a:not(.cta){display:none;}
+    section{padding:80px 20px 20px;}
+    .cover-wrap{padding:0 20px; margin-top:80px;}
+    footer{padding:52px 20px 36px;}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="logo porkys" href="#" aria-label="Nimble">
+    <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
+  </a>
+  <div class="links">
+    <a href="#studio">Studio</a>
+    <a href="poem.html">Poem</a>
+    <a class="cta" href="studio/index.html">Open Studio <span class="arr">→</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="blobs" aria-hidden="true">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="blob b3"></div><div class="blob b4"></div>
+  </div>
+
+  <div class="pill"><span class="dot"></span>The beginning</div>
+
+  <h1>
+    <span class="fun porkys" style="--c:var(--indigo);--r:-2deg"><i>N</i><i>i</i><i>m</i><i>b</i><i>l</i><i>e</i></span> by name.<br>
+    <span class="fun" style="--c:var(--red);--r:2deg">
+      Brave
+      <svg class="squiggle" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M2 9 Q 15 2, 30 8 T 58 8 T 86 8 T 114 8 T 142 8 T 170 8 T 198 8 T 218 7"
+              fill="none" stroke="var(--yellow)" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </span> by nature.
+  </h1>
+
+  <p class="sub">Nimble is a small design studio — we build our own platforms, tools and curious little experiments, then share them for free. Everything runs right here in your browser.</p>
+
+  <div class="actions">
+    <a class="cta" href="studio/index.html">Enter the Studio <span class="arr">→</span></a>
+    <a class="cta ghost" href="poem.html">Read a little poem</a>
+  </div>
+
+  <div class="scrollcue">Scroll</div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="track" id="marqueeTrack">
+    <span style="--mc:var(--red)">Brave by nature</span>
+    <span style="--mc:var(--pink)">Curious to a fault</span>
+    <span style="--mc:var(--yellow)">Made by hand</span>
+    <span style="--mc:var(--blue)">Follow the discomfort</span>
+    <span style="--mc:var(--indigo)">Ship the weird one</span>
+    <span style="--mc:var(--lavender)">Stay a little restless</span>
+  </div>
+</div>
+
+<div class="cover-wrap reveal" id="studio">
+  <div class="cover">
+    <div class="glow" aria-hidden="true"></div>
+    <div>
+      <div class="kicker" style="--kc:var(--blue)">What we've built</div>
+      <h2>Meet the<br>Studio.</h2>
+      <p class="lede">One of the platforms we've built is the Studio — a single web app where all of our tools live side by side. Open it up and have a wander.</p>
+      <a class="cta" href="studio/index.html">Access the Studio <span class="arr">→</span></a>
+    </div>
+    <div class="mock" aria-hidden="true">
+      <div class="titlebar"><i></i><i></i><i></i></div>
+      <div class="app">
+        <div class="side">
+          <div class="item active" style="--ic:var(--pink)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--blue)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--yellow)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--indigo)"><i></i><b></b></div>
+        </div>
+        <div class="canvas"><div class="art"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <div class="logo biglogo porkys reveal" aria-label="Nimble">
+      <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
+    </div>
+    <div class="row">
+      <span>© 2026 Nimble Design Studio. Made with far too much enthusiasm.</span>
+      <div class="flinks">
+        <a href="studio/index.html">Studio</a>
+        <a href="poem.html">Poem</a>
+        <a href="mailto:Chris.palin@mac.com">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // nav border on scroll
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 12), {passive:true});
+
+  // duplicate marquee content for a seamless loop
+  const track = document.getElementById('marqueeTrack');
+  track.innerHTML += track.innerHTML;
+
+  // reveal on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

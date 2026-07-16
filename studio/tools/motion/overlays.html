@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIGHT CITY — Overlay Lab</title>
+<style>
+  :root {
+    --yellow: #fcee0a;
+    --cyan: #00f0ff;
+    --red: #ff003c;
+    --bg: #0a0a0c;
+    --panel: #101014;
+    --panel2: #17171d;
+    --border: #2c2c36;
+    --text: #eaeaea;
+    --dim: #7d7d8c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Avenir Next Condensed", "Arial Narrow", -apple-system, sans-serif;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+
+  header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 18px; background: var(--panel);
+    border-bottom: 2px solid var(--yellow); flex-shrink: 0;
+  }
+  .logo { font-weight: 800; font-size: 19px; letter-spacing: 3px; color: var(--yellow); user-select: none; }
+  .logo em { font-style: normal; color: var(--cyan); }
+  .back { color: var(--dim); text-decoration: none; font-size: 12px; letter-spacing: 1px; }
+  .back:hover { color: var(--cyan); }
+  .spacer { flex: 1; }
+
+  select, button, input[type=text] {
+    background: var(--panel2); color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 12px; font-size: 13px; font-weight: 600;
+    font-family: inherit; letter-spacing: 1px; cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  select:hover, button:hover { border-color: var(--yellow); color: var(--yellow); }
+  input[type=text] { cursor: text; width: 100%; }
+  input[type=text]:focus { outline: none; border-color: var(--cyan); }
+
+  #exportBtn {
+    background: var(--yellow); color: #111; border: none;
+    font-weight: 800; min-width: 190px; padding: 9px 16px;
+  }
+  #exportBtn:hover { color: #111; filter: brightness(1.1); }
+  #exportBtn:disabled { opacity: .55; cursor: default; }
+  #pngBtn { border-color: var(--cyan); color: var(--cyan); }
+
+  .main { flex: 1; display: flex; min-height: 0; }
+  aside {
+    width: 300px; flex-shrink: 0; background: var(--panel);
+    border-right: 1px solid var(--border); overflow-y: auto;
+    padding: 16px; display: flex; flex-direction: column; gap: 18px;
+  }
+  aside::-webkit-scrollbar { width: 8px; }
+  aside::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .sec { font-size: 10px; font-weight: 800; letter-spacing: 3px; color: var(--yellow); margin-bottom: 8px; }
+  .sec::before { content: "// "; color: var(--dim); }
+
+  .scene-list { display: flex; flex-direction: column; gap: 6px; }
+  .scene-item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--panel2); border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    padding: 9px 12px; cursor: pointer; transition: all .12s;
+  }
+  .scene-item:hover { border-left-color: var(--cyan); }
+  .scene-item.active { border-left-color: var(--yellow); background: #1d1d10; color: var(--yellow); }
+  .scene-item .nm { font-weight: 700; font-size: 13px; letter-spacing: 1.5px; }
+  .scene-item .tag { margin-left: auto; font-size: 9px; color: var(--dim); letter-spacing: 1px; }
+
+  .scheme-row { display: flex; gap: 8px; }
+  .scheme {
+    flex: 1; height: 34px; cursor: pointer; border: 1px solid var(--border);
+    display: flex; align-items: flex-end; overflow: hidden; position: relative;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .scheme div { flex: 1; height: 100%; }
+  .scheme.active { outline: 2px solid #fff; }
+
+  .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .slider-row label { font-size: 12px; width: 58px; color: var(--dim); letter-spacing: 1px; }
+  .slider-row output { font-size: 12px; width: 30px; text-align: right; color: var(--cyan); }
+  input[type=range] { flex: 1; -webkit-appearance: none; height: 3px; background: var(--border); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    background: var(--yellow); cursor: pointer;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+
+  .field { margin-bottom: 10px; }
+  .field label { display: block; font-size: 10px; color: var(--dim); letter-spacing: 2px; margin-bottom: 4px; }
+
+  .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .exp-grid select { width: 100%; }
+
+  .progress-wrap { display: none; margin-top: 8px; }
+  .progress-wrap.on { display: block; }
+  .progress-bar { height: 10px; background: var(--panel2); border: 1px solid var(--border); }
+  .progress-fill { height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, var(--yellow) 0 8px, #b9ae07 8px 16px); transition: width .1s; }
+  .progress-txt { font-size: 11px; color: var(--dim); margin-top: 5px; letter-spacing: 1px; }
+  .progress-txt b { color: var(--cyan); font-weight: 700; }
+
+  .stage {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px; min-width: 0; gap: 12px; position: relative;
+  }
+  .canvas-holder {
+    position: relative; max-width: 100%; max-height: calc(100% - 50px);
+    display: flex; box-shadow: 0 10px 50px rgba(0,0,0,.8);
+    border: 1px solid var(--border);
+  }
+  /* transparency checkerboard */
+  .canvas-holder.checker {
+    background:
+      repeating-conic-gradient(#26262e 0% 25%, #1b1b21 0% 50%) 0 0 / 28px 28px;
+  }
+  .canvas-holder.footage { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%232b3a5e"/><stop offset=".5" stop-color="%23744a7c"/><stop offset="1" stop-color="%23c96a4a"/></linearGradient></defs><rect width="640" height="360" fill="url(%23g)"/><circle cx="480" cy="120" r="70" fill="%23f7d9a0" opacity=".9"/><rect y="250" width="640" height="110" fill="%23151b2c" opacity=".85"/><rect x="60" y="180" width="70" height="120" fill="%23202a44"/><rect x="170" y="150" width="90" height="150" fill="%231a2338"/><rect x="300" y="200" width="60" height="100" fill="%23233052"/><rect x="520" y="170" width="80" height="130" fill="%231d2740"/></svg>') center/cover; }
+  .canvas-holder.black { background: #000; }
+  canvas { max-width: 100%; max-height: 72vh; display: block; }
+
+  .bg-toggle { display: flex; gap: 8px; }
+  .bg-toggle button { font-size: 11px; padding: 5px 12px; }
+  .bg-toggle button.on { border-color: var(--yellow); color: var(--yellow); }
+  .stage .hint { position: absolute; bottom: 8px; right: 18px; font-size: 11px; color: var(--dim); letter-spacing: .5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NIGHT CITY <em>// OVERLAY LAB</em></div>
+  <a class="back" href="/">◀ MOTIONFORGE</a>
+  <div class="spacer"></div>
+  <button id="pngBtn">⬇ PNG STILL (ALPHA)</button>
+  <button id="exportBtn">⬢ EXPORT .MOV FOR FCP</button>
+</header>
+
+<div class="main">
+  <aside>
+    <div>
+      <div class="sec">TEXT</div>
+      <div class="field"><label>PRIMARY</label><input type="text" id="text1" value="V // STREET KID" maxlength="40"></div>
+      <div class="field"><label>SECONDARY</label><input type="text" id="text2" value="NETRUNNER — NIGHT CITY" maxlength="50"></div>
+    </div>
+
+    <div>
+      <div class="sec">OVERLAY</div>
+      <div class="scene-list" id="sceneList"></div>
+    </div>
+
+    <div>
+      <div class="sec">COLORWAY</div>
+      <div class="scheme-row" id="schemeRow"></div>
+    </div>
+
+    <div>
+      <div class="sec">TUNING</div>
+      <div class="slider-row">
+        <label>GLITCH</label>
+        <input type="range" id="glitchSlider" min="0" max="2" step="0.1" value="1">
+        <output id="glitchOut">1.0</output>
+      </div>
+      <div class="slider-row">
+        <label>OPACITY</label>
+        <input type="range" id="alphaSlider" min="0.2" max="1" step="0.05" value="1">
+        <output id="alphaOut">1.0</output>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec">EXPORT</div>
+      <div class="exp-grid">
+        <select id="resSel">
+          <option value="1920x1080" selected>1080p</option>
+          <option value="3840x2160">4K UHD</option>
+          <option value="1080x1920">Vertical</option>
+          <option value="1080x1080">Square</option>
+        </select>
+        <select id="fpsSel">
+          <option value="30" selected>30 fps</option>
+          <option value="60">60 fps</option>
+          <option value="25">25 fps</option>
+          <option value="24">24 fps</option>
+        </select>
+        <select id="durSel">
+          <option value="4" selected>4s loop</option>
+          <option value="8">8s loop</option>
+          <option value="12">12s loop</option>
+        </select>
+      </div>
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-txt" id="progressTxt">RENDERING…</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="stage">
+    <div class="canvas-holder checker" id="holder">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="bg-toggle">
+      <button data-bg="checker" class="on">TRANSPARENCY</button>
+      <button data-bg="footage">SAMPLE FOOTAGE</button>
+      <button data-bg="black">BLACK</button>
+    </div>
+    <div class="hint">Exports are Apple ProRes 4444 .mov with full alpha → drag onto your FCP timeline. Loops seamlessly.</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const TAU = Math.PI * 2;
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let W = 1920, H = 1080;
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+// deterministic hash rng — same t always gives same frame (loop-safe exports)
+const h1 = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const easeOut = (t) => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
+
+const SCHEMES = [
+  { id: "classic",   p: "#fcee0a", s: "#00f0ff", a: "#ff003c", ink: "#0d0e12" },
+  { id: "netrunner", p: "#00f0ff", s: "#c8faff", a: "#fcee0a", ink: "#031419" },
+  { id: "samurai",   p: "#ff003c", s: "#fcee0a", a: "#00f0ff", ink: "#170309" },
+  { id: "ghost",     p: "#f2f2f2", s: "#00f0ff", a: "#ff003c", ink: "#101012" },
+];
+
+const state = {
+  scene: "hud",
+  scheme: SCHEMES[0],
+  glitch: 1,
+  alpha: 1,
+  text1: "V // STREET KID",
+  text2: "NETRUNNER — NIGHT CITY",
+};
+
+const COND = `"Avenir Next Condensed", "Arial Narrow", sans-serif`;
+const MONO = `"SF Mono", Menlo, "Courier New", monospace`;
+
+function font(weight, size, mono) {
+  return `${weight} ${size}px ${mono ? MONO : COND}`;
+}
+function notchPath(x, y, w, hh, n) {
+  ctx.beginPath();
+  ctx.moveTo(x + n, y);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x + w, y + hh - n);
+  ctx.lineTo(x + w - n, y + hh);
+  ctx.lineTo(x, y + hh);
+  ctx.lineTo(x, y + n);
+  ctx.closePath();
+}
+function hex2(seed) {
+  return Math.floor(h1(seed) * 256).toString(16).toUpperCase().padStart(2, "0");
+}
+// glitch seed quantized so pattern repeats every 4s
+const gseed = (t, rate = 15) => Math.floor(((t % 4) + 4) % 4 * rate);
+
+// scale factor so overlays look identical at any export resolution
+const U = () => Math.min(W, H) / 1080;
+
+// =====================================================================
+// OVERLAYS — every draw() is a pure function of t with a 4s period,
+// drawn on a TRANSPARENT canvas.
+// =====================================================================
+const SCENES = {};
+
+// ---------- HUD FRAME ----------
+SCENES.hud = {
+  name: "HUD FRAME", tag: "FULLSCREEN",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const m = 46 * u;                       // margin
+    const breathe = Math.sin(TAU * t / 4) * 4 * u;
+    const L = 110 * u + breathe;
+    ctx.lineWidth = 4 * u;
+    ctx.strokeStyle = C.p;
+    ctx.shadowColor = C.p; ctx.shadowBlur = 10 * u;
+    // corner brackets
+    for (const [cx, cy, dx, dy] of [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]]) {
+      ctx.beginPath();
+      ctx.moveTo(cx + dx * L, cy);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx, cy + dy * L);
+      ctx.stroke();
+      // inner accent
+      ctx.save();
+      ctx.strokeStyle = C.s; ctx.lineWidth = 2 * u; ctx.shadowBlur = 6 * u; ctx.shadowColor = C.s;
+      ctx.beginPath();
+      ctx.moveTo(cx + dx * L * 0.5, cy + dy * 12 * u);
+      ctx.lineTo(cx + dx * 12 * u, cy + dy * 12 * u);
+      ctx.lineTo(cx + dx * 12 * u, cy + dy * L * 0.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.shadowBlur = 0;
+    // top ruler ticks
+    ctx.fillStyle = C.s;
+    ctx.globalAlpha = 0.75;
+    const tickN = 40;
+    for (let i = 0; i <= tickN; i++) {
+      const x = lerp(W * 0.24, W * 0.76, i / tickN);
+      const big = i % 5 === 0;
+      ctx.fillRect(x, m - 2 * u, 2 * u, (big ? 16 : 8) * u);
+    }
+    // moving marker on ruler
+    const mk = ((t % 4) / 4);
+    ctx.fillStyle = C.p;
+    ctx.beginPath();
+    const mx = lerp(W * 0.24, W * 0.76, mk);
+    ctx.moveTo(mx, m + 22 * u); ctx.lineTo(mx - 7 * u, m + 34 * u); ctx.lineTo(mx + 7 * u, m + 34 * u);
+    ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1;
+    // right data column
+    ctx.textAlign = "right";
+    ctx.font = font(600, 20 * u, true);
+    ctx.fillStyle = C.s;
+    const rows = 7;
+    for (let i = 0; i < rows; i++) {
+      const seed = i * 13 + Math.floor(t * 6);
+      ctx.globalAlpha = 0.55 + 0.45 * h1(seed);
+      ctx.fillText(`0x${hex2(seed)}${hex2(seed + 1)}`, W - m - 14 * u, H * 0.32 + i * 30 * u);
+    }
+    ctx.globalAlpha = 0.9;
+    ctx.font = font(700, 17 * u, false);
+    ctx.fillStyle = C.p;
+    ctx.fillText("NET_WATCH v2.077", W - m - 14 * u, H * 0.32 - 34 * u);
+    // bottom-left coords
+    ctx.textAlign = "left";
+    ctx.font = font(600, 19 * u, true);
+    ctx.fillStyle = C.s;
+    const la = (37.7749 + Math.sin(TAU * t / 4) * 0.002).toFixed(4);
+    const lo = (122.4194 + Math.cos(TAU * t / 4) * 0.002).toFixed(4);
+    ctx.fillText(`NC//${la}N ${lo}W`, m + 14 * u, H - m - 16 * u);
+    ctx.fillStyle = C.p;
+    ctx.font = font(700, 15 * u, false);
+    ctx.fillText(state.text2.toUpperCase(), m + 14 * u, H - m - 44 * u);
+    // REC dot
+    if (Math.floor(t * 2) % 2 === 0) {
+      ctx.fillStyle = C.a;
+      ctx.beginPath(); ctx.arc(m + 26 * u, m + 30 * u, 8 * u, 0, TAU); ctx.fill();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.font = font(700, 20 * u, false);
+    ctx.fillText("REC", m + 44 * u, m + 37 * u);
+    // scan sweep
+    const sy = ((t % 4) / 4) * H;
+    const grad = ctx.createLinearGradient(0, sy - 90 * u, 0, sy);
+    grad.addColorStop(0, "rgba(0,0,0,0)");
+    grad.addColorStop(1, C.p + "26"); // hex alpha
+    ctx.fillStyle = grad;
+    ctx.fillRect(m, sy - 90 * u, W - m * 2, 90 * u);
+    ctx.fillStyle = C.p; ctx.globalAlpha = 0.5;
+    ctx.fillRect(m, sy, W - m * 2, 2 * u);
+    ctx.globalAlpha = 1;
+    // center micro-crosshair
+    ctx.strokeStyle = C.s; ctx.lineWidth = 2 * u; ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 18 * u, H / 2); ctx.lineTo(W / 2 + 18 * u, H / 2);
+    ctx.moveTo(W / 2, H / 2 - 18 * u); ctx.lineTo(W / 2, H / 2 + 18 * u);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  },
+};
+
+// ---------- LOWER THIRD ----------
+SCENES.lowerthird = {
+  name: "LOWER THIRD", tag: "NAMEPLATE",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const tt = ((t % 4) + 4) % 4;
+    const ap = easeOut(tt / 0.45);
+    const slide = (ap - 1) * 320 * u;
+    const baseX = 90 * u + slide, baseY = H - 210 * u;
+    ctx.globalAlpha = ap;
+
+    // skew like CP2077 plates
+    ctx.save();
+    ctx.transform(1, 0, -0.18, 1, 0, 0);
+    const skx = baseX + 0.18 * baseY;
+    // main bar
+    ctx.font = font(700, 46 * u, false);
+    const tw = ctx.measureText(state.text1.toUpperCase()).width;
+    const bw = tw + 110 * u;
+    ctx.fillStyle = C.p;
+    ctx.shadowColor = C.p; ctx.shadowBlur = 18 * u;
+    notchPath(skx, baseY, bw, 66 * u, 14 * u);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = C.ink;
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(state.text1.toUpperCase(), skx + 34 * u, baseY + 35 * u);
+    // barcode block at right end of bar
+    ctx.fillStyle = C.ink;
+    for (let i = 0; i < 9; i++) {
+      const bx = skx + bw - 58 * u + i * 6 * u;
+      if (h1(i * 7) > 0.35) ctx.fillRect(bx, baseY + 12 * u, 2.5 * u, 42 * u);
+    }
+    // sub bar
+    const sy = baseY + 74 * u;
+    ctx.fillStyle = "rgba(6,7,10,0.72)";
+    notchPath(skx + 26 * u, sy, bw * 0.82, 38 * u, 9 * u);
+    ctx.fill();
+    ctx.fillStyle = C.s;
+    ctx.fillRect(skx + 26 * u, sy, 6 * u, 38 * u);
+    ctx.font = font(600, 21 * u, true);
+    ctx.fillStyle = C.s;
+    ctx.fillText(state.text2.toUpperCase(), skx + 48 * u, sy + 20 * u);
+    // deco line above
+    ctx.fillStyle = C.s; ctx.globalAlpha = ap * 0.9;
+    ctx.fillRect(skx, baseY - 22 * u, 150 * u, 3 * u);
+    ctx.font = font(600, 16 * u, true);
+    ctx.fillText("ID_" + hex2(3) + hex2(9) + " // VERIFIED", skx + 164 * u, baseY - 15 * u);
+    ctx.restore();
+
+    // glitch flicker just after entry
+    if (tt > 0.45 && tt < 0.62 && state.glitch > 0) {
+      const n = Math.round(6 * state.glitch);
+      for (let i = 0; i < n; i++) {
+        const s = gseed(t, 30) * 7 + i;
+        ctx.fillStyle = [C.p, C.s, C.a][Math.floor(h1(s) * 3)];
+        ctx.globalAlpha = 0.7;
+        ctx.fillRect(baseX + h1(s + 1) * 500 * u - 60 * u, baseY - 30 * u + h1(s + 2) * 160 * u,
+                     h1(s + 3) * 200 * u + 30 * u, 4 * u);
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.textBaseline = "alphabetic";
+  },
+};
+
+// ---------- TARGET SCANNER ----------
+SCENES.scanner = {
+  name: "TARGET SCANNER", tag: "RETICLE",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const cx = W / 2, cy = H / 2;
+    const R = 170 * u;
+    ctx.lineCap = "butt";
+    // rotating dashed rings
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = C.p; ctx.lineWidth = 5 * u;
+    ctx.shadowColor = C.p; ctx.shadowBlur = 12 * u;
+    ctx.setLineDash([40 * u, 26 * u]);
+    ctx.rotate(TAU * t / 4);
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.stroke();
+    ctx.rotate(-TAU * t / 4 * 2.5);
+    ctx.strokeStyle = C.s; ctx.lineWidth = 2.5 * u;
+    ctx.shadowColor = C.s; ctx.shadowBlur = 8 * u;
+    ctx.setLineDash([12 * u, 30 * u]);
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.28, 0, TAU); ctx.stroke();
+    ctx.restore();
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 0;
+    // crosshair ticks
+    ctx.strokeStyle = C.p; ctx.lineWidth = 3.5 * u;
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * TAU + TAU / 8 * 0;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * R * 0.72, cy + Math.sin(a) * R * 0.72);
+      ctx.lineTo(cx + Math.cos(a) * R * 0.52, cy + Math.sin(a) * R * 0.52);
+      ctx.stroke();
+    }
+    // pulsing diamond
+    const pd = 1 + Math.sin(TAU * 2 * t / 4) * 0.12;
+    ctx.save();
+    ctx.translate(cx, cy); ctx.rotate(TAU / 8); ctx.scale(pd, pd);
+    ctx.strokeStyle = C.a; ctx.lineWidth = 3 * u;
+    ctx.shadowColor = C.a; ctx.shadowBlur = 10 * u;
+    ctx.strokeRect(-16 * u, -16 * u, 32 * u, 32 * u);
+    ctx.restore();
+    ctx.shadowBlur = 0;
+    // breathing corner brackets around square
+    const S = R * 1.85 + Math.sin(TAU * t / 4) * 8 * u;
+    ctx.strokeStyle = C.s; ctx.lineWidth = 3 * u;
+    const bl = 44 * u;
+    for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      ctx.beginPath();
+      ctx.moveTo(cx + dx * S - dx * bl, cy + dy * S);
+      ctx.lineTo(cx + dx * S, cy + dy * S);
+      ctx.lineTo(cx + dx * S, cy + dy * S - dy * bl);
+      ctx.stroke();
+    }
+    // text readouts
+    const dots = ".".repeat(1 + Math.floor(((t * 2) % 4)) % 4);
+    ctx.font = font(700, 30 * u, false);
+    ctx.fillStyle = C.p;
+    ctx.textAlign = "left";
+    ctx.fillText("SCANNING" + dots, cx - S, cy - S - 22 * u);
+    ctx.font = font(600, 20 * u, true);
+    ctx.fillStyle = C.s;
+    const dist = (42.7 + Math.sin(TAU * t / 4) * 3.4).toFixed(1);
+    ctx.textAlign = "right";
+    ctx.fillText(`DIST ${dist}M`, cx + S, cy + S + 34 * u);
+    ctx.fillText(`SIG ${hex2(Math.floor(t * 5))}%`, cx + S, cy + S + 60 * u);
+    // threat bar
+    ctx.textAlign = "left";
+    ctx.fillStyle = C.a;
+    ctx.font = font(700, 20 * u, false);
+    ctx.fillText("THREAT", cx - S, cy + S + 34 * u);
+    const tb = 0.4 + 0.35 * Math.abs(Math.sin(TAU * t / 4));
+    ctx.strokeStyle = C.a; ctx.lineWidth = 1.5 * u;
+    ctx.strokeRect(cx - S + 92 * u, cy + S + 18 * u, 160 * u, 16 * u);
+    ctx.fillRect(cx - S + 94 * u, cy + S + 20 * u, 156 * u * tb, 12 * u);
+  },
+};
+
+// ---------- BREACH PROTOCOL ----------
+SCENES.breach = {
+  name: "BREACH PROTOCOL", tag: "CODE PANEL",
+  codes: ["BD", "1C", "55", "E9", "7A", "FF"],
+  draw(t) {
+    const C = state.scheme, u = U();
+    const pw = 470 * u, ph = 430 * u;
+    const px = W - pw - 70 * u, py = 70 * u;
+    // panel
+    ctx.fillStyle = "rgba(5,6,9,0.78)";
+    notchPath(px, py, pw, ph, 18 * u);
+    ctx.fill();
+    ctx.strokeStyle = C.p; ctx.lineWidth = 1.5 * u; ctx.globalAlpha = 0.7;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    // header
+    ctx.fillStyle = C.p;
+    notchPath(px, py, pw, 46 * u, 18 * u);
+    ctx.save(); ctx.clip();
+    ctx.fillRect(px, py, pw, 46 * u);
+    ctx.restore();
+    ctx.fillStyle = C.ink;
+    ctx.font = font(800, 25 * u, false);
+    ctx.textAlign = "left";
+    ctx.fillText("BREACH PROTOCOL", px + 20 * u, py + 32 * u);
+    // draining timer bar
+    const frac = 1 - ((t % 4) / 4);
+    ctx.fillStyle = C.a;
+    ctx.fillRect(px + pw * 0.62, py + 16 * u, (pw * 0.32) * frac, 14 * u);
+    // buffer slots
+    const filled = Math.floor(((t % 4) / 4) * 8);
+    for (let i = 0; i < 8; i++) {
+      const bx = px + 20 * u + i * 54 * u;
+      ctx.strokeStyle = C.s; ctx.lineWidth = 1.5 * u;
+      ctx.setLineDash(i < filled ? [] : [5 * u, 5 * u]);
+      ctx.strokeRect(bx, py + 62 * u, 44 * u, 36 * u);
+      if (i < filled) {
+        ctx.fillStyle = C.s;
+        ctx.font = font(700, 20 * u, true);
+        ctx.textAlign = "center";
+        ctx.fillText(this.codes[Math.floor(h1(i * 31) * 6)], bx + 22 * u, py + 88 * u);
+      }
+    }
+    ctx.setLineDash([]);
+    // 5x5 code matrix
+    const gx = px + 34 * u, gy = py + 130 * u, cell = 82 * u;
+    ctx.textAlign = "center";
+    const active = Math.floor(((t % 4) / 4) * 10);
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        const idx = r * 5 + c;
+        const code = this.codes[Math.floor(h1(idx * 17) * 6)];
+        // pseudo-random highlight path
+        const isActive = Math.floor(h1(active * 7 + 3) * 5) === c && Math.floor(h1(active * 13 + 5) * 5) === r;
+        const cxx = gx + c * cell, cyy = gy + r * 68 * u;
+        if (isActive) {
+          ctx.fillStyle = C.p + "33";
+          ctx.fillRect(cxx - 26 * u, cyy - 22 * u, 52 * u, 34 * u);
+          ctx.strokeStyle = C.p; ctx.lineWidth = 1.5 * u;
+          ctx.strokeRect(cxx - 26 * u, cyy - 22 * u, 52 * u, 34 * u);
+        }
+        ctx.font = font(isActive ? 700 : 500, 22 * u, true);
+        ctx.fillStyle = isActive ? C.p : C.s;
+        ctx.globalAlpha = isActive ? 1 : 0.75;
+        ctx.fillText(code, cxx, cyy);
+      }
+    }
+    ctx.globalAlpha = 1;
+    // footer
+    ctx.textAlign = "left";
+    ctx.font = font(600, 15 * u, true);
+    ctx.fillStyle = C.s; ctx.globalAlpha = 0.8;
+    ctx.fillText("DAEMONS: ICEPICK // MASS VULNERABILITY", px + 20 * u, py + ph - 18 * u);
+    ctx.globalAlpha = 1;
+  },
+};
+
+// ---------- WARNING BANNER ----------
+SCENES.warning = {
+  name: "WARNING BANNER", tag: "ALERT",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const barH = 58 * u;
+    // scrolling hazard stripes top & bottom
+    for (const y of [0, H - barH]) {
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, y, W, barH); ctx.clip();
+      ctx.fillStyle = C.p; ctx.globalAlpha = 0.85;
+      const sw = 46 * u;
+      const off = (t * 60 * u) % (sw * 2);
+      for (let x = -sw * 2; x < W + sw * 2; x += sw * 2) {
+        ctx.beginPath();
+        ctx.moveTo(x + off, y + barH);
+        ctx.lineTo(x + off + sw, y);
+        ctx.lineTo(x + off + sw * 1.5, y);
+        ctx.lineTo(x + off + sw * 0.5, y + barH);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = C.a;
+      ctx.fillRect(0, y === 0 ? barH : y - 4 * u, W, 4 * u);
+    }
+    // flashing center band
+    const flash = Math.floor(t * 3) % 2 === 0;
+    const bw = W * 0.64, bh = 132 * u;
+    const bx = (W - bw) / 2, by = H / 2 - bh / 2;
+    const jx = flash ? 0 : (h1(gseed(t, 12)) - 0.5) * 10 * u * state.glitch;
+    ctx.save();
+    ctx.translate(jx, 0);
+    ctx.fillStyle = flash ? "rgba(255,0,60,0.16)" : "rgba(255,0,60,0.08)";
+    if (C.a !== "#ff003c") ctx.fillStyle = flash ? C.a + "29" : C.a + "14";
+    notchPath(bx, by, bw, bh, 22 * u);
+    ctx.fill();
+    ctx.strokeStyle = C.a; ctx.lineWidth = 3 * u;
+    ctx.shadowColor = C.a; ctx.shadowBlur = flash ? 24 * u : 8 * u;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    // chevrons
+    ctx.fillStyle = C.a;
+    ctx.font = font(800, 44 * u, false);
+    ctx.textAlign = "left";
+    const ch = ">".repeat(3);
+    const cOff = ((t * 2) % 1) * 18 * u;
+    ctx.globalAlpha = 0.85;
+    ctx.fillText(ch, bx + 24 * u + cOff, by + bh / 2 + 16 * u);
+    ctx.textAlign = "right";
+    ctx.fillText("<".repeat(3), bx + bw - 24 * u - cOff, by + bh / 2 + 16 * u);
+    ctx.globalAlpha = 1;
+    // main text
+    ctx.textAlign = "center";
+    const msg = "⚠ " + (state.text1 || "WARNING").toUpperCase();
+    ctx.font = font(800, 64 * u, false);
+    ctx.fillStyle = flash ? "#fff" : C.a;
+    ctx.shadowColor = C.a; ctx.shadowBlur = 20 * u;
+    ctx.fillText(msg, W / 2, by + bh / 2 + 22 * u);
+    ctx.shadowBlur = 0;
+    // sub text
+    ctx.font = font(600, 22 * u, true);
+    ctx.fillStyle = C.p;
+    ctx.fillText(state.text2.toUpperCase(), W / 2, by + bh + 42 * u);
+    ctx.restore();
+  },
+};
+
+// ---------- GLITCH BURST ----------
+SCENES.glitchburst = {
+  name: "GLITCH BURST", tag: "TRANSITION",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const tt = ((t % 2) + 2) % 2;
+    // pre-flicker
+    if (tt > 1.55 && tt < 1.6) {
+      ctx.fillStyle = C.s; ctx.globalAlpha = 0.5;
+      ctx.fillRect(0, h1(gseed(t, 40)) * H, W, 3 * u);
+      ctx.globalAlpha = 1;
+    }
+    if (tt >= 0.35) return; // transparent between bursts
+    const amp = 1 - tt / 0.35;
+    const seed = gseed(t, 60);
+    const n = Math.round(16 * state.glitch * amp) + 4;
+    for (let i = 0; i < n; i++) {
+      const s = seed * 17 + i * 7;
+      const y = h1(s) * H;
+      const hh = (h1(s + 1) * 46 + 5) * u;
+      const x = (h1(s + 2) - 0.5) * W * 0.45 * amp;
+      const w = h1(s + 3) * W * 0.9 + W * 0.1;
+      ctx.fillStyle = [C.p, C.s, C.a, "#ffffff"][Math.floor(h1(s + 4) * 4)];
+      ctx.globalAlpha = 0.25 + h1(s + 5) * 0.6 * amp;
+      ctx.fillRect(x, y, w, hh);
+    }
+    // big translucent blocks
+    for (let i = 0; i < 3; i++) {
+      const s = seed * 29 + i * 11;
+      ctx.fillStyle = h1(s) > 0.5 ? C.p : C.s;
+      ctx.globalAlpha = 0.14 * amp;
+      ctx.fillRect(h1(s + 1) * W * 0.7, h1(s + 2) * H * 0.7, W * 0.3, h1(s + 3) * H * 0.3);
+    }
+    // thin full-width scan tears
+    for (let i = 0; i < 6; i++) {
+      const s = seed * 41 + i * 5;
+      ctx.fillStyle = "#fff";
+      ctx.globalAlpha = 0.5 * amp;
+      ctx.fillRect(0, h1(s) * H, W, 2 * u);
+    }
+    ctx.globalAlpha = 1;
+  },
+};
+
+// ---------- STAT BARS ----------
+SCENES.stats = {
+  name: "STAT BARS", tag: "GAME UI",
+  draw(t) {
+    const C = state.scheme, u = U();
+    const x = 70 * u, y = 70 * u;
+    ctx.textAlign = "left";
+    // label
+    ctx.font = font(800, 26 * u, false);
+    ctx.fillStyle = C.p;
+    ctx.shadowColor = C.p; ctx.shadowBlur = 8 * u;
+    ctx.fillText((state.text1 || "V").toUpperCase(), x, y);
+    ctx.shadowBlur = 0;
+    ctx.font = font(600, 16 * u, true);
+    ctx.fillStyle = C.s; ctx.globalAlpha = 0.85;
+    ctx.fillText(state.text2.toUpperCase(), x, y + 24 * u);
+    ctx.globalAlpha = 1;
+    // HP bar
+    const bw = 430 * u, bh = 20 * u, hy = y + 44 * u;
+    const hp = 0.68 + 0.1 * Math.sin(TAU * t / 4);
+    ctx.strokeStyle = C.a; ctx.lineWidth = 2 * u;
+    notchPath(x, hy, bw, bh, 8 * u); ctx.stroke();
+    ctx.save();
+    notchPath(x, hy, bw, bh, 8 * u); ctx.clip();
+    ctx.fillStyle = C.a;
+    ctx.shadowColor = C.a; ctx.shadowBlur = 10 * u;
+    ctx.fillRect(x + 2 * u, hy + 2 * u, (bw - 4 * u) * hp, bh - 4 * u);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    for (let i = 1; i < 10; i++) ctx.fillRect(x + (bw / 10) * i, hy, 2 * u, bh);
+    ctx.restore();
+    ctx.font = font(700, 17 * u, true);
+    ctx.fillStyle = C.a;
+    ctx.fillText(`HP ${Math.round(hp * 380)}/380`, x + bw + 16 * u, hy + 16 * u);
+    // RAM cells
+    const ry = hy + 38 * u;
+    const cells = 12;
+    const filled = 7 + Math.round(2 * Math.sin(TAU * t / 4));
+    for (let i = 0; i < cells; i++) {
+      const cx2 = x + i * 30 * u;
+      if (i < filled) {
+        ctx.fillStyle = C.s;
+        ctx.shadowColor = C.s; ctx.shadowBlur = 8 * u;
+        notchPath(cx2, ry, 24 * u, 26 * u, 6 * u); ctx.fill();
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.strokeStyle = C.s; ctx.lineWidth = 1.5 * u; ctx.globalAlpha = 0.5;
+        notchPath(cx2, ry, 24 * u, 26 * u, 6 * u); ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+    ctx.fillStyle = C.s;
+    ctx.fillText(`RAM ${filled}/${cells}`, x + cells * 30 * u + 10 * u, ry + 19 * u);
+    // XP bar
+    const xy = ry + 44 * u;
+    const xp = ((t % 4) / 4);
+    ctx.strokeStyle = C.p; ctx.lineWidth = 1.5 * u; ctx.globalAlpha = 0.8;
+    ctx.strokeRect(x, xy, bw * 0.7, 8 * u);
+    ctx.fillStyle = C.p;
+    ctx.fillRect(x + 1.5 * u, xy + 1.5 * u, (bw * 0.7 - 3 * u) * xp, 5 * u);
+    ctx.globalAlpha = 1;
+    ctx.font = font(700, 15 * u, false);
+    ctx.fillText(`STREET CRED 50`, x + bw * 0.7 + 14 * u, xy + 9 * u);
+    // spinning hex
+    ctx.save();
+    ctx.translate(x + bw + 130 * u, hy + 10 * u);
+    ctx.rotate(TAU * t / 4);
+    ctx.strokeStyle = C.p; ctx.lineWidth = 2.5 * u;
+    ctx.beginPath();
+    for (let i = 0; i <= 6; i++) {
+      const a = (i / 6) * TAU;
+      i === 0 ? ctx.moveTo(Math.cos(a) * 16 * u, Math.sin(a) * 16 * u)
+              : ctx.lineTo(Math.cos(a) * 16 * u, Math.sin(a) * 16 * u);
+    }
+    ctx.stroke();
+    ctx.restore();
+  },
+};
+
+// ---------- CRT / SCANLINES ----------
+SCENES.crt = {
+  name: "CRT SCANLINES", tag: "TEXTURE",
+  draw(t) {
+    const C = state.scheme, u = U();
+    // scanlines
+    ctx.fillStyle = "rgba(0,0,0,0.13)";
+    const step = Math.max(3, Math.round(4 * u));
+    for (let y = 0; y < H; y += step) ctx.fillRect(0, y, W, Math.max(1, step * 0.4));
+    // rolling bright band
+    const by = ((t % 4) / 4) * (H + 300 * u) - 150 * u;
+    const g = ctx.createLinearGradient(0, by - 130 * u, 0, by + 130 * u);
+    g.addColorStop(0, "rgba(255,255,255,0)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.05)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, by - 130 * u, W, 260 * u);
+    // vignette
+    const v = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.42, W / 2, H / 2, Math.max(W, H) * 0.72);
+    v.addColorStop(0, "rgba(0,0,0,0)");
+    v.addColorStop(1, "rgba(0,0,0,0.34)");
+    ctx.fillStyle = v;
+    ctx.fillRect(0, 0, W, H);
+    // chromatic edge whisper
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = C.s;
+    ctx.fillRect(0, 0, W, 2 * u);
+    ctx.fillStyle = C.a;
+    ctx.fillRect(0, H - 2 * u, W, 2 * u);
+    ctx.globalAlpha = 1;
+    // occasional noise line
+    const s = gseed(t, 10);
+    if (h1(s) > 0.72) {
+      ctx.fillStyle = "rgba(255,255,255,0.22)";
+      ctx.fillRect(0, h1(s + 1) * H, W, 2.5 * u);
+    }
+  },
+};
+
+// =====================================================================
+// UI wiring
+// =====================================================================
+const sceneList = document.getElementById("sceneList");
+for (const [id, s] of Object.entries(SCENES)) {
+  const el = document.createElement("div");
+  el.className = "scene-item" + (id === state.scene ? " active" : "");
+  el.dataset.id = id;
+  el.innerHTML = `<span class="nm">${s.name}</span><span class="tag">${s.tag}</span>`;
+  el.onclick = () => {
+    state.scene = id;
+    document.querySelectorAll(".scene-item").forEach(c => c.classList.toggle("active", c.dataset.id === id));
+  };
+  sceneList.appendChild(el);
+}
+
+const schemeRow = document.getElementById("schemeRow");
+SCHEMES.forEach((sc, i) => {
+  const el = document.createElement("div");
+  el.className = "scheme" + (i === 0 ? " active" : "");
+  el.title = sc.id;
+  el.innerHTML = `<div style="background:${sc.p}"></div><div style="background:${sc.s}"></div><div style="background:${sc.a}"></div>`;
+  el.onclick = () => {
+    state.scheme = sc;
+    document.querySelectorAll(".scheme").forEach(x => x.classList.remove("active"));
+    el.classList.add("active");
+  };
+  schemeRow.appendChild(el);
+});
+
+document.getElementById("text1").oninput = e => state.text1 = e.target.value;
+document.getElementById("text2").oninput = e => state.text2 = e.target.value;
+document.getElementById("glitchSlider").oninput = e => {
+  state.glitch = +e.target.value;
+  document.getElementById("glitchOut").textContent = state.glitch.toFixed(1);
+};
+document.getElementById("alphaSlider").oninput = e => {
+  state.alpha = +e.target.value;
+  document.getElementById("alphaOut").textContent = state.alpha.toFixed(1);
+};
+
+document.querySelectorAll(".bg-toggle button").forEach(b => {
+  b.onclick = () => {
+    document.getElementById("holder").className = "canvas-holder " + b.dataset.bg;
+    document.querySelectorAll(".bg-toggle button").forEach(x => x.classList.toggle("on", x === b));
+  };
+});
+
+const resSel = document.getElementById("resSel");
+function applyRes() {
+  const [w, hh] = resSel.value.split("x").map(Number);
+  W = w; H = hh;
+  canvas.width = W; canvas.height = H;
+  canvas.style.aspectRatio = `${W} / ${H}`;
+}
+resSel.onchange = applyRes;
+
+// ---------- frame render ----------
+function renderFrame(t) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.globalAlpha = state.alpha;
+  SCENES[state.scene].draw(t);
+  ctx.restore();
+}
+
+// ---------- PNG still ----------
+document.getElementById("pngBtn").onclick = () => {
+  const a = document.createElement("a");
+  a.download = `nc-${state.scene}-alpha.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+};
+
+// ---------- MOV export ----------
+const exportBtn = document.getElementById("exportBtn");
+const progressWrap = document.getElementById("progressWrap");
+const progressFill = document.getElementById("progressFill");
+const progressTxt = document.getElementById("progressTxt");
+let exporting = false;
+
+exportBtn.onclick = async () => {
+  if (exporting) return;
+  exporting = true;
+  exportBtn.disabled = true;
+  progressWrap.classList.add("on");
+  try {
+    const fps = +document.getElementById("fpsSel").value;
+    const dur = +document.getElementById("durSel").value;
+    const total = fps * dur;
+    const start = await fetch("/api/export/start", {
+      method: "POST",
+      body: JSON.stringify({ name: "nc-" + state.scene, fps, width: W, height: H }),
+    }).then(r => r.json());
+    for (let f = 0; f < total; f++) {
+      renderFrame(f / fps);
+      const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+      const res = await fetch(`/api/export/frame?id=${start.id}&n=${f}`, { method: "POST", body: blob });
+      if (!res.ok) throw new Error("frame upload failed");
+      progressFill.style.width = ((f + 1) / total * 92) + "%";
+      progressTxt.innerHTML = `RENDERING FRAME <b>${f + 1}/${total}</b>`;
+    }
+    progressTxt.textContent = "ENCODING PRORES 4444…";
+    const fin = await fetch(`/api/export/finish?id=${start.id}`, { method: "POST" }).then(r => r.json());
+    if (!fin.ok) throw new Error(fin.error || "mux failed");
+    progressFill.style.width = "100%";
+    const mb = (fin.bytes / 1048576).toFixed(1);
+    progressTxt.innerHTML = `✅ SAVED <b>${fin.path.split("/").pop()}</b> (${mb} MB) → exports folder`;
+  } catch (err) {
+    progressTxt.textContent = "⚠ EXPORT FAILED: " + err.message;
+  } finally {
+    exporting = false;
+    exportBtn.disabled = false;
+  }
+};
+
+// ---------- live preview loop ----------
+applyRes();
+const t0 = performance.now();
+(function loop() {
+  if (!exporting) renderFrame((performance.now() - t0) / 1000);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
