@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 
-const root = process.cwd();
+const root = new URL('../public', import.meta.url).pathname;
 const MIME = {
   '.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.mjs':'text/javascript',
   '.svg':'image/svg+xml', '.png':'image/png', '.ico':'image/x-icon', '.ttf':'font/ttf',
