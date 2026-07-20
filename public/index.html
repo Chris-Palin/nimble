@@ -175,9 +175,14 @@
   h1 .squiggle{
     position:absolute; left:0; right:0; bottom:-.12em; height:.22em; width:100%;
   }
-  h1 .squiggle path{stroke-dasharray:245;}
-  h1 .fun:hover .squiggle path{animation:squigDraw .9s ease;}
-  @keyframes squigDraw{from{stroke-dashoffset:245;}to{stroke-dashoffset:0;}}
+  h1 .squiggle path{transform-box:fill-box; transform-origin:center;}
+  h1 .fun:hover .squiggle path{animation:squigWave .7s ease-in-out infinite;}
+  @keyframes squigWave{
+    0%,100%{transform:translateY(0) scaleY(1);}
+    30%{transform:translateY(-1.5px) scaleY(1.14);}
+    65%{transform:translateY(1.5px) scaleY(.9);}
+  }
+  @media (prefers-reduced-motion:reduce){h1 .fun:hover .squiggle path{animation:none;}}
   .hero .sub{
     margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
     color:var(--muted); max-width:520px; font-weight:500;
@@ -298,7 +303,8 @@
 
   /* blueprint band behind the Genesis card: white, dotted grid, no vignette */
   .genesis-band{
-    margin-top:110px; padding:96px 0;
+    margin-top:64px; padding:96px 0;
+    border-top:1px solid var(--line);
     background:#ffffff;
     background-image:radial-gradient(rgba(16,16,19,.13) 1.1px, transparent 1.5px);
     background-size:16px 16px;
@@ -402,7 +408,7 @@
 
   /* ---------- footer ---------- */
   footer{
-    margin-top:130px; border-top:1px solid var(--line);
+    margin-top:0; border-top:1px solid var(--line);
     padding:64px 40px 44px;
   }
   footer .inner{
@@ -433,7 +439,7 @@
     nav .links a:not(.cta){display:none;}
     section{padding:80px 20px 20px;}
     .cover-wrap{padding:0 20px;}
-    .genesis-band{margin-top:80px; padding:64px 0;}
+    .genesis-band{margin-top:48px; padding:64px 0;}
     footer{padding:52px 20px 36px;}
   }
 </style>
@@ -491,7 +497,7 @@
 
 <section class="overview reveal" id="overview">
   <div class="kicker" style="--kc:var(--pink)">00 - Overview</div>
-  <h2>A one-person studio,<br>running on curiosity.</h2>
+  <h2>Overview</h2>
   <p class="lede">Nimble is where ideas get chased until they become things you can actually play with. No roadmap, no meetings, no uploads. Just small, handmade tools that live entirely in your browser.</p>
   <div class="ovgrid">
     <div class="ov" style="--oc:var(--red)"><b>Small tools</b><span>Each one does a single thing properly, and stays out of your way.</span></div>
