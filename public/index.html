@@ -87,7 +87,9 @@
   .hero{
     position:relative; min-height:100svh;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:140px 24px 80px;
+    text-align:center;
+    /* offset the centred block below the fixed nav, with headroom on top */
+    padding:120px 24px 64px;
   }
   .blobs{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
   .blob{
@@ -134,9 +136,9 @@
   }
 
   h1{
-    font-size:clamp(50px, 9vw, 118px);
+    font-size:clamp(46px, 8.4vw, 112px);
     font-weight:860; letter-spacing:-0.045em; line-height:1;
-    max-width:15ch;
+    text-align:center; margin-inline:auto; max-width:100%;
   }
   h1 .fun{position:relative; white-space:nowrap;}
   h1 .fun.porkys{
@@ -187,20 +189,8 @@
     margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
     color:var(--muted); max-width:520px; font-weight:500;
   }
-  .hero .actions{margin-top:42px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
+  .hero .actions{margin-top:52px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
   .hero .cta{font-size:15px; padding:16px 30px;}
-
-  .scrollcue{
-    margin-top:70px; font-size:10.5px; font-weight:700; letter-spacing:.3em;
-    text-transform:uppercase; color:var(--faint);
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-  }
-  .scrollcue::after{
-    content:""; width:1px; height:44px;
-    background:linear-gradient(var(--faint), transparent);
-    animation:cue 1.8s ease-in-out infinite;
-  }
-  @keyframes cue{0%,100%{transform:scaleY(1); opacity:.9;}50%{transform:scaleY(.55); opacity:.4;}}
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -475,13 +465,9 @@
     </span> by nature.
   </h1>
 
-  <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. I build it all and share it freely, right here in your browser.</p>
-
   <div class="actions">
     <a class="cta" href="#overview">Have a wander <span class="arr">→</span></a>
   </div>
-
-  <div class="scrollcue">Scroll</div>
 </header>
 
 <div class="marquee" aria-hidden="true">
@@ -498,7 +484,7 @@
 <section class="overview reveal" id="overview">
   <div class="kicker" style="--kc:var(--pink)">00 - Overview</div>
   <h2>Overview</h2>
-  <p class="lede">Nimble is where ideas get chased until they become things you can actually play with. No roadmap, no meetings, no uploads. Just small, handmade tools that live entirely in your browser.</p>
+  <p class="lede">Nimble is a home for everything: every experiment, every idea worth chasing. No roadmap, no meetings, no uploads. I build small, handmade tools and share them freely, right here in your browser.</p>
   <div class="ovgrid">
     <div class="ov" style="--oc:var(--red)"><b>Small tools</b><span>Each one does a single thing properly, and stays out of your way.</span></div>
     <div class="ov" style="--oc:var(--blue)"><b>Nothing leaves your device</b><span>Every pixel is processed locally. No accounts, no telemetry.</span></div>
