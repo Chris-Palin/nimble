@@ -6,7 +6,7 @@
 <title>Stage — Nimble</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<link rel="stylesheet" href="../../assets/theme.css?v=7">
+<link rel="stylesheet" href="../../assets/theme.css?v=8">
 <script src="../../assets/theme.js"></script>
 <style>
   :root, :root[data-theme="dark"]{
@@ -78,15 +78,7 @@
   }
   input[type=number]{width:60px; flex:none;}
   input[type=number]:focus, input[type=text]:focus, select:focus{outline:none; border-color:var(--focus);}
-  input[type=range]{
-    -webkit-appearance:none; appearance:none; flex:1; height:4px; border-radius:2px;
-    background:var(--range-track); outline:none; min-width:40px;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%;
-    background:var(--ink); cursor:pointer; border:2px solid var(--bg);
-  }
-  input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:4px;}
+  input[type=range]{flex:1; min-width:40px;}   /* look comes from the shared theme.css slider */
   input[type=color]{
     -webkit-appearance:none; appearance:none; width:32px; height:26px; border:1px solid var(--line);
     border-radius:6px; background:none; padding:0; cursor:pointer; flex:none;
@@ -1438,10 +1430,10 @@ DEVICES['imac-24'] = {
       boxShadow:`inset 0 0 ${Math.round(18*K)}px 0 ${darken(fin.accent,.06)}`,
     }));
     root.appendChild(body);
-    // camera dot centred in the top bezel
+    // camera dot centred vertically in the top bezel, clear of the screen ring
     root.appendChild(el('div', null, {
-      position:'absolute', left:'50%', top:Math.round(10*K)+'px', transform:'translateX(-50%)',
-      width:'10px', height:'10px', borderRadius:'50%', background:'#0a0a0a', zIndex:6,
+      position:'absolute', left:'50%', top:Math.round((bez-8)/2)+'px', transform:'translateX(-50%)',
+      width:'8px', height:'8px', borderRadius:'50%', background:'#0a0a0a', zIndex:6,
     }));
     return { root, devW, devH };
   }

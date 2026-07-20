@@ -6,7 +6,7 @@
 <title>Mash — Nimble</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<link rel="stylesheet" href="../../assets/theme.css?v=7">
+<link rel="stylesheet" href="../../assets/theme.css?v=8">
 <script src="../../assets/theme.js"></script>
 <style>
   :root, :root[data-theme="dark"]{
@@ -49,14 +49,7 @@
     border-radius:8px; padding:7px 9px; font-size:13px; width:100%;
   }
   input[type=number]:focus, select:focus{outline:none; border-color:var(--line2);}
-  input[type=range]{
-    -webkit-appearance:none; appearance:none; flex:1; height:4px; border-radius:2px;
-    background:var(--range-track); outline:none;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%;
-    background:var(--ink); cursor:pointer; border:2px solid var(--bg);
-  }
+  input[type=range]{flex:1;}   /* look comes from the shared theme.css slider */
   input[type=color]{
     -webkit-appearance:none; appearance:none; width:34px; height:28px; border:1px solid var(--line);
     border-radius:6px; background:none; padding:0; cursor:pointer;

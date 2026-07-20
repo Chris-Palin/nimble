@@ -85,16 +85,18 @@
   .tool-btn:hover{background:var(--panel); color:var(--ink);}
   .tool-btn.active{background:var(--ink); color:var(--bg);}
   .tool-btn .mono{
-    width:28px; height:28px; flex:none; border-radius:7px;
-    border:1px solid var(--line2);
+    width:28px; height:28px; flex:none;
     display:flex; align-items:center; justify-content:center;
-    font-size:10.5px; font-weight:800; letter-spacing:0;
-    color:var(--muted); background:var(--bg);
-    transition:border-color .15s, color .15s;
   }
-  .tool-btn:hover .mono{color:var(--ink);}
-  .tool-btn.active .mono{border-color:transparent; background:rgba(255,255,255,.14); color:var(--bg);}
-  :root[data-theme="dark"] .tool-btn.active .mono{background:rgba(0,0,0,.22);}
+  .tool-btn .mono::before{
+    content:''; width:9px; height:9px; border-radius:50%;
+    background:var(--line2);
+    transition:background .2s, box-shadow .2s;
+  }
+  .tool-btn.active .mono::before{
+    background:#A3E635;
+    box-shadow:0 0 10px rgba(163,230,53,.85), 0 0 3px rgba(163,230,53,.9);
+  }
   .tool-btn .txt{display:flex; flex-direction:column; gap:1px; min-width:0;}
   .tool-btn .txt small{
     font-size:10px; font-weight:500; color:var(--faint); letter-spacing:.02em;
@@ -103,7 +105,13 @@
 
   .tool-btn.soon{cursor:default; color:var(--faint);}
   .tool-btn.soon:hover{background:transparent; color:var(--faint);}
-  .tool-btn.soon .mono{border-style:dashed;}
+
+  /* home entry: bare minimalist house icon, no chip, no border */
+  .tool-btn .ico-home{
+    width:28px; height:28px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tool-btn .ico-home svg{width:17px; height:17px; display:block;}
 
   .spacer{flex:1;}
 
@@ -205,6 +213,18 @@
     </div>
   </div>
 
+  <nav class="tools" id="homeNav" aria-label="Home" style="margin-top:4px;">
+    <button class="tool-btn" id="homeBtn" type="button" data-id="home">
+      <span class="ico-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.8 12 3.5l8.5 7.3"/>
+          <path d="M5.8 9.6V20a.6.6 0 0 0 .6.6h11.2a.6.6 0 0 0 .6-.6V9.6"/>
+        </svg>
+      </span>
+      <span class="txt">Home<small>Studio overview</small></span>
+    </button>
+  </nav>
+
   <div class="navlabel">Tools</div>
   <nav class="tools" id="toolNav" aria-label="Tools"></nav>
 
@@ -227,11 +247,12 @@
 <script>
   /* ---- tool registry: add future tools here ---- */
   const TOOLS = [
-    { id:'mash',    name:'Mash',    meta:'Mesh gradients', mono:'Ma', src:'tools/mesh-gradient/index.html' },
-    { id:'stage',   name:'Stage',   meta:'Screenshot mockups', mono:'Sg', src:'tools/stage/index.html' },
-    { id:'digit',   name:'Digit',   meta:'Gesture FX',    mono:'Di', src:'tools/pinch-fx/index.html' },
-    { id:'motion',  name:'Motion',  meta:'Motion graphics',mono:'Mo', src:'tools/motion/index.html' },
-    { id:'stipple', name:'Stipple', meta:'Dither & halftone', mono:'St', src:'tools/dither/index.html' },
+    { id:'home',    name:'Home',    meta:'Studio overview', src:'home.html', hidden:true },
+    { id:'mash',    name:'Mash',    meta:'Mesh gradients', src:'tools/mesh-gradient/index.html' },
+    { id:'stage',   name:'Stage',   meta:'Screenshot mockups', src:'tools/stage/index.html' },
+    { id:'digit',   name:'Digit',   meta:'Gesture FX',    src:'tools/digit/index.html' },
+    { id:'motion',  name:'Motion',  meta:'Motion graphics', src:'tools/motion/index.html' },
+    { id:'stipple', name:'Stipple', meta:'Dither & halftone', src:'tools/dither/index.html' },
   ];
 
   const navEl   = document.getElementById('toolNav');
@@ -240,19 +261,19 @@
   let current   = null;
 
   /* ---- build sidebar ---- */
-  TOOLS.forEach(t => {
+  TOOLS.filter(t => !t.hidden).forEach(t => {
     const b = document.createElement('button');
     b.className = 'tool-btn'; b.type = 'button'; b.dataset.id = t.id;
-    b.innerHTML = `<span class="mono">${t.mono}</span>
+    b.innerHTML = `<span class="mono"></span>
       <span class="txt">${t.name}<small>${t.meta}</small></span>`;
     b.addEventListener('click', () => open(t.id, true));
     navEl.appendChild(b);
   });
   const soon = document.createElement('button');
   soon.className = 'tool-btn soon'; soon.type = 'button'; soon.tabIndex = -1;
-  soon.innerHTML = `<span class="mono">+</span>
-    <span class="txt">More soon<small>New tools land here</small></span>`;
+  soon.innerHTML = `<span class="txt">More soon<small>New tools land here</small></span>`;
   navEl.appendChild(soon);
+  document.getElementById('homeBtn').addEventListener('click', () => open('home', true));
 
   /* ---- Nimble pill: random brand colour on each hover ---- */
   const NIMBLE_PALETTE = ['#F42C04','#FF6FAE','#FCCA46','#2DC7FF','#645DD7','#CBA0FF'];
@@ -334,13 +355,13 @@
     if (TOOLS.some(t => t.id === id)) open(id, false);
   });
 
-  /* ---- boot: hash > last used > first tool ---- */
+  /* ---- boot: hash > last used > home ---- */
   const fromHash = location.hash.slice(1);
   const last = localStorage.getItem('studio-last-tool');
   open(
     TOOLS.some(t => t.id === fromHash) ? fromHash :
     TOOLS.some(t => t.id === last)     ? last     :
-    TOOLS[0].id,
+    'home',
     true
   );
 </script>
