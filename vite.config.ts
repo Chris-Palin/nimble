@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: { app: resolve(__dirname, 'app/index.html') },
+      input: { studio: resolve(__dirname, 'studio/index.html') },
     },
   },
 });
