@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio — Nimble</title>
+<title>Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/theme.css?v=8">
 <script src="assets/theme.js"></script>
@@ -43,7 +43,7 @@
   .sky i:nth-child(1){background:var(--indigo);  left:-8vw;  top:-16vw; animation:drift1 26s ease-in-out infinite alternate;}
   .sky i:nth-child(2){background:var(--pink);    left:34vw;  top:-22vw; animation:drift2 31s ease-in-out infinite alternate;}
   .sky i:nth-child(3){background:var(--blue);    right:-12vw;top:-10vw; animation:drift3 24s ease-in-out infinite alternate;}
-  .sky i:nth-child(4){background:var(--lime);    left:52vw;  top:2vw;  width:20vw; height:20vw; min-width:220px; min-height:220px; opacity:.16; animation:drift1 36s ease-in-out infinite alternate-reverse;}
+  .sky i:nth-child(4){background:var(--yellow);    left:52vw;  top:2vw;  width:20vw; height:20vw; min-width:220px; min-height:220px; opacity:.16; animation:drift1 36s ease-in-out infinite alternate-reverse;}
   @keyframes drift1{to{transform:translate(6vw,4vw) scale(1.12);}}
   @keyframes drift2{to{transform:translate(-5vw,5vw) scale(.94);}}
   @keyframes drift3{to{transform:translate(-4vw,6vw) scale(1.08);}}
@@ -60,20 +60,12 @@
     background:color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter:blur(6px);
   }
   .hero .kicker .live{
-    width:7px; height:7px; border-radius:50%; background:var(--lime);
-    box-shadow:0 0 8px rgba(163,230,53,.9);
+    width:7px; height:7px; border-radius:50%; background:var(--ink);
   }
   .hero h1{
-    font-family:'Porkys','Arial Rounded MT Bold',sans-serif; font-weight:400;
-    font-size:clamp(56px, 9vw, 104px); line-height:.98; letter-spacing:.04em; text-transform:uppercase;
+    font-family:'Aonic','Inter',sans-serif; font-weight:500;
+    font-size:clamp(60px, 9.5vw, 116px); line-height:.95; letter-spacing:-.03em; color:var(--ink);
   }
-  .hero h1 .s{display:inline-block; transform:rotate(var(--r,0deg)) translateY(var(--y,0));}
-  .hero h1 .s:nth-child(1){--r:-4deg; color:var(--red);}
-  .hero h1 .s:nth-child(2){--r:3deg;  color:var(--pink);}
-  .hero h1 .s:nth-child(3){--r:-2deg; color:var(--yellow);}
-  .hero h1 .s:nth-child(4){--r:4deg;  color:var(--blue);}
-  .hero h1 .s:nth-child(5){--r:-3deg; color:var(--indigo);}
-  .hero h1 .s:nth-child(6){--r:5deg;  color:var(--lavender);}
   .hero p{
     margin:22px auto 0; max-width:480px; color:var(--muted); font-size:15px; line-height:1.65; font-weight:500;
   }
@@ -91,8 +83,8 @@
   }
   .card:hover, .card:focus-visible{
     transform:translateY(-4px);
-    border-color:color-mix(in srgb, var(--lime) 55%, var(--line));
-    box-shadow:0 18px 44px -18px rgba(0,0,0,.5), 0 0 0 1px color-mix(in srgb, var(--lime) 45%, transparent), 0 0 26px -6px rgba(163,230,53,.35);
+    border-color:color-mix(in srgb, var(--ink) 40%, var(--line));
+    box-shadow:0 18px 44px -18px rgba(0,0,0,.45);
     outline:none;
   }
   .card .art{position:relative; aspect-ratio:16/9; overflow:hidden; background:#101014;}
@@ -106,7 +98,7 @@
     border:1px solid var(--line2); color:var(--muted); font-size:14px;
     transition:background .18s, color .18s, border-color .18s, transform .22s;
   }
-  .card:hover .go{background:var(--lime); border-color:var(--lime); color:#111; transform:rotate(-45deg);}
+  .card:hover .go{background:var(--ink); border-color:var(--ink); color:var(--bg); transform:rotate(-45deg);}
 
   /* per-tool art, all CSS */
   .art-mash{background:#0e0d16;}
@@ -136,10 +128,10 @@
 
   .art-digit{background:#0d1310;}
   .art-digit b{
-    position:absolute; border:2px solid var(--lime); border-radius:50%; opacity:.85;
+    position:absolute; border:2px solid var(--blue); border-radius:50%; opacity:.85;
     left:50%; top:52%; transform:translate(-50%,-50%);
   }
-  .art-digit b:nth-child(1){width:26px; height:26px; background:rgba(163,230,53,.28); border-width:0;}
+  .art-digit b:nth-child(1){width:26px; height:26px; background:rgba(45,199,255,.28); border-width:0;}
   .art-digit b:nth-child(2){width:74px; height:74px; opacity:.55;}
   .art-digit b:nth-child(3){width:130px; height:130px; opacity:.28;}
   .art-digit b:nth-child(4){width:190px; height:190px; opacity:.12;}
@@ -152,8 +144,8 @@
 
   .art-motion{background:#120d0d; display:flex; align-items:center; justify-content:center; overflow:hidden;}
   .art-motion span{
-    font-family:'Porkys','Arial Rounded MT Bold',sans-serif; font-size:54px; letter-spacing:.04em;
-    color:var(--yellow); text-transform:uppercase; position:relative; transform:skewX(-6deg);
+    font-family:'Aonic','Inter',sans-serif; font-weight:500; font-size:56px;
+    color:var(--yellow); position:relative; transform:skewX(-6deg);
   }
   .art-motion span::before, .art-motion span::after{
     content:'M'; position:absolute; left:0; top:0;
@@ -162,7 +154,7 @@
   .art-motion span::after{color:var(--blue); transform:translateX(-20px); opacity:.25;}
   .card:hover .art-motion span{transition:transform .3s; transform:skewX(-12deg) translateX(6px);}
 
-  .art-stipple{
+  .card .art.art-stipple{
     background:#0f0f13;
     background-image:radial-gradient(circle at 3px 3px, #e8e8ee 2.2px, transparent 0);
     background-size:12px 12px;
@@ -203,10 +195,8 @@
 <div class="wrap">
   <header class="hero">
     <div class="kicker"><span class="live"></span> Five tools · zero uploads · all browser</div>
-    <h1 aria-label="Studio">
-      <span class="s">S</span><span class="s">T</span><span class="s">U</span><span class="s">D</span><span class="s">I</span><span class="s">O</span>
-    </h1>
-    <p>Nimble's workbench of <b>small, playful, seriously capable</b> creative tools. Pick one on the left — or dive in below.</p>
+    <h1>Arabella.</h1>
+    <p>A workbench of <b>small, playful, seriously capable</b> creative tools. Pick one on the left — or dive in below.</p>
   </header>
 
   <div class="seclabel">The tools</div>

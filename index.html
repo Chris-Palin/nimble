@@ -125,10 +125,34 @@
     text-transform:uppercase; letter-spacing:.11em; padding-right:.11em;
   }
   h1 .fun i{
-    font-style:normal; display:inline-block;
+    font-style:normal; display:inline-block; position:relative;
     transition:transform .3s var(--ease-bounce), color .3s;
   }
-  h1 .fun:hover i{color:var(--c); transform:rotate(var(--r)) translateY(-.06em);}
+  h1 .fun.porkys i{color:var(--c);}
+  h1 .fun:hover i{transform:rotate(var(--r)) translateY(-.06em);}
+  /* sparkles: two tiny stars per letter, twinkling while hovered */
+  h1 .fun.porkys i::before, h1 .fun.porkys i::after{
+    content:'\2726'; position:absolute; line-height:1; color:currentColor;
+    opacity:0; pointer-events:none; font-size:.17em; top:-.14em; right:-.1em;
+  }
+  h1 .fun.porkys i::after{font-size:.12em; top:auto; right:auto; bottom:.1em; left:-.14em;}
+  h1 .fun.porkys i:nth-child(2n)::before{top:-.06em; right:auto; left:-.12em;}
+  h1 .fun.porkys i:nth-child(3n)::after{bottom:auto; top:.34em; left:auto; right:-.16em;}
+  h1 .fun.porkys:hover i::before{animation:sparkle 1.15s ease-in-out infinite;}
+  h1 .fun.porkys:hover i::after{animation:sparkle 1.15s ease-in-out infinite .28s;}
+  h1 .fun.porkys i:nth-child(2)::before{animation-delay:.1s;}
+  h1 .fun.porkys i:nth-child(3)::before{animation-delay:.22s;}
+  h1 .fun.porkys i:nth-child(4)::before{animation-delay:.05s;}
+  h1 .fun.porkys i:nth-child(5)::before{animation-delay:.3s;}
+  h1 .fun.porkys i:nth-child(6)::before{animation-delay:.16s;}
+  @keyframes sparkle{
+    0%,100%{opacity:0; transform:scale(.2) rotate(0deg);}
+    40%{opacity:1; transform:scale(1.2) rotate(38deg);}
+    70%{opacity:.55; transform:scale(.75) rotate(70deg);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    h1 .fun.porkys:hover i::before, h1 .fun.porkys:hover i::after{animation:none; opacity:.9;}
+  }
   h1 .squiggle{
     position:absolute; left:0; right:0; bottom:-.12em; height:.22em; width:100%;
   }
@@ -367,9 +391,9 @@
     <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
   </a>
   <div class="links">
-    <a href="#studio">Studio</a>
+    <a href="#studio">Arabella.</a>
     <a href="poem.html">Poem</a>
-    <a class="cta" href="studio/index.html">Open Studio <span class="arr">→</span></a>
+    <a class="cta" href="studio/index.html">Open Arabella. <span class="arr">→</span></a>
   </div>
 </nav>
 
@@ -382,7 +406,7 @@
   <div class="pill"><span class="dot"></span>The beginning</div>
 
   <h1>
-    <span class="fun porkys" style="--c:var(--indigo);--r:-2deg"><i>N</i><i>i</i><i>m</i><i>b</i><i>l</i><i>e</i></span> by name.<br>
+    <span class="fun porkys" style="--r:-2deg"><i style="--c:var(--red)">N</i><i style="--c:var(--pink)">i</i><i style="--c:var(--yellow)">m</i><i style="--c:var(--blue)">b</i><i style="--c:var(--indigo)">l</i><i style="--c:var(--lavender)">e</i></span> by name.<br>
     <span class="fun" style="--c:var(--red);--r:2deg">
       Brave
       <svg class="squiggle" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
@@ -395,7 +419,7 @@
   <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. We build it all and share it freely, right here in your browser.</p>
 
   <div class="actions">
-    <a class="cta" href="studio/index.html">Enter the Studio <span class="arr">→</span></a>
+    <a class="cta" href="studio/index.html">Enter Arabella. <span class="arr">→</span></a>
   </div>
 
   <div class="scrollcue">Scroll</div>
@@ -417,9 +441,9 @@
     <div class="glow" aria-hidden="true"></div>
     <div>
       <div class="kicker" style="--kc:var(--blue)">What we've built</div>
-      <h2>Meet the<br>Studio.</h2>
-      <p class="lede">One of the platforms we've built is the Studio — a single web app where all of our tools live side by side. Open it up and have a wander.</p>
-      <a class="cta" href="studio/index.html">Access the Studio <span class="arr">→</span></a>
+      <h2>Meet<br>Arabella.</h2>
+      <p class="lede">Arabella. is our workbench — a single web app where all of our tools live side by side. Open it up and have a wander.</p>
+      <a class="cta" href="studio/index.html">Open Arabella. <span class="arr">→</span></a>
     </div>
     <div class="mock" aria-hidden="true">
       <div class="titlebar"><i></i><i></i><i></i></div>
@@ -444,7 +468,7 @@
     <div class="row">
       <span>© 2026 Nimble Design Studio. Made with far too much enthusiasm.</span>
       <div class="flinks">
-        <a href="studio/index.html">Studio</a>
+        <a href="studio/index.html">Arabella.</a>
         <a href="poem.html">Poem</a>
         <a href="mailto:Chris.palin@mac.com">Contact</a>
       </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio — Nimble</title>
+<title>Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -21,6 +21,12 @@
   @font-face{
     font-family:'Porkys';
     src:url('assets/PORKYS_.ttf') format('truetype');
+    font-display:swap;
+  }
+  @font-face{
+    font-family:'Aonic';
+    src:url('assets/Aonic-Medium.ttf') format('truetype');
+    font-weight:400 600;
     font-display:swap;
   }
   :root{
@@ -63,6 +69,10 @@
   }
   .brand .name{display:flex; flex-direction:column; gap:1px; min-width:0;}
   .brand .name b{font-size:14.5px; font-weight:800; letter-spacing:-0.02em;}
+  .brand .name b.arabella-word{
+    font-family:'Aonic','Inter',sans-serif; font-weight:500; font-size:17px; letter-spacing:-.01em;
+  }
+  .brand .mark{font-family:'Aonic','Inter',sans-serif; font-weight:500; font-size:12px; letter-spacing:-.02em;}
   .brand .name span{
     font-size:9px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
     color:var(--faint);
@@ -132,27 +142,21 @@
     width:28px; flex:none; display:flex; align-items:center; justify-content:center;
     font-size:14px;
   }
-  /* ---------- nimble pill (top of sidebar) ---------- */
-  .nimble-slot{flex:none; padding:16px 14px 8px;}
+  /* ---------- nimble button (bottom of sidebar, under dark mode) ----------
+     rounded rectangle, solid outline in one palette colour picked per page load */
+  .nimble-slot{flex:none; padding:6px 0 0;}
   .nimble-pill{
     display:flex; align-items:center; justify-content:center;
-    height:42px; padding:0 18px; border-radius:999px;
+    height:42px; border-radius:12px;
     color:var(--ink);
-    font-family:'Porkys',system-ui,sans-serif; font-size:21px; line-height:1.2;
+    font-family:'Porkys',system-ui,sans-serif; font-size:19px; line-height:1.2;
     text-transform:uppercase;
     text-decoration:none; white-space:nowrap;
-    border:2px solid transparent;
-    background:
-      linear-gradient(var(--bg),var(--bg)) padding-box,
-      linear-gradient(120deg,#F42C04,#FF6FAE,#FCCA46,#2DC7FF,#CBA0FF,#645DD7) border-box;
+    border:2.5px solid var(--pill-c,#645DD7);
+    background:transparent;
     transition:background .15s;
   }
-  /* hover: fill the whole pill (and border) with one random palette colour
-     — the colour itself is set per-hover in JS via --pill-hover; text stays ink (b/w) */
-  .nimble-pill:hover{
-    background:var(--pill-hover,#645DD7);
-    border-color:var(--pill-hover,#645DD7);
-  }
+  .nimble-pill:hover{background:var(--pill-c,#645DD7);}
   .pill-full{display:inline; letter-spacing:.07em; padding-left:.07em; transform:translateY(1px);}
   .pill-mini{display:none; transform:translateY(1px);}
 
@@ -171,9 +175,9 @@
     width:40px; height:40px; margin:0 auto; padding:0; gap:0;
     justify-content:center; align-items:center;
   }
-  /* nimble pill collapses to a round N chip with the rainbow border */
-  body.collapsed .nimble-slot{padding:14px 8px 8px;}
-  body.collapsed .nimble-pill{width:40px; height:40px; margin:0 auto; padding:0; font-size:22px;}
+  /* nimble button collapses to a small N chip, same solid outline */
+  body.collapsed .nimble-slot{padding:6px 0 0;}
+  body.collapsed .nimble-pill{width:40px; height:40px; margin:0 auto; padding:0; font-size:20px;}
   body.collapsed .pill-full{display:none;}
   body.collapsed .pill-mini{display:inline;}
 
@@ -199,17 +203,11 @@
 <body>
 
 <aside>
-  <div class="nimble-slot">
-    <a class="nimble-pill" href="../index.html" title="Nimble">
-      <span class="pill-full">Nimble</span><span class="pill-mini">N</span>
-    </a>
-  </div>
-
   <div class="brand">
-    <div class="mark">S</div>
+    <div class="mark">A.</div>
     <div class="name">
-      <b>Studio</b>
-      <span>Working title</span>
+      <b class="arabella-word">Arabella.</b>
+      <span>Creative tools</span>
     </div>
   </div>
 
@@ -237,6 +235,11 @@
     <button class="foot-btn" id="collapseBtn" type="button" title="Collapse sidebar">
       <span class="ico" id="collapseIco">⟨</span><span class="lbl">Collapse</span>
     </button>
+    <div class="nimble-slot">
+      <a class="nimble-pill" href="../index.html" title="Nimble">
+        <span class="pill-full">Nimble</span><span class="pill-mini">N</span>
+      </a>
+    </div>
   </div>
 </aside>
 
@@ -275,13 +278,11 @@
   navEl.appendChild(soon);
   document.getElementById('homeBtn').addEventListener('click', () => open('home', true));
 
-  /* ---- Nimble pill: random brand colour on each hover ---- */
+  /* ---- Nimble button: one palette colour per page load for the outline ---- */
   const NIMBLE_PALETTE = ['#F42C04','#FF6FAE','#FCCA46','#2DC7FF','#645DD7','#CBA0FF'];
   const nimblePill = document.querySelector('.nimble-pill');
-  if (nimblePill) nimblePill.addEventListener('pointerenter', () => {
-    const c = NIMBLE_PALETTE[Math.floor(Math.random() * NIMBLE_PALETTE.length)];
-    nimblePill.style.setProperty('--pill-hover', c);
-  });
+  if (nimblePill) nimblePill.style.setProperty('--pill-c',
+    NIMBLE_PALETTE[Math.floor(Math.random() * NIMBLE_PALETTE.length)]);
 
   /* ---- theme (shared key with the tools) ---- */
   const THEME_KEY = 'nimble-theme';
@@ -345,7 +346,7 @@
       frames[id] = f;
     }
     Object.entries(frames).forEach(([k, f]) => f.classList.toggle('visible', k === id));
-    document.title = `${tool.name} — Studio`;
+    document.title = tool.id === 'home' ? 'Arabella.' : `${tool.name} — Arabella.`;
     if (push) history.replaceState(null, '', '#' + id);
     localStorage.setItem('studio-last-tool', id);
   }

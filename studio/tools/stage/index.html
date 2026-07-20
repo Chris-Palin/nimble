@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stage — Nimble</title>
+<title>Stage — Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
 <link rel="stylesheet" href="../../assets/theme.css?v=8">
@@ -3133,10 +3133,10 @@ addEventListener('keydown', e=>{
 </script>
 
 <div id="nimbleSplash" style="position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;">
-  <div style="font-family:'Porkys','Arial Rounded MT Bold',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;font-size:38px;display:flex;letter-spacing:.2em;"><span style="display:inline-block;--r:-7deg;color:#F42C04;animation:nbBnc 1.05s ease-in-out 0s infinite">N</span><span style="display:inline-block;--r:5deg;color:#FF6FAE;animation:nbBnc 1.05s ease-in-out .08s infinite">I</span><span style="display:inline-block;--r:-4deg;color:#FCCA46;animation:nbBnc 1.05s ease-in-out .16s infinite">M</span><span style="display:inline-block;--r:6deg;color:#2DC7FF;animation:nbBnc 1.05s ease-in-out .24s infinite">B</span><span style="display:inline-block;--r:-6deg;color:#645DD7;animation:nbBnc 1.05s ease-in-out .32s infinite">L</span><span style="display:inline-block;--r:8deg;color:#CBA0FF;animation:nbBnc 1.05s ease-in-out .4s infinite">E</span></div>
+  <div style="font-family:'Aonic','Inter',-apple-system,sans-serif;font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite">Arabella.</div>
   <div style="font:700 11px 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Stage</div>
 </div>
-<style>@keyframes nbBnc{0%,100%{transform:translateY(0) rotate(var(--r)) }50%{transform:translateY(-14px) rotate(var(--r)) scale(1.08)}}</style>
+<style>@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
 <script>(function(){var s=document.getElementById('nimbleSplash'),done=false;
 function hide(){if(done)return;done=true;setTimeout(function(){s.style.opacity='0';s.style.pointerEvents='none';setTimeout(function(){s.remove()},500)},550)}
 if(document.readyState==='complete')hide();else window.addEventListener('load',hide);
