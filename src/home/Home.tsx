@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import './home.css';
 
-/* Arabella. home — native React port of public/studio/home.html */
+/* Arabella. home — native React port of the old arabella home page */
 
 const CARDS: { id: string; name: string; blurb: string; art: ReactNode }[] = [
   {

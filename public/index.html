@@ -37,9 +37,6 @@
     overflow-x:hidden;
   }
   ::selection{background:var(--yellow); color:var(--ink);}
-  /* cute outlined cursor: indigo arrow, red over anything clickable */
-  body{cursor:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2226%22 height=%2226%22 viewBox=%220 0 26 26%22><path d=%22M5 2 L5 20 L10 15.5 L13.2 22.5 L16.6 21 L13.4 14 L20 13.6 Z%22 fill=%22%23645DD7%22 stroke=%22white%22 stroke-width=%222%22 stroke-linejoin=%22round%22/></svg>') 4 2, auto;}
-  a, button, .cta, .card, [role="button"]{cursor:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2226%22 height=%2226%22 viewBox=%220 0 26 26%22><path d=%22M5 2 L5 20 L10 15.5 L13.2 22.5 L16.6 21 L13.4 14 L20 13.6 Z%22 fill=%22%23F42C04%22 stroke=%22white%22 stroke-width=%222%22 stroke-linejoin=%22round%22/></svg>') 4 2, pointer;}
   .porkys{font-family:'Porkys',"Arial Rounded MT Bold",sans-serif; font-weight:400;}
   @font-face{font-family:'Aonic';src:url('studio/assets/Aonic-Medium.ttf') format('truetype');font-weight:400 600;font-display:swap;}
   .aonic{font-family:'Aonic','Inter',sans-serif; font-weight:500; letter-spacing:-.015em;}
@@ -178,6 +175,9 @@
   h1 .squiggle{
     position:absolute; left:0; right:0; bottom:-.12em; height:.22em; width:100%;
   }
+  h1 .squiggle path{stroke-dasharray:245;}
+  h1 .fun:hover .squiggle path{animation:squigDraw .9s ease;}
+  @keyframes squigDraw{from{stroke-dashoffset:245;}to{stroke-dashoffset:0;}}
   .hero .sub{
     margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
     color:var(--muted); max-width:520px; font-weight:500;
@@ -275,7 +275,35 @@
   .tool-card.soon .visual .plus{font-size:34px; color:var(--faint); font-weight:200;}
 
   /* ---------- dark cover / studio section ---------- */
-  .cover-wrap{max-width:1180px; margin:110px auto 0; padding:0 40px;}
+  /* ---------- overview ---------- */
+  .overview{max-width:1180px; margin:0 auto; padding:110px 40px 20px; text-align:center;}
+  .overview h2{font-size:clamp(34px,4.6vw,56px); font-weight:850; letter-spacing:-.035em; line-height:1.05;}
+  .overview .lede{
+    margin:22px auto 0; max-width:560px; color:var(--muted);
+    font-size:clamp(15px,1.8vw,17.5px); line-height:1.7; font-weight:500;
+  }
+  .ovgrid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px; margin-top:48px; text-align:left;
+  }
+  .ov{
+    border:1.5px solid var(--line); border-radius:18px; padding:22px 24px;
+    background:rgba(255,255,255,.7);
+    transition:transform .25s var(--ease-bounce), border-color .2s;
+  }
+  .ov:hover{transform:translateY(-3px); border-color:var(--ok, var(--ink));}
+  .ov b{display:flex; align-items:center; gap:9px; font-size:15.5px; font-weight:800; letter-spacing:-.01em;}
+  .ov b::before{content:''; width:9px; height:9px; border-radius:50%; background:var(--oc, var(--ink)); flex:none;}
+  .ov span{display:block; margin-top:7px; color:var(--muted); font-size:13px; line-height:1.55; font-weight:500;}
+
+  /* blueprint band behind the Genesis card: white, dotted grid, no vignette */
+  .genesis-band{
+    margin-top:110px; padding:96px 0;
+    background:#ffffff;
+    background-image:radial-gradient(rgba(16,16,19,.13) 1.1px, transparent 1.5px);
+    background-size:16px 16px;
+  }
+  .cover-wrap{max-width:1180px; margin:0 auto; padding:0 40px;}
   .cover{
     position:relative; background:var(--ink); color:#fff;
     border-radius:34px; padding:clamp(44px, 6vw, 84px);
@@ -404,7 +432,8 @@
     nav{padding:14px 20px;}
     nav .links a:not(.cta){display:none;}
     section{padding:80px 20px 20px;}
-    .cover-wrap{padding:0 20px; margin-top:80px;}
+    .cover-wrap{padding:0 20px;}
+    .genesis-band{margin-top:80px; padding:64px 0;}
     footer{padding:52px 20px 36px;}
   }
 </style>
@@ -416,9 +445,9 @@
     <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
   </a>
   <div class="links">
-    <a href="#studio">Arabella.</a>
+    <a href="#arabella">Arabella.</a>
     <a href="poem.html">Poem</a>
-    <a class="cta" href="studio/index.html">Visit Arabella. <span class="arr">→</span></a>
+    <a class="cta" href="arabella/index.html">Visit Arabella. <span class="arr">→</span></a>
   </div>
 </nav>
 
@@ -443,7 +472,7 @@
   <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. I build it all and share it freely, right here in your browser.</p>
 
   <div class="actions">
-    <a class="cta" href="studio/index.html">Have a wander <span class="arr">→</span></a>
+    <a class="cta" href="#overview">Have a wander <span class="arr">→</span></a>
   </div>
 
   <div class="scrollcue">Scroll</div>
@@ -460,14 +489,26 @@
   </div>
 </div>
 
-<div class="cover-wrap reveal" id="studio">
+<section class="overview reveal" id="overview">
+  <div class="kicker" style="--kc:var(--pink)">00 - Overview</div>
+  <h2>A one-person studio,<br>running on curiosity.</h2>
+  <p class="lede">Nimble is where ideas get chased until they become things you can actually play with. No roadmap, no meetings, no uploads. Just small, handmade tools that live entirely in your browser.</p>
+  <div class="ovgrid">
+    <div class="ov" style="--oc:var(--red)"><b>Small tools</b><span>Each one does a single thing properly, and stays out of your way.</span></div>
+    <div class="ov" style="--oc:var(--blue)"><b>Nothing leaves your device</b><span>Every pixel is processed locally. No accounts, no telemetry.</span></div>
+    <div class="ov" style="--oc:var(--indigo)"><b>Free to wander</b><span>Open Arabella., poke around, make something, take it with you.</span></div>
+  </div>
+</section>
+
+<div class="genesis-band">
+<div class="cover-wrap reveal" id="arabella">
   <div class="cover">
     <div class="glow" aria-hidden="true"></div>
     <div>
-      <div class="kicker" style="--kc:var(--ab-green)">What I've built</div>
+      <div class="kicker" style="--kc:var(--ab-green)">01 - Project Genesis</div>
       <h2>Meet<br><span class="aonic">Arabella.</span></h2>
       <p class="lede">Arabella. is my workbench, a single web app where all of my tools live side by side. Open it up and have a wander.</p>
-      <a class="cta" href="studio/index.html">Step inside <span class="arr">→</span></a>
+      <a class="cta" href="arabella/index.html">Step inside <span class="arr">→</span></a>
     </div>
     <div class="mock" aria-hidden="true">
       <div class="titlebar"><i></i><i></i><i></i></div>
@@ -483,6 +524,7 @@
     </div>
   </div>
 </div>
+</div><!-- /.genesis-band -->
 
 <footer>
   <div class="inner">
@@ -492,9 +534,8 @@
     <div class="row">
       <span>© 2026 Nimble Design Studio. Made with far too much enthusiasm.</span>
       <div class="flinks">
-        <a href="studio/index.html">Arabella.</a>
+        <a href="arabella/index.html">Arabella.</a>
         <a href="poem.html">Poem</a>
-        <a href="mailto:Chris.palin@mac.com">Contact</a>
       </div>
     </div>
   </div>
@@ -516,5 +557,21 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
+<script>
+(function(){
+  // outlined cursor in a random Nimble colour, new colour every visit
+  var cols=['%23F42C04','%23FF6FAE','%23FCCA46','%232DC7FF','%23645DD7','%23CBA0FF'];
+  var c=cols[Math.floor(Math.random()*cols.length)];
+  var d='M6 3 L6 21 L11 16.5 L14.2 23.5 L17.6 22 L14.4 15 L21 14.6 Z';
+  function arrow(){
+    return "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22 viewBox=%220 0 28 28%22>"+
+      "<path d=%22"+d+"%22 fill=%22none%22 stroke=%22rgba(0,0,0,0.32)%22 stroke-width=%225.5%22 stroke-linejoin=%22round%22/>"+
+      "<path d=%22"+d+"%22 fill=%22"+c+"%22 stroke=%22white%22 stroke-width=%222.2%22 stroke-linejoin=%22round%22/></svg>') 5 3";
+  }
+  var st=document.createElement('style');
+  st.textContent='body{cursor:'+arrow()+',auto}a,button,.cta,.card,[role=button]{cursor:'+arrow()+',pointer}';
+  document.head.appendChild(st);
+})();
+</script>
 </body>
 </html>

@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: { studio: resolve(__dirname, 'studio/index.html') },
+      input: { arabella: resolve(__dirname, 'arabella/index.html') },
     },
   },
 });
