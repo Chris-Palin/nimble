@@ -37,28 +37,24 @@
     width:308px; flex:0 0 308px; display:flex; flex-direction:column; min-height:0;
     background:var(--bg); border-right:1px solid var(--line);
   }
-  .acc{display:flex; flex-direction:column; min-height:0; border-bottom:1px solid var(--line);}
-  .acc.open{flex:1;}
-  .acc-head{
-    display:flex; align-items:center; gap:9px; padding:13px 16px; flex:none;
-    background:transparent; border:0; cursor:pointer; text-align:left; width:100%;
-    color:var(--muted); font-family:inherit;
+  .panel-tabs{
+    display:flex; gap:2px; flex:none; margin:12px 14px 4px; padding:3px;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
   }
-  .acc-head .acc-title{
-    font-family:'Porkys','Arial Rounded MT Bold',sans-serif; font-size:17px; letter-spacing:.06em;
-    text-transform:uppercase; color:inherit; transform:translateY(1px);
+  .ptab{
+    flex:1; border:0; background:transparent; color:var(--muted);
+    border-radius:9px; padding:8px 4px; font-size:12.5px; font-weight:700; letter-spacing:-.01em;
+    cursor:pointer; transition:background .15s, color .15s;
   }
-  .acc.open .acc-head{color:var(--ink);}
-  .acc-head .chev{margin-left:auto; font-size:10px; color:var(--faint); transition:transform .2s;}
-  .acc.open .acc-head .chev{transform:rotate(90deg);}
-  .acc-head .dot{width:7px; height:7px; border-radius:50%; flex:none;}
-  .acc-body{
-    display:none; overflow-y:auto; min-height:0; padding:2px 14px 30px;
+  .ptab:hover{color:var(--ink);}
+  .ptab.on{background:var(--panel3); color:var(--ink); box-shadow:inset 0 0 0 1px var(--line2);}
+  .panel-body{
+    overflow-y:auto; min-height:0; flex:1; padding:12px 14px 30px;
   }
-  .acc.open .acc-body{display:block;}
-  .acc-body::-webkit-scrollbar{width:8px;}
-  .acc-body::-webkit-scrollbar-thumb{background:#2c2c33; border-radius:4px;}
-  :root[data-theme="light"] .acc-body::-webkit-scrollbar-thumb{background:#c9c7c0;}
+  .panel-body[hidden]{display:none;}
+  .panel-body::-webkit-scrollbar{width:8px;}
+  .panel-body::-webkit-scrollbar-thumb{background:#2c2c33; border-radius:4px;}
+  :root[data-theme="light"] .panel-body::-webkit-scrollbar-thumb{background:#c9c7c0;}
 
   section{margin-bottom:20px;}
   section h2{
@@ -332,22 +328,12 @@
 <div class="app">
 
   <aside class="left" id="panelLeft">
-    <div class="acc open" id="accFrame">
-      <button class="acc-head" data-acc="frame" aria-expanded="true">
-        <span class="dot" style="background:var(--indigo)"></span>
-        <span class="acc-title">Frame</span>
-        <span class="chev">▶</span>
-      </button>
-      <div class="acc-body" id="frameBody"></div>
+    <div class="panel-tabs" role="tablist" aria-label="Editor panels">
+      <button class="ptab on" id="tabMockup" data-tab="mockup" role="tab" aria-selected="true">Mockup</button>
+      <button class="ptab" id="tabFrame" data-tab="frame" role="tab" aria-selected="false">Frame</button>
     </div>
-    <div class="acc" id="accMockup">
-      <button class="acc-head" data-acc="mockup" aria-expanded="false">
-        <span class="dot" style="background:var(--blue)"></span>
-        <span class="acc-title">Mockup</span>
-        <span class="chev">▶</span>
-      </button>
-      <div class="acc-body" id="mockupBody"></div>
-    </div>
+    <div class="panel-body" id="mockupBody" role="tabpanel"></div>
+    <div class="panel-body" id="frameBody" role="tabpanel" hidden></div>
   </aside>
 
   <main class="stage">
@@ -543,7 +529,7 @@ let comp = defaultComp();
 const IMAGES = {};                       // imageId -> { src, w, h }
 const ui = {
   zoom:'fit', panX:0, panY:0,
-  activeAcc:'frame',
+  activeAcc:'mockup',
   selStop:0, selMesh:-1,
   recentColors: [],
   previewLayout:null,                    // layout preset id being hover-previewed
@@ -1390,51 +1376,73 @@ DEVICES['macbook-pro-14'] = {
   }
 };
 
+/* iMac 24" — geometry & finish adapted from devices.css (MIT, picturepan2) */
 DEVICES['imac-24'] = {
   category:'desktop', label:'iMac 24"',
   variants:{
-    silver:{chin:'#E4E4E8', back:'#C9C9CF', label:'Silver'},
-    blue:{chin:'#CBDDEB', back:'#9DBBD3', label:'Blue'},
-    pink:{chin:'#F3D7DC', back:'#DFAAB4', label:'Pink'},
-    green:{chin:'#D3E5DA', back:'#A9C9B4', label:'Green'},
+    silver:{accent:'#D4D5D7', label:'Silver'},
+    blue:  {accent:'#B4C7DA', label:'Blue'},
+    green: {accent:'#BBD0C8', label:'Green'},
+    pink:  {accent:'#EDCCC6', label:'Pink'},
+    yellow:{accent:'#F4D595', label:'Yellow'},
+    orange:{accent:'#E9B5A0', label:'Orange'},
+    purple:{accent:'#C4C4E5', label:'Purple'},
   },
   build(m, opts){
     const fin = this.variants[m.device.variant] || this.variants.silver;
-    const bodyW = 1180, bez = 26, scrW = bodyW - bez*2;
-    const scrH = Math.round(scrW / (16/9)), chin = 96;
-    const bodyH = scrH + bez + chin;
-    const standH = 148, devW = bodyW, devH = bodyH + standH;
+    // devices.css iMac is 640×540 (frame 640×440, screen 608×342, chin 63, stand 92+6); scale ×1.84
+    const K = 1.84;
+    const devW = Math.round(640*K);                     // 1178
+    const frameH = Math.round(440*K);                   // 810
+    const bez = Math.round(16*K);                       // 29
+    const scrW = devW - bez*2, scrH = Math.round(342*K);// 1119×629 (16:9)
+    const chinH = Math.round(63*K);                     // 116
+    const standW = Math.round(152*K), standH = Math.round(92*K), footH = Math.round(6*K);
+    const devH = frameH + standH + footH;               // ~985
+    const R = Math.round(18*K);
+    const silver = '#EDEEF0', silverDark = '#D4D5D7';
     const root = el('div', null, {position:'relative', width:devW+'px', height:devH+'px'});
-    // stand behind
+    // stand column: brushed-metal vertical gradient (matte front face)
     root.appendChild(el('div', null, {
-      position:'absolute', left:'50%', top:(bodyH-8)+'px', transform:'translateX(-50%)',
-      width:'150px', height:(standH-16)+'px',
-      background:`linear-gradient(90deg, ${darken(fin.back,.18)}, ${fin.back}, ${darken(fin.back,.18)})`,
-      borderRadius:'6px 6px 0 0',
+      position:'absolute', left:'50%', top:(frameH-2)+'px', transform:'translateX(-50%)',
+      width:standW+'px', height:(standH+2)+'px',
+      background:`linear-gradient(to bottom, ${darken(fin.accent,.2)} 0, ${darken(fin.accent,.05)} 40%, ${darken(fin.accent,.05)} 85%, ${mixHex(silver,'#ffffff',.6)} 90%, ${darken(fin.accent,.4)} 100%)`,
     }));
+    // foot: shallow plate with a soft radial sheen
     root.appendChild(el('div', null, {
       position:'absolute', left:'50%', bottom:'0', transform:'translateX(-50%)',
-      width:'340px', height:'16px', borderRadius:'8px',
-      background:`linear-gradient(180deg, ${mixHex(fin.back,'#ffffff',.3)}, ${darken(fin.back,.2)})`,
+      width:standW+'px', height:footH+'px',
+      background:`radial-gradient(ellipse at center, ${fin.accent} 60%, ${darken(fin.accent,.25)} 100%)`,
+      borderRadius:'3px 3px 6px 6px',
+      borderTop:`1px solid ${fin.accent}`,
     }));
-    // body
+    // body: silver-white front, hairline ring, colored chin band
     const body = el('div', null, {
-      position:'absolute', left:'0', top:'0', width:bodyW+'px', height:bodyH+'px',
-      borderRadius:'24px', background:'#FBFBFD',
-      boxShadow:`inset 0 0 0 2px rgba(0,0,0,.06)`, overflow:'hidden',
+      position:'absolute', left:'0', top:'0', width:devW+'px', height:frameH+'px',
+      borderRadius:R+'px', background:silver,
+      boxShadow:`inset 0 0 0 2px ${fin.accent === silverDark ? silverDark : fin.accent}, 0 1px 0 rgba(255,255,255,.4)`,
+      overflow:'hidden',
     });
     const screen = el('div', null, {
       position:'absolute', left:bez+'px', top:bez+'px', width:scrW+'px', height:scrH+'px',
-      borderRadius:'10px', overflow:'hidden', background:'#0b0b0e',
+      borderRadius:'4px', overflow:'hidden', background:'#0b0b0e',
+      boxShadow:'0 0 0 2.5px #111113',
     });
     screen.appendChild(screenContent(m, opts, 30));
     body.appendChild(screen);
+    // chin: the pastel band with a soft inner glow, like the aluminium face
     body.appendChild(el('div', null, {
-      position:'absolute', left:'0', right:'0', bottom:'0', height:chin+'px',
-      background:`linear-gradient(180deg, ${fin.chin}, ${darken(fin.chin,.08)})`,
-      borderTop:'1px solid rgba(0,0,0,.05)',
+      position:'absolute', left:'1px', right:'1px', bottom:'1px', height:chinH+'px',
+      borderRadius:`0 0 ${R-1}px ${R-1}px`,
+      background:fin.accent,
+      boxShadow:`inset 0 0 ${Math.round(18*K)}px 0 ${darken(fin.accent,.06)}`,
     }));
     root.appendChild(body);
+    // camera dot centred in the top bezel
+    root.appendChild(el('div', null, {
+      position:'absolute', left:'50%', top:Math.round(10*K)+'px', transform:'translateX(-50%)',
+      width:'10px', height:'10px', borderRadius:'50%', background:'#0a0a0a', zIndex:6,
+    }));
     return { root, devW, devH };
   }
 };
@@ -2268,16 +2276,20 @@ function buildPanels(){
   buildMockupPanel(mb);
 }
 
-/* accordion behaviour — one open at a time, dims the other layer subtly */
-document.querySelectorAll('.acc-head').forEach(h=>{
-  h.addEventListener('click', ()=>{
-    const which = h.dataset.acc;
+/* panel rocker — Mockup | Frame, one visible at a time */
+document.querySelectorAll('.ptab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    const which = t.dataset.tab;
     if (ui.activeAcc === which) return;
     ui.activeAcc = which;
-    $('accFrame').classList.toggle('open', which === 'frame');
-    $('accMockup').classList.toggle('open', which === 'mockup');
-    document.querySelectorAll('.acc-head').forEach(x=>x.setAttribute('aria-expanded', x.dataset.acc === which));
-    renderMain();
+    document.querySelectorAll('.ptab').forEach(x=>{
+      const on = x.dataset.tab === which;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-selected', on);
+    });
+    $('mockupBody').hidden = which !== 'mockup';
+    $('frameBody').hidden = which !== 'frame';
+    renderMain();   // background handles only show on the Frame tab
   });
 });
 </script>

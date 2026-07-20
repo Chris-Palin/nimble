@@ -313,7 +313,7 @@
           const doc = f.contentDocument;
           // the studio owns Nimble branding — suppress any leftover tool splash/back-pill
           const s = doc.createElement('style');
-          s.textContent = '.tool-home-slot,#nimbleSplash{display:none !important;}';
+          s.textContent = '.tool-home-slot,#nimbleSplash,.tool-header .theme-toggle{display:none !important;}';
           doc.head.appendChild(s);
           const t = document.documentElement.dataset.theme;
           doc.documentElement.dataset.theme = t;

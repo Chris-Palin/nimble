@@ -29,6 +29,7 @@
     font-size: 13px;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
   }
 
   /* ---------- buttons + selects ---------- */
@@ -151,6 +152,21 @@
 </style>
 </head>
 <body>
+
+<header class="tool-header">
+  <div class="tool-home-slot">
+    <a class="nimble-home" href="../../index.html">Nimble</a>
+  </div>
+  <div class="tool-heading">
+    <h1 class="tool-title">Motion</h1>
+    <div class="tool-meta">Motion graphics</div>
+  </div>
+  <div class="tool-actions">
+    <button type="button" onclick="document.getElementById('snapBtn').click()" title="Save PNG frame">📸 Frame</button>
+    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record clip">⏺ Record</button>
+    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
+  </div>
+</header>
 
 <div class="main">
   <aside>

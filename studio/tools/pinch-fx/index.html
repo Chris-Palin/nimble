@@ -29,7 +29,8 @@
     overflow: hidden;
     font-size:13px; -webkit-font-smoothing:antialiased;
   }
-  body { display: flex; flex-direction: row; }
+  body { display: flex; flex-direction: column; }
+  .appwrap { flex: 1; display: flex; flex-direction: row; min-height: 0; }
 
   /* ---------- left sidebar ---------- */
   aside#sidebar {
@@ -187,7 +188,7 @@
   :root[data-theme="light"] #nimbleSplash { background: var(--bg)!important; }
 
   @media (max-width:760px){
-    body { flex-direction: column; }
+    .appwrap { flex-direction: column; }
     aside#sidebar {
       width: auto; flex: 0 0 auto; max-height: 54vh;
       border-right: none; border-bottom: 1px solid var(--line);
@@ -198,6 +199,21 @@
 </head>
 <body>
 
+<header class="tool-header">
+  <div class="tool-home-slot">
+    <a class="nimble-home" href="../../index.html">Nimble</a>
+  </div>
+  <div class="tool-heading">
+    <h1 class="tool-title">Digit</h1>
+    <div class="tool-meta">Gesture FX</div>
+  </div>
+  <div class="tool-actions">
+    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record (R)">⏺ Record</button>
+    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
+  </div>
+</header>
+
+<div class="appwrap">
 <aside id="sidebar">
   <button class="chip primary" id="recordBtn"><span class="dot"></span>Record</button>
 
@@ -277,6 +293,7 @@
   <div id="status">Loading hand tracking…</div>
   <div id="kbdHint"><kbd>Tab</kbd> mode · <kbd>[</kbd> <kbd>]</kbd> effect · <kbd>R</kbd> record · <kbd>C</kbd> clear</div>
 </div>
+</div><!-- /.appwrap -->
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
