@@ -345,7 +345,7 @@
         <span id="zoomLabel" style="min-width:38px; text-align:right; font-variant-numeric:tabular-nums;">—</span>
       </div>
       <div class="grow"></div>
-      <span class="privacy">Images never leave your browser — no uploads, no server.</span>
+      <span class="privacy">Images never leave your browser. No uploads, no server.</span>
     </div>
   </main>
 
@@ -2013,7 +2013,7 @@ function buildFramePanel(body){
         sliderRow(bgBody, 'Centre Y', 0, 100, 1, ()=>bg.y ?? 50, v=>mutate(c=>c.frame.background.y = v), {def:50});
       }
       const n = el('div','note');
-      n.textContent = OKLAB_OK ? 'Blending in OKLab — brand colours stay clean through the middle.' : '';
+      n.textContent = OKLAB_OK ? 'Blending in OKLab keeps brand colours clean through the middle.' : '';
       bgBody.appendChild(n);
     }
   }
@@ -2044,7 +2044,7 @@ function buildFramePanel(body){
       bgBody.appendChild(n);
     }
     const n2 = el('div','note');
-    n2.textContent = REDUCED ? 'Ambient motion disabled (reduced motion).' : 'Drifts slowly; freezes at the current moment on export.';
+    n2.textContent = REDUCED ? 'Ambient motion disabled (reduced motion).' : 'Drifts slowly, and freezes at the current moment on export.';
     bgBody.appendChild(n2);
   }
   else if (type === 'texture'){
@@ -2256,7 +2256,7 @@ function buildMockupPanel(body){
 
   if (comp.mockups.length > 1){
     const n = el('div','note');
-    n.textContent = `This layout uses ${comp.mockups.length} copies of the mockup — device and style edits apply to all of them.`;
+    n.textContent = `This layout uses ${comp.mockups.length} copies of the mockup. Device and style edits apply to all of them.`;
     body.appendChild(n);
   }
 }
@@ -2799,7 +2799,7 @@ async function doCopy(){
     const blob = await renderCompToBlob(comp, exportSettings.scale, 'png', 1);
     await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
     toast('Copied to clipboard');
-  }catch(err){ toast('Clipboard blocked — use Export instead'); }
+  }catch(err){ toast('Clipboard blocked. Use Export instead'); }
 }
 
 const BATCH_TARGETS = ['ig-square','ig-portrait','ig-story','x-post','og','yt-thumb','li-post'];
@@ -2829,7 +2829,7 @@ async function doBatch(selected){
       await new Promise(r=>setTimeout(r, 450));
     }catch(err){ toast(`Failed at ${w}×${h}: ${err.message}`); return; }
   }
-  toast(`Batch done — ${selected.length} files`);
+  toast(`Batch done: ${selected.length} files`);
 }
 
 /* ---- export popover ---- */
@@ -2885,7 +2885,7 @@ function buildExportPop(){
   sb.addEventListener('click', async ()=>{
     try{
       await navigator.clipboard.writeText(shareURL());
-      toast('Link copied — images are not included');
+      toast('Link copied. Images are not included');
     }catch(e){ toast('Clipboard blocked'); }
     closeExportPop();
   });
@@ -3002,7 +3002,7 @@ function renderSavedList(){
   wrap.textContent = '';
   const list = loadStyles();
   if (!list.length){
-    const n = el('div','note'); n.textContent = 'Save a look you use often — screenshots stay out of it.';
+    const n = el('div','note'); n.textContent = 'Save a look you use often. Screenshots stay out of it.';
     wrap.appendChild(n);
     return;
   }

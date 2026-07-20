@@ -38,6 +38,9 @@
   }
   ::selection{background:var(--yellow); color:var(--ink);}
   .porkys{font-family:'Porkys',"Arial Rounded MT Bold",sans-serif; font-weight:400;}
+  @font-face{font-family:'Aonic';src:url('studio/assets/Aonic-Medium.ttf') format('truetype');font-weight:400 600;font-display:swap;}
+  .aonic{font-family:'Aonic','Inter',sans-serif; font-weight:500; letter-spacing:-.015em;}
+  :root{--ab-green:#A3E635; --ab-purple:#6F5BD8;}
 
   /* ---------- bouncy multicolour logo ---------- */
   .logo{display:inline-flex; align-items:baseline; letter-spacing:.18em; user-select:none; text-decoration:none;}
@@ -133,11 +136,11 @@
   /* sparkles: two tiny stars per letter, twinkling while hovered */
   h1 .fun.porkys i::before, h1 .fun.porkys i::after{
     content:'\2726'; position:absolute; line-height:1; color:currentColor;
-    opacity:0; pointer-events:none; font-size:.17em; top:-.14em; right:-.1em;
+    opacity:0; pointer-events:none; font-size:.17em; top:-.26em; right:-.22em;
   }
-  h1 .fun.porkys i::after{font-size:.12em; top:auto; right:auto; bottom:.1em; left:-.14em;}
-  h1 .fun.porkys i:nth-child(2n)::before{top:-.06em; right:auto; left:-.12em;}
-  h1 .fun.porkys i:nth-child(3n)::after{bottom:auto; top:.34em; left:auto; right:-.16em;}
+  h1 .fun.porkys i::after{font-size:.12em; top:auto; right:auto; bottom:-.04em; left:-.26em;}
+  h1 .fun.porkys i:nth-child(2n)::before{top:-.18em; right:auto; left:-.24em;}
+  h1 .fun.porkys i:nth-child(3n)::after{bottom:auto; top:.4em; left:auto; right:-.28em;}
   h1 .fun.porkys:hover i::before{animation:sparkle 1.15s ease-in-out infinite;}
   h1 .fun.porkys:hover i::after{animation:sparkle 1.15s ease-in-out infinite .28s;}
   h1 .fun.porkys i:nth-child(2)::before{animation-delay:.1s;}
@@ -180,7 +183,7 @@
     border-top:1px solid var(--line); border-bottom:1px solid var(--line);
     padding:20px 0; overflow:hidden; white-space:nowrap; background:var(--bg);
   }
-  .marquee .track{display:inline-flex; gap:0; animation:scroll 30s linear infinite;}
+  .marquee .track{display:inline-flex; gap:0; width:max-content; animation:scroll 30s linear infinite; animation-delay:-15s;}
   .marquee:hover .track{animation-play-state:paused;}
   @keyframes scroll{to{transform:translateX(-50%);}}
   .marquee span{
@@ -301,10 +304,10 @@
   .mock .canvas .art{
     height:100%; border-radius:10px;
     background:
-      radial-gradient(circle at 25% 30%, var(--pink), transparent 52%),
-      radial-gradient(circle at 75% 25%, var(--blue), transparent 55%),
-      radial-gradient(circle at 60% 80%, var(--yellow), transparent 52%),
-      radial-gradient(circle at 20% 85%, var(--indigo), transparent 55%),
+      radial-gradient(circle at 25% 30%, var(--ab-purple), transparent 55%),
+      radial-gradient(circle at 78% 22%, var(--ab-green), transparent 52%),
+      radial-gradient(circle at 62% 82%, var(--ab-purple), transparent 55%),
+      radial-gradient(circle at 18% 85%, var(--ab-green), transparent 50%),
       #17171b;
     filter:saturate(1.15);
     animation:hueshift 10s linear infinite;
@@ -393,7 +396,7 @@
   <div class="links">
     <a href="#studio">Arabella.</a>
     <a href="poem.html">Poem</a>
-    <a class="cta" href="studio/index.html">Open Arabella. <span class="arr">→</span></a>
+    <a class="cta" href="studio/index.html">Visit Arabella. <span class="arr">→</span></a>
   </div>
 </nav>
 
@@ -403,7 +406,6 @@
     <div class="blob b3"></div><div class="blob b4"></div>
   </div>
 
-  <div class="pill"><span class="dot"></span>The beginning</div>
 
   <h1>
     <span class="fun porkys" style="--r:-2deg"><i style="--c:var(--red)">N</i><i style="--c:var(--pink)">i</i><i style="--c:var(--yellow)">m</i><i style="--c:var(--blue)">b</i><i style="--c:var(--indigo)">l</i><i style="--c:var(--lavender)">e</i></span> by name.<br>
@@ -416,10 +418,10 @@
     </span> by nature.
   </h1>
 
-  <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. We build it all and share it freely, right here in your browser.</p>
+  <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. I build it all and share it freely, right here in your browser.</p>
 
   <div class="actions">
-    <a class="cta" href="studio/index.html">Enter Arabella. <span class="arr">→</span></a>
+    <a class="cta" href="studio/index.html">Have a wander <span class="arr">→</span></a>
   </div>
 
   <div class="scrollcue">Scroll</div>
@@ -427,12 +429,12 @@
 
 <div class="marquee" aria-hidden="true">
   <div class="track" id="marqueeTrack">
-    <span style="--mc:var(--red)">Car Radio</span>
-    <span style="--mc:var(--pink)">Trees</span>
-    <span style="--mc:var(--yellow)">Ride</span>
-    <span style="--mc:var(--blue)">Heathens</span>
-    <span style="--mc:var(--indigo)">Chlorine</span>
-    <span style="--mc:var(--lavender)">Jumpsuit</span>
+    <span style="--mc:var(--red)">Nimble</span>
+    <span style="--mc:var(--pink)">Playful</span>
+    <span style="--mc:var(--yellow)">Brave</span>
+    <span style="--mc:var(--blue)">Curious</span>
+    <span style="--mc:var(--indigo)">Handmade</span>
+    <span style="--mc:var(--lavender)">In your browser</span>
   </div>
 </div>
 
@@ -440,19 +442,19 @@
   <div class="cover">
     <div class="glow" aria-hidden="true"></div>
     <div>
-      <div class="kicker" style="--kc:var(--blue)">What we've built</div>
-      <h2>Meet<br>Arabella.</h2>
-      <p class="lede">Arabella. is our workbench — a single web app where all of our tools live side by side. Open it up and have a wander.</p>
-      <a class="cta" href="studio/index.html">Open Arabella. <span class="arr">→</span></a>
+      <div class="kicker" style="--kc:var(--ab-green)">What I've built</div>
+      <h2>Meet<br><span class="aonic">Arabella.</span></h2>
+      <p class="lede">Arabella. is my workbench, a single web app where all of my tools live side by side. Open it up and have a wander.</p>
+      <a class="cta" href="studio/index.html">Step inside <span class="arr">→</span></a>
     </div>
     <div class="mock" aria-hidden="true">
       <div class="titlebar"><i></i><i></i><i></i></div>
       <div class="app">
         <div class="side">
-          <div class="item active" style="--ic:var(--pink)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--blue)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--yellow)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--indigo)"><i></i><b></b></div>
+          <div class="item active" style="--ic:var(--ab-green)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-purple)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-green)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-purple)"><i></i><b></b></div>
         </div>
         <div class="canvas"><div class="art"></div></div>
       </div>

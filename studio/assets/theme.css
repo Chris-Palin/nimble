@@ -62,18 +62,13 @@ input[type="range"]::-webkit-slider-thumb{
   width:9px !important; height:18px !important; border-radius:5px !important;
   background:var(--slider-thumb) !important;
   border:2px solid var(--slider-thumb-line) !important;
-  box-shadow:0 1px 5px rgba(0,0,0,.4) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.22) !important;
   cursor:ew-resize !important;
-  transition:box-shadow .15s;
-}
-input[type="range"]::-webkit-slider-thumb:hover,
-input[type="range"]:active::-webkit-slider-thumb{
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--slider-fill) 22%, transparent), 0 1px 5px rgba(0,0,0,.4) !important;
 }
 input[type="range"]::-moz-range-thumb{
   width:9px; height:18px; border-radius:5px;
   background:var(--slider-thumb); border:2px solid var(--slider-thumb-line);
-  box-shadow:0 1px 5px rgba(0,0,0,.4); cursor:ew-resize;
+  box-shadow:0 1px 3px rgba(0,0,0,.22); cursor:ew-resize;
 }
 input[type="range"]::-moz-range-track{background:transparent;}
 input[type="range"]:focus-visible{outline:2px solid var(--slider-fill); outline-offset:4px;}

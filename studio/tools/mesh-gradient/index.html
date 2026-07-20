@@ -231,7 +231,7 @@
     </div>
     <button class="primary" id="btnExport" style="width:100%">Export at exact size</button>
     <div class="btnrow" style="margin-top:8px"><button class="small" id="btnCopyImg">📋 Copy image to clipboard</button></div>
-    <div class="note">Exports render at the full pixel dimensions above — the preview is only a scaled view.<br>Shortcuts: <b>R</b> randomize · <b>V</b> vary shapes · <b>S</b> scatter · <b>E</b> export · <b>H</b> hide points</div>
+    <div class="note">Exports render at the full pixel dimensions above. The preview is only a scaled view.<br>Shortcuts: <b>R</b> randomize · <b>V</b> vary shapes · <b>S</b> scatter · <b>E</b> export · <b>H</b> hide points</div>
   </section>
 
   <section>
@@ -863,7 +863,7 @@ function doExport(){
   if(!exporter) exporter = createRenderer(exportCanvas);
   const lim = exporter.maxSize;
   if(w > lim || h > lim){
-    toast(`This GPU caps exports at ${lim}px per side — requested ${w}×${h}.`);
+    toast(`This GPU caps exports at ${lim}px per side. Requested ${w}×${h}.`);
     return;
   }
   const fmt = $("exFormat").value;
@@ -874,11 +874,11 @@ function doExport(){
     exporter.render(state, w, h);
     const gl = exporter.gl;
     if(gl.drawingBufferWidth !== w || gl.drawingBufferHeight !== h){
-      toast(`GPU could not allocate ${w}×${h} — got ${gl.drawingBufferWidth}×${gl.drawingBufferHeight}. Try a smaller size.`);
+      toast(`GPU could not allocate ${w}×${h}. Got ${gl.drawingBufferWidth}×${gl.drawingBufferHeight}. Try a smaller size.`);
       return;
     }
     exportCanvas.toBlob(blob=>{
-      if(!blob){ toast("Export failed — format may be unsupported."); return; }
+      if(!blob){ toast("Export failed. The format may be unsupported."); return; }
       const ext = fmt === "image/png" ? "png" : fmt === "image/jpeg" ? "jpg" : "webp";
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -903,7 +903,7 @@ $("btnCopyImg").addEventListener("click", ()=>{
         await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
         toast(`Copied ${w}×${h} PNG to clipboard`);
       }catch(err){
-        toast("Clipboard blocked by browser — use Export instead");
+        toast("Clipboard blocked by browser. Use Export instead");
       }
     }, "image/png");
   }, 30);

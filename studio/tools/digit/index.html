@@ -312,12 +312,12 @@ const sensitivitySlider = document.getElementById('sensitivity');
 
 const MODE_HINTS = {
   shape: 'Fingertips paint the live effect shape. Pick a corner scheme below.',
-  framer: 'Both index fingers set a rectangle — pinch both hands at once to lock the current effect there, live video stays visible inside it.',
+  framer: 'Both index fingers set a rectangle. Pinch both hands at once to lock the current effect there, live video stays visible inside it.',
   shortcuts: 'Middle-pinch → next FX · Ring-pinch → prev FX · Pinky-pinch → cycle corner scheme.',
-  face: 'Tracks your face — pick a region below. The effect follows it as you move.',
+  face: 'Tracks your face. Pick a region below. The effect follows it as you move.',
   zoneedit: 'Point at a locked zone and pinch to drag it, or pinch a corner handle to resize it.',
   macro: 'Record a timed sequence of Shortcuts-style pinches, then replay it on demand.',
-  facets: 'Needs both hands — a triangulated ribbon bridges the gap between them, each facet its own effect, for a faceted, faux-3D look.'
+  facets: 'Needs both hands: a triangulated ribbon bridges the gap between them, each facet its own effect, for a faceted, faux-3D look.'
 };
 
 let activeMode = 'shape';
@@ -1442,7 +1442,7 @@ start();
 
 <div id="nimbleSplash" style="position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;">
   <div style="font-family:'Aonic','Inter',-apple-system,sans-serif;font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite">Arabella.</div>
-  <div style="font:700 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Digit — Pinch FX</div>
+  <div style="font:700 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Digit</div>
 </div>
 <style>@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
 <script>(function(){var s=document.getElementById('nimbleSplash'),done=false;
