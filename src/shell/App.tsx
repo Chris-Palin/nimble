@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { create } from 'zustand';
+import { Home } from '../home/Home';
 import './shell.css';
 
 /* React port of the Arabella. shell. Tools keep shipping as static pages
@@ -148,7 +149,12 @@ export function App() {
       </aside>
 
       <main>
-        {TOOLS.filter(t => opened.includes(t.id)).map(t => (
+        {opened.includes('home') && (
+          <div className={'home-host' + (active === 'home' ? ' visible' : '')}>
+            <Home onOpen={open} />
+          </div>
+        )}
+        {TOOLS.filter(t => t.id !== 'home' && opened.includes(t.id)).map(t => (
           <iframe
             key={t.id}
             data-tool={t.id}
