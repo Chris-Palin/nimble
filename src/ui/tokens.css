@@ -25,3 +25,6 @@ body{
 .aonic{font-family:'Aonic','Inter',sans-serif;font-weight:500;letter-spacing:-.015em;}
 .porkys{font-family:'Porkys','Arial Rounded MT Bold',sans-serif;font-weight:400;}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px;}
+/* cute outlined cursor: Arabella purple arrow, lime over clickables */
+body{cursor:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2226%22 height=%2226%22 viewBox=%220 0 26 26%22><path d=%22M5 2 L5 20 L10 15.5 L13.2 22.5 L16.6 21 L13.4 14 L20 13.6 Z%22 fill=%22%236F5BD8%22 stroke=%22white%22 stroke-width=%222%22 stroke-linejoin=%22round%22/></svg>') 4 2, auto;}
+a, button, [role="button"]{cursor:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2226%22 height=%2226%22 viewBox=%220 0 26 26%22><path d=%22M5 2 L5 20 L10 15.5 L13.2 22.5 L16.6 21 L13.4 14 L20 13.6 Z%22 fill=%22%23A3E635%22 stroke=%22white%22 stroke-width=%222%22 stroke-linejoin=%22round%22/></svg>') 4 2, pointer;}

@@ -16,9 +16,9 @@ const CARDS: { id: string; name: string; blurb: string; art: ReactNode }[] = [
       <span className="art art-stage">
         <span className="win">
           <span className="bar"><b /><b /><b /></span>
-          <span className="blk" style={{ background: 'var(--nimble-yellow)' }} />
-          <span className="blk" style={{ background: 'var(--nimble-red)' }} />
-          <span className="blk" style={{ background: 'var(--nimble-blue)' }} />
+          <span className="blk" style={{ background: 'var(--ab-green)' }} />
+          <span className="blk" style={{ background: '#f4f4f5' }} />
+          <span className="blk" style={{ background: 'var(--ab-purple)' }} />
         </span>
       </span>
     ),
@@ -46,7 +46,7 @@ export function Home({ onOpen }: { onOpen: (id: string) => void }) {
       <div className="sky" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className="wrap">
         <header className="hero">
-          <div className="kicker"><span className="live" /> Five tools · zero uploads · all browser</div>
+          <div className="kicker">All browser</div>
           <h1 className="aonic">Arabella.</h1>
           <p>A workbench of <b>small, playful, seriously capable</b> creative tools. Pick one on the left, or dive in below.</p>
         </header>

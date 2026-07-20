@@ -6,105 +6,159 @@
 <title>Braver — Nimble</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
   :root{
-    --paper:#f3ede0;      /* warm parchment */
-    --paper2:#efe7d6;
-    --ink:#231f18;        /* deep sepia-black */
-    --ink-soft:#6a6152;
-    --rule:#d8cdb6;
-    --accent:#9a5b3f;     /* faded rust */
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --paper:#15120d; --paper2:#1b1710;
-      --ink:#ece3d0; --ink-soft:#9a8f78; --rule:#332b1f; --accent:#d69a6f;
-    }
+    --paper:#f0e7d3;      /* aged parchment, always */
+    --paper2:#e7dbc0;
+    --ink:#2b241a;
+    --ink-soft:#6a5f4b;
+    --rule:#c9b993;
+    --accent:#8a4f33;     /* faded rust */
+    --moss:#5c6e45;
   }
   *{margin:0; padding:0; box-sizing:border-box;}
   html,body{height:100%;}
   body{
     background:
-      radial-gradient(1100px 700px at 50% -8%, var(--paper2), transparent 60%),
+      radial-gradient(1200px 800px at 50% -10%, var(--paper2), transparent 62%),
+      radial-gradient(900px 600px at 8% 108%, #e3d5b5, transparent 55%),
+      radial-gradient(900px 600px at 94% 104%, #e6d9bc, transparent 55%),
       var(--paper);
     color:var(--ink);
     font-family:'Hoefler Text','Iowan Old Style','Baskerville','Big Caslon',Garamond,Georgia,serif;
     -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     min-height:100%;
-    display:flex; flex-direction:column; align-items:center;
-    padding:64px 28px 80px;
+    display:grid; place-items:center;
+    padding:96px 28px;
+    position:relative; overflow-x:hidden;
   }
-
-  /* faint paper grain */
+  /* parchment grain + burnt edge vignette */
   body::before{
-    content:""; position:fixed; inset:0; pointer-events:none; opacity:.035; z-index:0;
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.045; z-index:0;
     background-image:radial-gradient(currentColor 1px, transparent 1.4px);
     background-size:3px 3px;
   }
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    box-shadow:inset 0 0 140px 30px rgba(96,74,42,.28), inset 0 0 34px 6px rgba(96,74,42,.14);
+  }
+
+  /* ---------- moss & vines creeping down from the top ---------- */
+  .vines{
+    position:fixed; top:0; left:0; right:0; height:250px; z-index:1; pointer-events:none;
+  }
+  .vines svg{display:block; width:100%; height:100%;}
+  .vine{transform-origin:50% 0; animation:sway 9s ease-in-out infinite;}
+  .vine.v2{animation-duration:11s; animation-delay:-3s;}
+  .vine.v3{animation-duration:13s; animation-delay:-6s;}
+  @keyframes sway{
+    0%,100%{transform:rotate(-1.1deg);}
+    50%{transform:rotate(1.1deg);}
+  }
+  @media (prefers-reduced-motion:reduce){.vine{animation:none;}}
 
   .home{
-    position:relative; z-index:1;
+    position:fixed; top:56px; left:32px; z-index:2;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:11px; letter-spacing:.22em; text-transform:uppercase;
     color:var(--ink-soft); text-decoration:none;
     display:inline-flex; align-items:center; gap:8px;
-    margin-bottom:auto; align-self:center;
     transition:color .2s;
   }
   .home:hover{color:var(--ink);}
   .home .arr{font-size:13px;}
 
-  main{position:relative; z-index:1; max-width:600px; width:100%; text-align:center;
-    margin:auto 0;}
+  /* the manuscript panel — deckled double rule, perfectly centred */
+  main{
+    position:relative; z-index:1; max-width:640px; width:100%; text-align:center;
+    padding:56px 44px 48px;
+    border:1px solid var(--rule);
+    outline:1px solid var(--rule);
+    outline-offset:6px;
+    background:
+      radial-gradient(600px 400px at 50% 0%, rgba(255,250,235,.5), transparent 70%);
+  }
+  main::before, main::after{
+    content:"❦"; position:absolute; left:50%; transform:translateX(-50%);
+    color:var(--accent); font-size:15px; background:var(--paper); padding:0 12px;
+  }
+  main::before{top:-10px;}
+  main::after{bottom:-10px;}
 
-  .eyebrow{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:10.5px; letter-spacing:.34em; text-transform:uppercase;
-    color:var(--accent); margin-bottom:26px;
-  }
-  h1{
-    font-family:'Didot','Bodoni 72','Hoefler Text',Garamond,'Times New Roman',serif;
-    font-weight:500; font-size:clamp(52px, 11vw, 92px); line-height:.98;
-    letter-spacing:.01em; font-style:italic;
-    margin-bottom:6px;
-  }
   .ornament{
     color:var(--accent); font-size:22px; line-height:1;
-    margin:28px 0 40px; letter-spacing:.4em;
+    margin-bottom:38px; letter-spacing:.4em;
   }
 
   .poem{
-    font-size:clamp(20px, 3.1vw, 25px);
+    font-size:clamp(20px, 3vw, 24px);
     line-height:1.95; letter-spacing:.005em;
     font-style:italic; color:var(--ink);
   }
   .poem .stanza{margin:0 0 1.5em;}
   .poem .stanza:last-child{margin-bottom:0;}
   .poem p{margin:0;}
-  /* accent the opening capital (no float — keeps the centred lines intact) */
   .poem .stanza:first-child p:first-child::first-letter{
     font-family:'Didot','Bodoni 72','Hoefler Text',Garamond,serif;
-    font-style:normal; font-size:1.35em; color:var(--accent);
+    font-style:normal; font-size:1.4em; color:var(--accent);
   }
 
-  .sig{
-    margin-top:52px; display:flex; flex-direction:column; align-items:center; gap:20px;
-  }
+  .sig{margin-top:48px; display:flex; flex-direction:column; align-items:center; gap:20px;}
   .sig .rule{width:56px; height:1px; background:var(--rule);}
-  .sig .by{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-soft);
-  }
 
-  @media (max-width:520px){
-    body{padding:44px 22px 60px;}
+  @media (max-width:560px){
+    body{padding:120px 18px 60px;}
+    main{padding:44px 24px 40px;}
     .poem{line-height:1.85;}
+    .vines{height:170px;}
   }
 </style>
 </head>
 <body>
+
+  <!-- moss beginning to overgrow the top of the page -->
+  <div class="vines" aria-hidden="true">
+    <svg viewBox="0 0 1440 250" preserveAspectRatio="xMidYMin slice" fill="none">
+      <!-- mossy fringe along the top edge -->
+      <path d="M0 0 H1440 V16 Q1380 30 1320 18 Q1250 34 1180 20 Q1100 38 1020 22 Q950 36 880 21 Q800 40 720 23 Q640 38 560 20 Q480 36 400 22 Q330 34 260 19 Q180 32 100 18 Q50 28 0 16 Z"
+            fill="#5c6e45" opacity=".55"/>
+      <path d="M0 0 H1440 V9 Q1360 20 1280 11 Q1180 24 1080 12 Q980 26 880 13 Q760 27 640 12 Q540 24 440 12 Q320 26 200 11 Q100 20 0 10 Z"
+            fill="#465735" opacity=".7"/>
+      <!-- hanging tendrils -->
+      <g class="vine" stroke="#5c6e45" stroke-width="2.4" stroke-linecap="round">
+        <path d="M180 14 C176 60 190 92 178 138 C170 170 180 196 172 220"/>
+        <ellipse cx="186" cy="58" rx="9" ry="4.5" fill="#5c6e45" stroke="none" transform="rotate(28 186 58)"/>
+        <ellipse cx="171" cy="104" rx="10" ry="5" fill="#6a7d50" stroke="none" transform="rotate(-24 171 104)"/>
+        <ellipse cx="184" cy="160" rx="9" ry="4.5" fill="#5c6e45" stroke="none" transform="rotate(30 184 160)"/>
+        <ellipse cx="170" cy="212" rx="8" ry="4" fill="#6a7d50" stroke="none" transform="rotate(-20 170 212)"/>
+      </g>
+      <g class="vine v2" stroke="#4d5d3a" stroke-width="2.2" stroke-linecap="round">
+        <path d="M470 12 C478 48 462 84 472 122 C480 152 468 176 474 196"/>
+        <ellipse cx="462" cy="52" rx="9" ry="4.5" fill="#5c6e45" stroke="none" transform="rotate(-26 462 52)"/>
+        <ellipse cx="480" cy="98" rx="10" ry="5" fill="#71835a" stroke="none" transform="rotate(24 480 98)"/>
+        <ellipse cx="464" cy="152" rx="8" ry="4" fill="#5c6e45" stroke="none" transform="rotate(-28 464 152)"/>
+      </g>
+      <g class="vine v3" stroke="#5c6e45" stroke-width="2.6" stroke-linecap="round">
+        <path d="M760 16 C752 70 772 110 758 162 C748 200 760 224 752 244"/>
+        <ellipse cx="768" cy="64" rx="10" ry="5" fill="#6a7d50" stroke="none" transform="rotate(26 768 64)"/>
+        <ellipse cx="750" cy="118" rx="9" ry="4.5" fill="#5c6e45" stroke="none" transform="rotate(-26 750 118)"/>
+        <ellipse cx="766" cy="176" rx="10" ry="5" fill="#71835a" stroke="none" transform="rotate(28 766 176)"/>
+        <ellipse cx="750" cy="232" rx="8" ry="4" fill="#5c6e45" stroke="none" transform="rotate(-22 750 232)"/>
+      </g>
+      <g class="vine v2" stroke="#4d5d3a" stroke-width="2.2" stroke-linecap="round">
+        <path d="M1050 12 C1058 52 1042 86 1052 126 C1060 154 1050 172 1056 190"/>
+        <ellipse cx="1042" cy="56" rx="9" ry="4.5" fill="#5c6e45" stroke="none" transform="rotate(-24 1042 56)"/>
+        <ellipse cx="1060" cy="104" rx="10" ry="5" fill="#6a7d50" stroke="none" transform="rotate(26 1060 104)"/>
+        <ellipse cx="1044" cy="156" rx="8" ry="4" fill="#71835a" stroke="none" transform="rotate(-26 1044 156)"/>
+      </g>
+      <g class="vine" stroke="#5c6e45" stroke-width="2.4" stroke-linecap="round">
+        <path d="M1300 14 C1294 56 1308 92 1296 134 C1288 164 1298 182 1292 202"/>
+        <ellipse cx="1304" cy="60" rx="9" ry="4.5" fill="#6a7d50" stroke="none" transform="rotate(26 1304 60)"/>
+        <ellipse cx="1288" cy="110" rx="10" ry="5" fill="#5c6e45" stroke="none" transform="rotate(-26 1288 110)"/>
+        <ellipse cx="1302" cy="168" rx="8" ry="4" fill="#71835a" stroke="none" transform="rotate(24 1302 168)"/>
+      </g>
+    </svg>
+  </div>
 
   <a class="home" href="index.html"><span class="arr">←</span> Nimble</a>
 
