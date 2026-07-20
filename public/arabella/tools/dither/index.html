@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stipple — Nimble</title>
+<title>Stipple — Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<link rel="stylesheet" href="../../assets/theme.css?v=7">
+<link rel="stylesheet" href="../../assets/theme.css?v=8">
 <script src="../../assets/theme.js"></script>
 <style>
   :root, :root[data-theme="dark"]{
     --bg:#0c0c0d; --panel:#131315; --panel2:#1b1b1e; --line:#232326; --line2:#303034;
     --ink:#f4f4f5; --text:#f4f4f5; --muted:#8f8f98; --faint:#5c5c66; --range-track:#2f2f37;
-    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46; --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF; --accent:#645DD7; --accent2:#2DC7FF; --radius:9px;
+    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46; --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF; --accent:var(--ink); --accent2:var(--ink); --radius:9px;
   }
   :root[data-theme="light"]{
     --bg:#ffffff; --panel:#fafafa; --panel2:#f1f1f3; --line:#e9e9e9; --line2:#d9d9d9;
@@ -50,14 +50,7 @@
     border-radius:8px; padding:7px 9px; font-size:13px; width:100%;
   }
   input[type=number]:focus, select:focus{outline:none; border-color:var(--line2);}
-  input[type=range]{
-    -webkit-appearance:none; appearance:none; flex:1; height:4px; border-radius:2px;
-    background:var(--range-track); outline:none;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%;
-    background:var(--ink); cursor:pointer; border:2px solid var(--bg);
-  }
+  input[type=range]{flex:1;}   /* look comes from the shared theme.css slider */
   button{
     font-family:inherit; border:1px solid var(--line); background:var(--panel); color:var(--ink);
     border-radius:9px; padding:8px 11px; font-size:12.5px; font-weight:600; letter-spacing:-.01em;
@@ -97,7 +90,7 @@
   .switch input{opacity:0; width:100%; height:100%; margin:0; position:absolute; inset:0; cursor:pointer; z-index:1;}
   .switch .track{position:absolute; inset:0; background:var(--range-track); border-radius:999px; transition:background .15s; pointer-events:none;}
   .switch .thumb{position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%; background:#fff; transition:transform .15s; box-shadow:0 1px 3px rgba(0,0,0,.35); pointer-events:none;}
-  .switch input:checked ~ .track{background:var(--indigo);}
+  .switch input:checked ~ .track{background:var(--ink);}
   .switch input:checked ~ .thumb{transform:translateX(15px);}
   .grade-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;}
   .grade-row b{font-size:12.5px; font-weight:700;}
@@ -111,7 +104,7 @@
 
   /* checkbox row */
   .check-row{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); margin-top:4px;}
-  .check-row input{width:15px; height:15px; accent-color:var(--indigo);}
+  .check-row input{width:15px; height:15px; accent-color:var(--ink);}
 
   /* preset chips */
   .preset-grid{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px;}
@@ -163,6 +156,21 @@
 </head>
 <body>
 
+<header class="tool-header">
+  <div class="tool-home-slot">
+    <a class="nimble-home" href="../../index.html">Nimble</a>
+  </div>
+  <div class="tool-heading">
+    <h1 class="tool-title">Stipple</h1>
+    <div class="tool-meta">Dither &amp; halftone</div>
+  </div>
+  <div class="tool-actions">
+    <button type="button" onclick="document.getElementById('btnRandomize').click()" title="Randomize">🎲 Random</button>
+    <button type="button" class="primary" onclick="document.getElementById('btnExport').click()" title="Export">Export ↓</button>
+    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
+  </div>
+</header>
+
 <div class="app">
 <aside>
 
@@ -170,7 +178,7 @@
     <h2>Image</h2>
     <div class="dropzone" id="dropzone">
       <b>Drop an image, or click to browse</b>
-      PNG, JPG, WebP — processed entirely on your device
+      PNG, JPG, WebP, processed entirely on your device
     </div>
     <input type="file" id="fileInput" accept="image/*" class="hidden">
     <div class="imgmeta hidden" id="imgMeta">
@@ -226,7 +234,7 @@
 
   <section>
     <h2>Compare</h2>
-    <div class="note">Drag the handle on the canvas to reveal the original — or press <b>C</b> to flip fully.</div>
+    <div class="note">Drag the handle on the canvas to reveal the original, or press <b>C</b> to flip fully.</div>
     <div class="btnrow" style="margin-top:8px;"><button class="small" id="btnCompareReset">Reset compare</button></div>
   </section>
 
@@ -1066,10 +1074,10 @@ updateCompareClip();
 </script>
 
 <div id="nimbleSplash" style="position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;">
-  <div style="font-family:'Porkys','Arial Rounded MT Bold',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;font-size:38px;display:flex;letter-spacing:.2em;"><span style="display:inline-block;--r:-7deg;color:#F42C04;animation:nbBnc 1.05s ease-in-out 0s infinite">N</span><span style="display:inline-block;--r:5deg;color:#FF6FAE;animation:nbBnc 1.05s ease-in-out .08s infinite">I</span><span style="display:inline-block;--r:-4deg;color:#FCCA46;animation:nbBnc 1.05s ease-in-out .16s infinite">M</span><span style="display:inline-block;--r:6deg;color:#2DC7FF;animation:nbBnc 1.05s ease-in-out .24s infinite">B</span><span style="display:inline-block;--r:-6deg;color:#645DD7;animation:nbBnc 1.05s ease-in-out .32s infinite">L</span><span style="display:inline-block;--r:8deg;color:#CBA0FF;animation:nbBnc 1.05s ease-in-out .4s infinite">E</span></div>
+  <div style="font-family:'Aonic','Inter',-apple-system,sans-serif;font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite">Arabella.</div>
   <div style="font:700 11px 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Stipple</div>
 </div>
-<style>@keyframes nbBnc{0%,100%{transform:translateY(0) rotate(var(--r)) }50%{transform:translateY(-14px) rotate(var(--r)) scale(1.08)}}</style>
+<style>@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
 <script>(function(){var s=document.getElementById('nimbleSplash'),done=false;
 function hide(){if(done)return;done=true;setTimeout(function(){s.style.opacity='0';s.style.pointerEvents='none';setTimeout(function(){s.remove()},500)},550)}
 if(document.readyState==='complete')hide();else window.addEventListener('load',hide);

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOTIONFORGE — Motion Graphics Generator</title>
+<title>Motion — Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<link rel="stylesheet" href="../../assets/theme.css?v=7">
+<link rel="stylesheet" href="../../assets/theme.css?v=8">
 <script src="../../assets/theme.js"></script>
 <style>
   :root, :root[data-theme="dark"]{
@@ -29,6 +29,7 @@
     font-size: 13px;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
   }
 
   /* ---------- buttons + selects ---------- */
@@ -114,19 +115,7 @@
   .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .slider-row label { font-size: 12px; font-weight: 600; width: 62px; color: var(--muted); }
   .slider-row output { font-size: 12px; font-weight: 600; width: 34px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
-  input[type=range] {
-    flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px;
-    background: var(--range-track); outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-    background: var(--ink); border: 2px solid var(--bg);
-    cursor: pointer;
-  }
-  input[type=range]::-moz-range-thumb {
-    width: 16px; height: 16px; border-radius: 50%;
-    background: var(--ink); border: 2px solid var(--bg); cursor: pointer;
-  }
+  input[type=range] { flex: 1; }   /* look comes from the shared theme.css slider */
   .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .toggle-row label { font-size: 13px; font-weight: 600; }
   input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); cursor: pointer; }
@@ -151,6 +140,21 @@
 </style>
 </head>
 <body>
+
+<header class="tool-header">
+  <div class="tool-home-slot">
+    <a class="nimble-home" href="../../index.html">Nimble</a>
+  </div>
+  <div class="tool-heading">
+    <h1 class="tool-title">Motion</h1>
+    <div class="tool-meta">Motion graphics</div>
+  </div>
+  <div class="tool-actions">
+    <button type="button" onclick="document.getElementById('snapBtn').click()" title="Save PNG frame">📸 Frame</button>
+    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record clip">⏺ Record</button>
+    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
+  </div>
+</header>
 
 <div class="main">
   <aside>
@@ -185,7 +189,7 @@
 
     <div>
       <div class="section-label">Title Text</div>
-      <input type="text" id="textInput" value="EPIC INTRO" maxlength="60">
+      <input type="text" id="textInput" value="MOTION" maxlength="60">
     </div>
 
     <div>
@@ -274,7 +278,7 @@ const state = {
   palette: PALETTES[0],
   speed: 1,
   intensity: 1,
-  text: "EPIC INTRO",
+  text: "MOTION",
   showTitle: true,
 };
 

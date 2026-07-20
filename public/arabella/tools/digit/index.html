@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Digit — Nimble</title>
+<title>Digit — Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="../../assets/theme.css?v=7">
+<link rel="stylesheet" href="../../assets/theme.css?v=8">
 <script src="../../assets/theme.js"></script>
 <style>
     :root, :root[data-theme="dark"]{
@@ -29,7 +29,8 @@
     overflow: hidden;
     font-size:13px; -webkit-font-smoothing:antialiased;
   }
-  body { display: flex; flex-direction: row; }
+  body { display: flex; flex-direction: column; }
+  .appwrap { flex: 1; display: flex; flex-direction: row; min-height: 0; }
 
   /* ---------- left sidebar ---------- */
   aside#sidebar {
@@ -77,7 +78,7 @@
   #modeTabs { display: flex; flex-direction: column; gap: 8px; }
   .mode-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
   .mode-group-label {
-    width: 56px; flex: 0 0 56px; color: var(--muted); font-size: 10px;
+    width: auto; flex: 0 0 auto; min-width: 56px; color: var(--muted); font-size: 10px;
     font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
   }
   #modeTabs button.modeTab { padding: 6px 9px; font-size: 11.5px; }
@@ -137,8 +138,7 @@
   .hidden { display: none !important; }
 
   /* range sliders — theme.css paints the gradient fill */
-  input[type="range"] { -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:99px; background:var(--range-track); outline:none; }
-  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;}
+  input[type="range"] { width:100%; }   /* look comes from the shared theme.css slider */
   input[type="range"]:disabled{opacity:.45;}
 
   /* ---------- stage ---------- */
@@ -187,7 +187,7 @@
   :root[data-theme="light"] #nimbleSplash { background: var(--bg)!important; }
 
   @media (max-width:760px){
-    body { flex-direction: column; }
+    .appwrap { flex-direction: column; }
     aside#sidebar {
       width: auto; flex: 0 0 auto; max-height: 54vh;
       border-right: none; border-bottom: 1px solid var(--line);
@@ -198,6 +198,21 @@
 </head>
 <body>
 
+<header class="tool-header">
+  <div class="tool-home-slot">
+    <a class="nimble-home" href="../../index.html">Nimble</a>
+  </div>
+  <div class="tool-heading">
+    <h1 class="tool-title">Digit</h1>
+    <div class="tool-meta">Gesture FX</div>
+  </div>
+  <div class="tool-actions">
+    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record (R)">⏺ Record</button>
+    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
+  </div>
+</header>
+
+<div class="appwrap">
 <aside id="sidebar">
   <button class="chip primary" id="recordBtn"><span class="dot"></span>Record</button>
 
@@ -277,6 +292,7 @@
   <div id="status">Loading hand tracking…</div>
   <div id="kbdHint"><kbd>Tab</kbd> mode · <kbd>[</kbd> <kbd>]</kbd> effect · <kbd>R</kbd> record · <kbd>C</kbd> clear</div>
 </div>
+</div><!-- /.appwrap -->
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
@@ -296,12 +312,12 @@ const sensitivitySlider = document.getElementById('sensitivity');
 
 const MODE_HINTS = {
   shape: 'Fingertips paint the live effect shape. Pick a corner scheme below.',
-  framer: 'Both index fingers set a rectangle — pinch both hands at once to lock the current effect there, live video stays visible inside it.',
+  framer: 'Both index fingers set a rectangle. Pinch both hands at once to lock the current effect there, live video stays visible inside it.',
   shortcuts: 'Middle-pinch → next FX · Ring-pinch → prev FX · Pinky-pinch → cycle corner scheme.',
-  face: 'Tracks your face — pick a region below. The effect follows it as you move.',
+  face: 'Tracks your face. Pick a region below. The effect follows it as you move.',
   zoneedit: 'Point at a locked zone and pinch to drag it, or pinch a corner handle to resize it.',
   macro: 'Record a timed sequence of Shortcuts-style pinches, then replay it on demand.',
-  facets: 'Needs both hands — a triangulated ribbon bridges the gap between them, each facet its own effect, for a faceted, faux-3D look.'
+  facets: 'Needs both hands: a triangulated ribbon bridges the gap between them, each facet its own effect, for a faceted, faux-3D look.'
 };
 
 let activeMode = 'shape';
@@ -1425,10 +1441,10 @@ start();
 </script>
 
 <div id="nimbleSplash" style="position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;">
-  <div style="font-family:'Porkys','Arial Rounded MT Bold',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;font-size:38px;display:flex;letter-spacing:.2em;"><span style="display:inline-block;--r:-7deg;color:#F42C04;animation:nbBnc 1.05s ease-in-out 0s infinite">N</span><span style="display:inline-block;--r:5deg;color:#FF6FAE;animation:nbBnc 1.05s ease-in-out .08s infinite">I</span><span style="display:inline-block;--r:-4deg;color:#FCCA46;animation:nbBnc 1.05s ease-in-out .16s infinite">M</span><span style="display:inline-block;--r:6deg;color:#2DC7FF;animation:nbBnc 1.05s ease-in-out .24s infinite">B</span><span style="display:inline-block;--r:-6deg;color:#645DD7;animation:nbBnc 1.05s ease-in-out .32s infinite">L</span><span style="display:inline-block;--r:8deg;color:#CBA0FF;animation:nbBnc 1.05s ease-in-out .4s infinite">E</span></div>
-  <div style="font:700 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Digit — Pinch FX</div>
+  <div style="font-family:'Aonic','Inter',-apple-system,sans-serif;font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite">Arabella.</div>
+  <div style="font:700 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Digit</div>
 </div>
-<style>@keyframes nbBnc{0%,100%{transform:translateY(0) rotate(var(--r)) }50%{transform:translateY(-14px) rotate(var(--r)) scale(1.08)}}</style>
+<style>@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
 <script>(function(){var s=document.getElementById('nimbleSplash'),done=false;
 function hide(){if(done)return;done=true;setTimeout(function(){s.style.opacity='0';s.style.pointerEvents='none';setTimeout(function(){s.remove()},500)},550)}
 if(document.readyState==='complete')hide();else window.addEventListener('load',hide);

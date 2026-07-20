@@ -38,6 +38,9 @@
   }
   ::selection{background:var(--yellow); color:var(--ink);}
   .porkys{font-family:'Porkys',"Arial Rounded MT Bold",sans-serif; font-weight:400;}
+  @font-face{font-family:'Aonic';src:url('studio/assets/Aonic-Medium.ttf') format('truetype');font-weight:400 600;font-display:swap;}
+  .aonic{font-family:'Aonic','Inter',sans-serif; font-weight:500; letter-spacing:-.015em;}
+  :root{--ab-green:#A3E635; --ab-purple:#6F5BD8;}
 
   /* ---------- bouncy multicolour logo ---------- */
   .logo{display:inline-flex; align-items:baseline; letter-spacing:.18em; user-select:none; text-decoration:none;}
@@ -89,16 +92,32 @@
   .blobs{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
   .blob{
     position:absolute; border-radius:50%; filter:blur(70px); opacity:.5;
-    animation:drift 16s ease-in-out infinite alternate;
   }
-  .b1{width:420px;height:420px; background:var(--blue);   top:-8%;  left:-6%;  animation-delay:0s;}
-  .b2{width:380px;height:380px; background:var(--pink);   top:12%;  right:-8%; animation-delay:-4s;}
-  .b3{width:330px;height:330px; background:var(--yellow); bottom:-6%; left:16%; animation-delay:-8s;}
-  .b4{width:300px;height:300px; background:var(--lavender); bottom:4%; right:14%; animation-delay:-12s;}
-  @keyframes drift{
+  .b1{width:420px;height:420px; background:var(--blue);   top:-8%;  left:-6%;  animation:drift1 21s ease-in-out infinite alternate;}
+  .b2{width:380px;height:380px; background:var(--pink);   top:12%;  right:-8%; animation:drift2 17s ease-in-out infinite alternate;}
+  .b3{width:330px;height:330px; background:var(--yellow); bottom:-6%; left:16%; animation:drift3 24s ease-in-out infinite alternate;}
+  .b4{width:300px;height:300px; background:var(--lavender); bottom:4%; right:14%; animation:drift4 19s ease-in-out infinite alternate;}
+  @keyframes drift1{
     0%{transform:translate(0,0) scale(1);}
-    100%{transform:translate(60px,-50px) scale(1.15);}
+    50%{transform:translate(90px,60px) scale(1.18);}
+    100%{transform:translate(30px,-70px) scale(.94);}
   }
+  @keyframes drift2{
+    0%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(-110px,40px) scale(.9);}
+    100%{transform:translate(-40px,110px) scale(1.2);}
+  }
+  @keyframes drift3{
+    0%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(120px,-50px) scale(1.12);}
+    100%{transform:translate(-60px,-90px) scale(1.02);}
+  }
+  @keyframes drift4{
+    0%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(-80px,-80px) scale(1.16);}
+    100%{transform:translate(50px,40px) scale(.92);}
+  }
+  @media (prefers-reduced-motion:reduce){.blob{animation:none !important;}}
   .hero > *:not(.blobs){position:relative; z-index:1;}
 
   .pill{
@@ -125,13 +144,45 @@
     text-transform:uppercase; letter-spacing:.11em; padding-right:.11em;
   }
   h1 .fun i{
-    font-style:normal; display:inline-block;
+    font-style:normal; display:inline-block; position:relative;
     transition:transform .3s var(--ease-bounce), color .3s;
   }
-  h1 .fun:hover i{color:var(--c); transform:rotate(var(--r)) translateY(-.06em);}
+  h1 .fun.porkys i{color:var(--c);}
+  h1 .fun:hover i{transform:rotate(var(--r)) translateY(-.06em);}
+  /* sparkles: two tiny stars per letter, twinkling while hovered */
+  h1 .fun.porkys i::before, h1 .fun.porkys i::after{
+    content:'\2726'; position:absolute; line-height:1; color:currentColor;
+    opacity:0; pointer-events:none; font-size:.17em; top:-.26em; right:-.22em;
+  }
+  h1 .fun.porkys i::after{font-size:.12em; top:auto; right:auto; bottom:-.04em; left:-.26em;}
+  h1 .fun.porkys i:nth-child(2n)::before{top:-.18em; right:auto; left:-.24em;}
+  h1 .fun.porkys i:nth-child(3n)::after{bottom:auto; top:.4em; left:auto; right:-.28em;}
+  h1 .fun.porkys:hover i::before{animation:sparkle 1.15s ease-in-out infinite;}
+  h1 .fun.porkys:hover i::after{animation:sparkle 1.15s ease-in-out infinite .28s;}
+  h1 .fun.porkys i:nth-child(2)::before{animation-delay:.1s;}
+  h1 .fun.porkys i:nth-child(3)::before{animation-delay:.22s;}
+  h1 .fun.porkys i:nth-child(4)::before{animation-delay:.05s;}
+  h1 .fun.porkys i:nth-child(5)::before{animation-delay:.3s;}
+  h1 .fun.porkys i:nth-child(6)::before{animation-delay:.16s;}
+  @keyframes sparkle{
+    0%,100%{opacity:0; transform:scale(.2) rotate(0deg);}
+    40%{opacity:1; transform:scale(1.2) rotate(38deg);}
+    70%{opacity:.55; transform:scale(.75) rotate(70deg);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    h1 .fun.porkys:hover i::before, h1 .fun.porkys:hover i::after{animation:none; opacity:.9;}
+  }
   h1 .squiggle{
     position:absolute; left:0; right:0; bottom:-.12em; height:.22em; width:100%;
   }
+  h1 .squiggle path{transform-box:fill-box; transform-origin:center;}
+  h1 .fun:hover .squiggle path{animation:squigWave .7s ease-in-out infinite;}
+  @keyframes squigWave{
+    0%,100%{transform:translateY(0) scaleY(1);}
+    30%{transform:translateY(-1.5px) scaleY(1.14);}
+    65%{transform:translateY(1.5px) scaleY(.9);}
+  }
+  @media (prefers-reduced-motion:reduce){h1 .fun:hover .squiggle path{animation:none;}}
   .hero .sub{
     margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
     color:var(--muted); max-width:520px; font-weight:500;
@@ -156,7 +207,7 @@
     border-top:1px solid var(--line); border-bottom:1px solid var(--line);
     padding:20px 0; overflow:hidden; white-space:nowrap; background:var(--bg);
   }
-  .marquee .track{display:inline-flex; gap:0; animation:scroll 30s linear infinite;}
+  .marquee .track{display:inline-flex; gap:0; width:max-content; animation:scroll 30s linear infinite; animation-delay:-15s;}
   .marquee:hover .track{animation-play-state:paused;}
   @keyframes scroll{to{transform:translateX(-50%);}}
   .marquee span{
@@ -229,7 +280,36 @@
   .tool-card.soon .visual .plus{font-size:34px; color:var(--faint); font-weight:200;}
 
   /* ---------- dark cover / studio section ---------- */
-  .cover-wrap{max-width:1180px; margin:110px auto 0; padding:0 40px;}
+  /* ---------- overview ---------- */
+  .overview{max-width:1180px; margin:0 auto; padding:110px 40px 20px; text-align:center;}
+  .overview h2{font-size:clamp(34px,4.6vw,56px); font-weight:850; letter-spacing:-.035em; line-height:1.05;}
+  .overview .lede{
+    margin:22px auto 0; max-width:560px; color:var(--muted);
+    font-size:clamp(15px,1.8vw,17.5px); line-height:1.7; font-weight:500;
+  }
+  .ovgrid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px; margin-top:48px; text-align:left;
+  }
+  .ov{
+    border:1.5px solid var(--line); border-radius:18px; padding:22px 24px;
+    background:rgba(255,255,255,.7);
+    transition:transform .25s var(--ease-bounce), border-color .2s;
+  }
+  .ov:hover{transform:translateY(-3px); border-color:var(--ok, var(--ink));}
+  .ov b{display:flex; align-items:center; gap:9px; font-size:15.5px; font-weight:800; letter-spacing:-.01em;}
+  .ov b::before{content:''; width:9px; height:9px; border-radius:50%; background:var(--oc, var(--ink)); flex:none;}
+  .ov span{display:block; margin-top:7px; color:var(--muted); font-size:13px; line-height:1.55; font-weight:500;}
+
+  /* blueprint band behind the Genesis card: white, dotted grid, no vignette */
+  .genesis-band{
+    margin-top:64px; padding:96px 0;
+    border-top:1px solid var(--line);
+    background:#ffffff;
+    background-image:radial-gradient(rgba(16,16,19,.13) 1.1px, transparent 1.5px);
+    background-size:16px 16px;
+  }
+  .cover-wrap{max-width:1180px; margin:0 auto; padding:0 40px;}
   .cover{
     position:relative; background:var(--ink); color:#fff;
     border-radius:34px; padding:clamp(44px, 6vw, 84px);
@@ -243,7 +323,7 @@
   .cover .cta:hover{box-shadow:0 12px 32px rgba(0,0,0,.5);}
   .cover .glow{
     position:absolute; width:520px; height:520px; border-radius:50%;
-    background:radial-gradient(circle, var(--indigo), transparent 65%);
+    background:radial-gradient(circle, var(--ab-purple), transparent 65%);
     top:-40%; right:-14%; opacity:.5; filter:blur(50px); pointer-events:none;
   }
 
@@ -277,15 +357,18 @@
   .mock .canvas .art{
     height:100%; border-radius:10px;
     background:
-      radial-gradient(circle at 25% 30%, var(--pink), transparent 52%),
-      radial-gradient(circle at 75% 25%, var(--blue), transparent 55%),
-      radial-gradient(circle at 60% 80%, var(--yellow), transparent 52%),
-      radial-gradient(circle at 20% 85%, var(--indigo), transparent 55%),
+      radial-gradient(circle at 25% 30%, var(--ab-purple), transparent 55%),
+      radial-gradient(circle at 78% 22%, var(--ab-green), transparent 52%),
+      radial-gradient(circle at 62% 82%, var(--ab-purple), transparent 55%),
+      radial-gradient(circle at 18% 85%, var(--ab-green), transparent 50%),
       #17171b;
     filter:saturate(1.15);
-    animation:hueshift 10s linear infinite;
+    animation:artGlow 5.5s ease-in-out infinite;
   }
-  @keyframes hueshift{to{filter:saturate(1.15) hue-rotate(360deg);}}
+  @keyframes artGlow{
+    0%,100%{filter:saturate(1.1) brightness(1);}
+    50%{filter:saturate(1.35) brightness(1.22);}
+  }
 
   /* ---------- values row ---------- */
   .values{
@@ -325,7 +408,7 @@
 
   /* ---------- footer ---------- */
   footer{
-    margin-top:130px; border-top:1px solid var(--line);
+    margin-top:0; border-top:1px solid var(--line);
     padding:64px 40px 44px;
   }
   footer .inner{
@@ -355,7 +438,8 @@
     nav{padding:14px 20px;}
     nav .links a:not(.cta){display:none;}
     section{padding:80px 20px 20px;}
-    .cover-wrap{padding:0 20px; margin-top:80px;}
+    .cover-wrap{padding:0 20px;}
+    .genesis-band{margin-top:48px; padding:64px 0;}
     footer{padding:52px 20px 36px;}
   }
 </style>
@@ -367,9 +451,9 @@
     <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
   </a>
   <div class="links">
-    <a href="#studio">Studio</a>
+    <a href="#arabella">Arabella.</a>
     <a href="poem.html">Poem</a>
-    <a class="cta" href="studio/index.html">Open Studio <span class="arr">→</span></a>
+    <a class="cta" href="arabella/index.html">Visit Arabella. <span class="arr">→</span></a>
   </div>
 </nav>
 
@@ -379,10 +463,9 @@
     <div class="blob b3"></div><div class="blob b4"></div>
   </div>
 
-  <div class="pill"><span class="dot"></span>The beginning</div>
 
   <h1>
-    <span class="fun porkys" style="--c:var(--indigo);--r:-2deg"><i>N</i><i>i</i><i>m</i><i>b</i><i>l</i><i>e</i></span> by name.<br>
+    <span class="fun porkys" style="--r:-2deg"><i style="--c:var(--red)">N</i><i style="--c:var(--pink)">i</i><i style="--c:var(--yellow)">m</i><i style="--c:var(--blue)">b</i><i style="--c:var(--indigo)">l</i><i style="--c:var(--lavender)">e</i></span> by name.<br>
     <span class="fun" style="--c:var(--red);--r:2deg">
       Brave
       <svg class="squiggle" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
@@ -392,10 +475,10 @@
     </span> by nature.
   </h1>
 
-  <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. We build it all and share it freely, right here in your browser.</p>
+  <p class="sub">Nimble is a home for everything. Every experiment, every adventure, every idea worth chasing. No bounds, no boxes. I build it all and share it freely, right here in your browser.</p>
 
   <div class="actions">
-    <a class="cta" href="studio/index.html">Enter the Studio <span class="arr">→</span></a>
+    <a class="cta" href="#overview">Have a wander <span class="arr">→</span></a>
   </div>
 
   <div class="scrollcue">Scroll</div>
@@ -403,38 +486,51 @@
 
 <div class="marquee" aria-hidden="true">
   <div class="track" id="marqueeTrack">
-    <span style="--mc:var(--red)">Car Radio</span>
-    <span style="--mc:var(--pink)">Trees</span>
-    <span style="--mc:var(--yellow)">Ride</span>
-    <span style="--mc:var(--blue)">Heathens</span>
-    <span style="--mc:var(--indigo)">Chlorine</span>
-    <span style="--mc:var(--lavender)">Jumpsuit</span>
+    <span style="--mc:var(--red)">Nimble</span>
+    <span style="--mc:var(--pink)">Nimble</span>
+    <span style="--mc:var(--yellow)">Nimble</span>
+    <span style="--mc:var(--blue)">Nimble</span>
+    <span style="--mc:var(--indigo)">Nimble</span>
+    <span style="--mc:var(--lavender)">Nimble</span>
   </div>
 </div>
 
-<div class="cover-wrap reveal" id="studio">
+<section class="overview reveal" id="overview">
+  <div class="kicker" style="--kc:var(--pink)">00 - Overview</div>
+  <h2>Overview</h2>
+  <p class="lede">Nimble is where ideas get chased until they become things you can actually play with. No roadmap, no meetings, no uploads. Just small, handmade tools that live entirely in your browser.</p>
+  <div class="ovgrid">
+    <div class="ov" style="--oc:var(--red)"><b>Small tools</b><span>Each one does a single thing properly, and stays out of your way.</span></div>
+    <div class="ov" style="--oc:var(--blue)"><b>Nothing leaves your device</b><span>Every pixel is processed locally. No accounts, no telemetry.</span></div>
+    <div class="ov" style="--oc:var(--indigo)"><b>Free to wander</b><span>Open Arabella., poke around, make something, take it with you.</span></div>
+  </div>
+</section>
+
+<div class="genesis-band">
+<div class="cover-wrap reveal" id="arabella">
   <div class="cover">
     <div class="glow" aria-hidden="true"></div>
     <div>
-      <div class="kicker" style="--kc:var(--blue)">What we've built</div>
-      <h2>Meet the<br>Studio.</h2>
-      <p class="lede">One of the platforms we've built is the Studio — a single web app where all of our tools live side by side. Open it up and have a wander.</p>
-      <a class="cta" href="studio/index.html">Access the Studio <span class="arr">→</span></a>
+      <div class="kicker" style="--kc:var(--ab-green)">01 - Project Genesis</div>
+      <h2>Meet<br><span class="aonic">Arabella.</span></h2>
+      <p class="lede">Arabella. is my workbench, a single web app where all of my tools live side by side. Open it up and have a wander.</p>
+      <a class="cta" href="arabella/index.html">Step inside <span class="arr">→</span></a>
     </div>
     <div class="mock" aria-hidden="true">
       <div class="titlebar"><i></i><i></i><i></i></div>
       <div class="app">
         <div class="side">
-          <div class="item active" style="--ic:var(--pink)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--blue)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--yellow)"><i></i><b></b></div>
-          <div class="item" style="--ic:var(--indigo)"><i></i><b></b></div>
+          <div class="item active" style="--ic:var(--ab-green)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-purple)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-green)"><i></i><b></b></div>
+          <div class="item" style="--ic:var(--ab-purple)"><i></i><b></b></div>
         </div>
         <div class="canvas"><div class="art"></div></div>
       </div>
     </div>
   </div>
 </div>
+</div><!-- /.genesis-band -->
 
 <footer>
   <div class="inner">
@@ -444,9 +540,8 @@
     <div class="row">
       <span>© 2026 Nimble Design Studio. Made with far too much enthusiasm.</span>
       <div class="flinks">
-        <a href="studio/index.html">Studio</a>
+        <a href="arabella/index.html">Arabella.</a>
         <a href="poem.html">Poem</a>
-        <a href="mailto:Chris.palin@mac.com">Contact</a>
       </div>
     </div>
   </div>
@@ -468,5 +563,21 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
+<script>
+(function(){
+  // outlined cursor in a random Nimble colour, new colour every visit
+  var cols=['%23F42C04','%23FF6FAE','%23FCCA46','%232DC7FF','%23645DD7','%23CBA0FF'];
+  var c=cols[Math.floor(Math.random()*cols.length)];
+  var d='M6 3 L6 21 L11 16.5 L14.2 23.5 L17.6 22 L14.4 15 L21 14.6 Z';
+  function arrow(){
+    return "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22 viewBox=%220 0 28 28%22>"+
+      "<path d=%22"+d+"%22 fill=%22none%22 stroke=%22rgba(0,0,0,0.32)%22 stroke-width=%225.5%22 stroke-linejoin=%22round%22/>"+
+      "<path d=%22"+d+"%22 fill=%22"+c+"%22 stroke=%22white%22 stroke-width=%222.2%22 stroke-linejoin=%22round%22/></svg>') 5 3";
+  }
+  var st=document.createElement('style');
+  st.textContent='body{cursor:'+arrow()+',auto}a,button,.cta,.card,[role=button]{cursor:'+arrow()+',pointer}';
+  document.head.appendChild(st);
+})();
+</script>
 </body>
 </html>
