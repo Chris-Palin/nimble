@@ -1,14 +1,17 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'node:path';
 
-// Phase 1 of the platform uplift: the existing static site lives in public/
-// and passes through the build verbatim, so deploys are byte-identical to
-// the pre-Vite site. React app entries (shell, home, Stage) land in src/
-// as phase 2 and get bundled alongside it.
+// Platform uplift, phase 2: the static site in public/ still passes through
+// verbatim. The React shell (Arabella. sidebar + home) builds at /app/ and
+// takes over /studio/ once it reaches parity; tools keep shipping untouched.
 export default defineConfig({
+  plugins: [react()],
+  resolve: { alias: { '@ui': resolve(__dirname, 'src/ui') } },
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: { seed: 'src/main.ts' },
+      input: { app: resolve(__dirname, 'app/index.html') },
     },
   },
 });
