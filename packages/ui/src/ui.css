@@ -156,6 +156,8 @@ input[type="range"].ui-range:focus-visible{outline:2px solid var(--slider-fill);
 .shell.collapsed .brand{padding-left:0;padding-right:0;justify-content:center;}
 .shell.collapsed .tool-btn{width:40px;height:40px;margin:0 auto;padding:0;gap:0;justify-content:center;}
 .shell.collapsed .tool-btn.soon{display:none;}   /* no icon to show when collapsed */
+/* the "Tools" label is hidden when collapsed — restore even 8px spacing below Home */
+.shell.collapsed nav[aria-label="Tools"]{margin-top:8px;}
 .shell.collapsed .foot-btn{width:40px;height:40px;margin:0 auto;padding:0;gap:0;justify-content:center;}
 .shell.collapsed .nimble-pill{width:40px;height:40px;margin:0 auto;padding:0;font-size:20px;}
 .shell.collapsed .pill-full{display:none;}
