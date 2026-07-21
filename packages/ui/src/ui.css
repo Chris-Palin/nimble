@@ -1,0 +1,164 @@
+/* @arabella/ui — shared chrome styling for every Arabella surface.
+   Single home for the header, sliders, segmented controls, theme toggle,
+   and the studio sidebar so their look can't drift tool to tool.
+   Design tokens (--bg/--panel/--ink…) come from each app's own token sheet. */
+
+@font-face{
+  font-family:'Inter';
+  src:url('/arabella/assets/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-style:normal; font-weight:100 900; font-display:swap;
+}
+@font-face{
+  font-family:'Porkys';
+  src:url('/arabella/assets/PORKYS_.ttf') format('truetype');
+  font-display:swap;
+}
+@font-face{
+  font-family:'Aonic';
+  src:url('/arabella/assets/Aonic-Medium.ttf') format('truetype');
+  font-weight:400 600; font-display:swap;
+}
+
+/* slider colour tokens (mirrors the old theme.css) */
+:root{--range-track:#2f2f37; --slider-fill:#f4f4f5; --slider-thumb:#0c0c0d; --slider-thumb-line:#f4f4f5;}
+:root[data-theme="light"]{--range-track:#d8d8df; --slider-fill:#111114; --slider-thumb:#ffffff; --slider-thumb-line:#111114;}
+
+/* ---- shared slider design: slim track, grip thumb, ink fill ---- */
+input[type="range"].ui-range{
+  --range-progress:50%;
+  -webkit-appearance:none !important; appearance:none !important;
+  height:4px !important; border-radius:99px !important; outline:none; margin:0;
+  background:linear-gradient(to right,
+    var(--slider-fill) 0,
+    var(--slider-fill) var(--range-progress),
+    var(--range-track) var(--range-progress),
+    var(--range-track) 100%) !important;
+}
+input[type="range"].ui-range::-webkit-slider-thumb{
+  -webkit-appearance:none !important; appearance:none !important;
+  width:9px !important; height:18px !important; border-radius:5px !important;
+  background:var(--slider-thumb) !important;
+  border:2px solid var(--slider-thumb-line) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.22) !important;
+  cursor:ew-resize !important;
+}
+input[type="range"].ui-range::-moz-range-thumb{
+  width:9px; height:18px; border-radius:5px;
+  background:var(--slider-thumb); border:2px solid var(--slider-thumb-line);
+  box-shadow:0 1px 3px rgba(0,0,0,.22); cursor:ew-resize;
+}
+input[type="range"].ui-range::-moz-range-track{background:transparent;}
+input[type="range"].ui-range:focus-visible{outline:2px solid var(--slider-fill); outline-offset:4px;}
+
+/* ---- shared tool header ---- */
+.tool-header{
+  display:grid; grid-template-columns:minmax(220px,1fr) auto minmax(220px,1fr);
+  align-items:center; gap:16px; height:64px; min-height:64px; padding:10px 16px; box-sizing:border-box;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+.tool-header *,.tool-header *::before,.tool-header *::after{box-sizing:border-box;}
+.tool-home-slot{justify-self:start; min-width:0;}
+.nimble-home{
+  display:inline-flex; align-items:center; gap:9px; height:34px; min-height:34px; padding:0 12px;
+  border:2px solid transparent; border-radius:999px;
+  background:linear-gradient(var(--panel2,#1a1a1f),var(--panel2,#1a1a1f)) padding-box,
+    linear-gradient(90deg,#F42C04,#FF6FAE,#FCCA46,#2DC7FF,#645DD7,#CBA0FF) border-box;
+  color:var(--text,#f2f2f4); text-decoration:none; font-family:'Porkys','Arial Rounded MT Bold',sans-serif;
+  font-size:14px; font-weight:400; letter-spacing:.04em; white-space:nowrap;
+  transition:background .18s,border-color .18s,transform .18s;
+}
+.nimble-home:hover{transform:translateY(-1px);}
+.tool-heading{justify-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;text-align:center;}
+.tool-title{margin:0;color:var(--text,#f2f2f4);font:750 15px/1.15 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.015em;white-space:nowrap;}
+.tool-meta{color:var(--muted,#8f8f98);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.tool-actions{justify-self:end;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;}
+.tool-header .tool-actions>button{display:inline-flex;align-items:center;justify-content:center;height:34px;min-height:34px;}
+
+/* ---- shared theme toggle ---- */
+.theme-toggle{
+  display:inline-flex; align-items:center; gap:7px; flex:0 0 auto;
+  height:34px; min-height:34px; padding:0 11px; border-radius:999px;
+  border:1px solid var(--line, #2a2a31); background:var(--panel2, #1a1a1f);
+  color:var(--text, #f2f2f4); font:650 12px/1 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  cursor:pointer; transition:background .18s,border-color .18s,transform .18s;
+}
+.theme-toggle:hover{transform:translateY(-1px); border-color:var(--line2, #3a3a42);}
+.theme-toggle__icon{font-size:14px; line-height:1;}
+.theme-toggle:focus-visible{outline:2px solid var(--ink, #f4f4f5); outline-offset:2px;}
+
+@media (max-width:760px){
+  .tool-header{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;height:56px;min-height:56px;padding:9px 10px;}
+  .nimble-home{padding-right:9px;}
+  .tool-meta{display:none;}
+  .tool-title{font-size:14px;}
+  .tool-actions{gap:5px;}
+}
+
+/* ================= studio sidebar (shell) ================= */
+.shell aside{
+  width:var(--sidebar);flex:none;height:100%;
+  border-right:1px solid var(--line);background:var(--bg);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .28s cubic-bezier(.4,0,.2,1);
+}
+.shell.collapsed aside{width:var(--rail);}
+
+.brand{display:flex;align-items:center;gap:11px;padding:20px 18px 14px;flex:none;white-space:nowrap;}
+.brand .mark{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;font-size:24px;user-select:none;}
+.brand .name{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.brand .name b{font-size:17px;}
+.brand .name span{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);}
+
+.navlabel{padding:14px 18px 8px;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);white-space:nowrap;}
+.shell nav{display:flex;flex-direction:column;gap:2px;padding:0 10px;flex:none;}
+.tool-btn{
+  display:flex;align-items:center;gap:11px;padding:9px;border:0;border-radius:9px;
+  background:transparent;color:var(--muted);font-family:inherit;font-size:13.5px;font-weight:600;
+  letter-spacing:-.01em;text-align:left;cursor:pointer;white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.tool-btn:hover{background:var(--panel);color:var(--ink);}
+.tool-btn.active{background:var(--ink);color:var(--bg);}
+.tool-btn .dot{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;}
+.tool-btn .dot::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--line2);transition:background .2s,box-shadow .2s;}
+.tool-btn.active .dot::before{background:var(--ab-green);box-shadow:0 0 10px rgba(163,230,53,.85),0 0 3px rgba(163,230,53,.9);}
+.tool-btn .txt{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.tool-btn .txt small{font-size:10px;font-weight:500;color:var(--faint);letter-spacing:.02em;}
+.tool-btn.active .txt small{color:inherit;opacity:.55;}
+.tool-btn.soon{cursor:default;color:var(--faint);}
+.tool-btn.soon:hover{background:transparent;color:var(--faint);}
+.tool-btn .ico-home{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;}
+.tool-btn .ico-home svg{width:17px;height:17px;display:block;}
+
+.spacer{flex:1;}
+.side-foot{flex:none;padding:10px;display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--line);}
+.foot-btn{
+  display:flex;align-items:center;gap:11px;padding:8px 9px;border:0;border-radius:9px;
+  background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:600;
+  text-align:left;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;
+}
+.foot-btn:hover{background:var(--panel);color:var(--ink);}
+.foot-btn .ico{width:28px;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+.nimble-pill{
+  display:flex;align-items:center;justify-content:center;height:42px;margin-top:6px;
+  border-radius:12px;color:var(--ink);font-size:19px;line-height:1.2;text-transform:uppercase;
+  text-decoration:none;white-space:nowrap;border:2.5px solid var(--pill-c,#645DD7);
+  background:transparent;transition:background .15s;
+}
+.nimble-pill:hover{background:var(--pill-c,#645DD7);}
+.pill-full{display:inline;letter-spacing:.07em;padding-left:.07em;transform:translateY(1px);}
+.pill-mini{display:none;transform:translateY(1px);}
+
+.shell.collapsed .brand .name,
+.shell.collapsed .navlabel,
+.shell.collapsed .tool-btn .txt,
+.shell.collapsed .foot-btn .lbl{display:none;}
+.shell.collapsed .shell nav,
+.shell.collapsed .side-foot{padding-left:8px;padding-right:8px;}
+.shell.collapsed .brand{padding-left:0;padding-right:0;justify-content:center;}
+.shell.collapsed .tool-btn{width:40px;height:40px;margin:0 auto;padding:0;gap:0;justify-content:center;}
+.shell.collapsed .foot-btn{gap:0;padding:0;justify-content:center;}
+.shell.collapsed .nimble-pill{width:40px;height:40px;margin:6px auto 0;padding:0;font-size:20px;}
+.shell.collapsed .pill-full{display:none;}
+.shell.collapsed .pill-mini{display:inline;}

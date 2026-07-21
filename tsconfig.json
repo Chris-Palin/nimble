@@ -8,7 +8,11 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "paths": { "@ui/*": ["./src/ui/*"] }
+    "paths": {
+      "@ui/*": ["./src/ui/*"],
+      "@arabella/ui": ["./packages/ui/src/index.ts"],
+      "@arabella/ui/*": ["./packages/ui/src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "packages/ui/src"]
 }

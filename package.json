@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,6 +20,8 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
+    "html-to-image": "1.11.13",
+    "immer": "^10.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "zustand": "^5.0.14"
