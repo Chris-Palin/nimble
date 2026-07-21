@@ -185,6 +185,8 @@
     65%{transform:translateY(1.5px) scaleY(.9);}
   }
   @media (prefers-reduced-motion:reduce){h1 .fun:hover .squiggle path{animation:none;}}
+  /* periodic letter rearrange: longer, springy float while scrambling */
+  h1 .fun.porkys.scrambling i{transition:transform .95s cubic-bezier(.34,1.32,.5,1) !important;}
   .hero .sub{
     margin-top:58px; font-size:clamp(16px,2vw,19px); line-height:1.65;
     color:var(--muted); max-width:520px; font-weight:500;
@@ -194,17 +196,28 @@
 
   /* ---------- marquee ---------- */
   .marquee{
-    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-    padding:20px 0; overflow:hidden; white-space:nowrap; background:var(--bg);
+    position:relative; overflow:hidden; white-space:nowrap; padding:22px 0;
+    background:linear-gradient(90deg,
+      var(--red), var(--pink), var(--yellow), var(--blue), var(--indigo), var(--lavender), var(--red));
+    background-size:200% 100%;
+    animation:barFlow 16s linear infinite;
+    box-shadow:
+      0 -10px 36px -8px rgba(255,111,174,.55),
+      0 10px 36px -8px rgba(45,199,255,.55),
+      0 0 64px -6px rgba(100,93,215,.5),
+      inset 0 0 26px rgba(255,255,255,.30);
   }
+  @keyframes barFlow{to{background-position:200% 0;}}
   .marquee .track{display:inline-flex; gap:0; width:max-content; animation:scroll 30s linear infinite; animation-delay:-15s;}
   .marquee:hover .track{animation-play-state:paused;}
   @keyframes scroll{to{transform:translateX(-50%);}}
   .marquee span{
     font-size:14px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
-    color:var(--ink); padding:0 26px; display:inline-flex; align-items:center; gap:26px;
+    color:#fff; padding:0 26px; display:inline-flex; align-items:center; gap:26px;
+    text-shadow:0 1px 3px rgba(0,0,0,.30);
   }
-  .marquee span::after{content:"✦"; color:var(--mc); font-size:15px;}
+  .marquee span::after{content:"✦"; color:rgba(255,255,255,.92); font-size:15px; text-shadow:0 0 8px rgba(255,255,255,.5);}
+  @media (prefers-reduced-motion:reduce){.marquee{animation:none;}}
 
   /* ---------- sections ---------- */
   section{max-width:1180px; margin:0 auto; padding:110px 40px 30px;}
@@ -524,7 +537,7 @@
       <span style="--c:var(--red);--r:-5deg">N</span><span style="--c:var(--pink);--r:4deg">I</span><span style="--c:var(--yellow);--r:-3deg">M</span><span style="--c:var(--blue);--r:4deg">B</span><span style="--c:var(--indigo);--r:-4deg">L</span><span style="--c:var(--lavender);--r:5deg">E</span>
     </div>
     <div class="row">
-      <span>© 2026 Nimble Design Studio. Made with far too much enthusiasm.</span>
+      <span>Nimble</span>
       <div class="flinks">
         <a href="arabella/index.html">Arabella.</a>
         <a href="poem.html">Poem</a>
@@ -547,6 +560,36 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, {threshold:.12});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // every so often the Nimble letters rise, shuffle about, then float back into place
+  (function(){
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const word = document.querySelector('h1 .fun.porkys');
+    if (!word) return;
+    const letters = [...word.querySelectorAll('i')];
+    const rand = (a,b) => a + Math.random()*(b-a);
+    function scramble(){
+      word.classList.add('scrambling');
+      // rise up and scatter, each letter a touch out of step
+      letters.forEach((l,i) => {
+        l.style.transitionDelay = (i*0.05).toFixed(2)+'s';
+        l.style.transform =
+          `translate(${rand(-46,46).toFixed(1)}px, ${rand(-72,-36).toFixed(1)}px) rotate(${rand(-24,24).toFixed(1)}deg)`;
+      });
+      // hold, then float back down into Nimble, settling left to right
+      setTimeout(() => {
+        letters.forEach((l,i) => {
+          l.style.transitionDelay = (i*0.07).toFixed(2)+'s';
+          l.style.transform = '';
+        });
+        setTimeout(() => {
+          word.classList.remove('scrambling');
+          letters.forEach(l => { l.style.transitionDelay = ''; });
+        }, 1100);
+      }, 1150);
+    }
+    (function loop(){ setTimeout(() => { scramble(); loop(); }, rand(6500, 11000)); })();
+  })();
 </script>
 
 <script>
