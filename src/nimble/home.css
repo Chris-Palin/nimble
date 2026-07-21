@@ -306,6 +306,19 @@
     top:-40%; right:-14%; opacity:.5; filter:blur(50px); pointer-events:none;
   }
 
+  /* teaser card — a quieter, unfinished sibling of the Arabella cover */
+  .genesis-band .cover-wrap + .cover-wrap{margin-top:28px;}
+  .cover.teaser{background:var(--panel); color:var(--ink); border:1.5px dashed var(--line);}
+  .cover.teaser .kicker{color:var(--faint);}
+  .cover.teaser .kicker::before{background:var(--faint);}
+  .cover.teaser h2{color:var(--ink);}
+  .cover.teaser .lede{color:var(--muted);}
+  .mock-empty{
+    border-radius:18px; border:1.5px dashed var(--line); background:transparent;
+    aspect-ratio:16/10.5; display:flex; align-items:center; justify-content:center;
+  }
+  .mock-empty span{color:var(--faint); font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;}
+
   /* mini mockup of the studio app */
   .mock{
     position:relative; border-radius:18px; background:#17171b;
