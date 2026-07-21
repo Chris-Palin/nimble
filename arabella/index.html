@@ -6,9 +6,40 @@
 <title>Arabella.</title>
 <link rel="icon" type="image/svg+xml" href="/arabella/assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/arabella/assets/favicon-32.png">
+<style>
+  /* Studio opening splash — shown before React mounts, faded out by main.tsx */
+  #arabellaSplash{
+    position:fixed; inset:0; z-index:99999; background:#0c0c0d;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px;
+    transition:opacity .5s ease;
+  }
+  #arabellaSplash.hide{opacity:0; pointer-events:none;}
+  #arabellaSplash .as-word{
+    font-family:'Aonic','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:500; font-size:44px; letter-spacing:-.02em; color:#f4f4f5;
+    animation:asPulse 1.8s ease-in-out infinite;
+  }
+  #arabellaSplash .as-dots{display:flex; gap:10px;}
+  #arabellaSplash .as-dots i{width:9px; height:9px; border-radius:50%; display:block; animation:asBounce 1.05s ease-in-out infinite;}
+  #arabellaSplash .as-dots i:nth-child(2){animation-delay:.09s}
+  #arabellaSplash .as-dots i:nth-child(3){animation-delay:.18s}
+  #arabellaSplash .as-dots i:nth-child(4){animation-delay:.27s}
+  #arabellaSplash .as-dots i:nth-child(5){animation-delay:.36s}
+  #arabellaSplash .as-dots i:nth-child(6){animation-delay:.45s}
+  @keyframes asPulse{0%,100%{opacity:.65} 50%{opacity:1}}
+  @keyframes asBounce{0%,100%{transform:translateY(0); opacity:.45} 50%{transform:translateY(-9px); opacity:1}}
+  @media (prefers-reduced-motion:reduce){#arabellaSplash .as-word,#arabellaSplash .as-dots i{animation:none}}
+</style>
 </head>
 <body>
 <div id="root"></div>
+<div id="arabellaSplash">
+  <div class="as-word">Arabella.</div>
+  <div class="as-dots">
+    <i style="background:#F42C04"></i><i style="background:#FF6FAE"></i><i style="background:#FCCA46"></i>
+    <i style="background:#2DC7FF"></i><i style="background:#645DD7"></i><i style="background:#CBA0FF"></i>
+  </div>
+</div>
 <script type="module" src="/src/shell/main.tsx"></script>
 </body>
 </html>

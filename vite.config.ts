@@ -17,6 +17,8 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
+        index: resolve(__dirname, 'index.html'),
+        poem: resolve(__dirname, 'poem.html'),
         arabella: resolve(__dirname, 'arabella/index.html'),
         stage: resolve(__dirname, 'arabella/stage.html'),
         motion: resolve(__dirname, 'arabella/motion.html'),

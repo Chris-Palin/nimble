@@ -1,0 +1,112 @@
+/* Poem page ("Braver") — ported verbatim from the original static poem.html. */
+
+  :root{
+    --paper:#f0e7d3;      /* aged parchment, always */
+    --paper2:#e7dbc0;
+    --ink:#2b241a;
+    --ink-soft:#6a5f4b;
+    --rule:#c9b993;
+    --accent:#8a4f33;     /* faded rust */
+    --moss:#5c6e45;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1200px 800px at 50% -10%, var(--paper2), transparent 62%),
+      radial-gradient(900px 600px at 8% 108%, #e3d5b5, transparent 55%),
+      radial-gradient(900px 600px at 94% 104%, #e6d9bc, transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Hoefler Text','Iowan Old Style','Baskerville','Big Caslon',Garamond,Georgia,serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    min-height:100%;
+    display:grid; place-items:center;
+    padding:96px 28px;
+    position:relative; overflow-x:hidden;
+  }
+  /* parchment grain + burnt edge vignette */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.045; z-index:0;
+    background-image:radial-gradient(currentColor 1px, transparent 1.4px);
+    background-size:3px 3px;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    box-shadow:inset 0 0 140px 30px rgba(96,74,42,.28), inset 0 0 34px 6px rgba(96,74,42,.14);
+  }
+
+  /* ---------- moss & vines creeping down from the top ---------- */
+  .vines{
+    position:fixed; top:0; left:0; right:0; height:260px; z-index:1; pointer-events:none;
+  }
+  .vines svg{display:block; width:100%; height:100%;}
+  .vine{transform-box:fill-box; transform-origin:top center; animation:sway 9s ease-in-out infinite;}
+  .vine.v2{animation-duration:11s; animation-delay:-3s;}
+  .vine.v3{animation-duration:13s; animation-delay:-6s;}
+  @keyframes sway{
+    0%,100%{transform:rotate(-1.4deg);}
+    50%{transform:rotate(1.4deg);}
+  }
+  @media (prefers-reduced-motion:reduce){.vine{animation:none;}}
+
+  /* blue + orange flowers blooming on the vines */
+  .vine-flowers{position:fixed; top:0; left:0; right:0; height:260px; z-index:2; pointer-events:none;}
+  .vine-flowers svg{display:block; width:100%; height:100%; overflow:visible;
+    filter:drop-shadow(0 2px 3px rgba(40,30,10,.28));}
+  .fl{transform-box:fill-box; transform-origin:center;
+    animation:flBob var(--dur,7s) ease-in-out infinite; animation-delay:var(--d,0s);}
+  @keyframes flBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-3px) rotate(2deg);}}
+  @media (prefers-reduced-motion:reduce){.fl{animation:none;}}
+
+  .home{
+    position:fixed; top:56px; left:32px; z-index:2;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink-soft); text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:color .2s;
+  }
+  .home:hover{color:var(--ink);}
+  .home .arr{font-size:13px;}
+
+  /* the manuscript panel — deckled double rule, perfectly centred */
+  main{
+    position:relative; z-index:1; max-width:640px; width:100%; text-align:center;
+    padding:56px 44px 48px;
+    border:1px solid var(--rule);
+    outline:1px solid var(--rule);
+    outline-offset:6px;
+    background:
+      radial-gradient(600px 400px at 50% 0%, rgba(255,250,235,.5), transparent 70%);
+  }
+  .ornament{
+    color:var(--accent); font-size:22px; line-height:1;
+    margin-bottom:38px; letter-spacing:.4em;
+  }
+
+  .poem{
+    font-size:clamp(20px, 3vw, 24px);
+    line-height:1.95; letter-spacing:.005em;
+    font-style:italic; color:var(--ink);
+  }
+  .poem .stanza{margin:0 0 1.5em;}
+  .poem .stanza:last-child{margin-bottom:0;}
+  .poem p{margin:0;}
+  .poem .stanza:first-child p:first-child::first-letter{
+    font-family:'Didot','Bodoni 72','Hoefler Text',Garamond,serif;
+    font-style:normal; font-size:1.4em; color:var(--accent);
+  }
+
+  .sig{margin-top:48px; display:flex; flex-direction:column; align-items:center; gap:20px;}
+  .sig .rule{width:56px; height:1px; background:var(--rule);}
+
+  @media (max-width:560px){
+    body{padding:120px 18px 60px;}
+    main{padding:44px 24px 40px;}
+    .poem{line-height:1.85;}
+    .vines, .vine-flowers{height:170px;}
+  }
+
+/* React mount: pass layout through to body's grid */
+#root{display:contents;}
