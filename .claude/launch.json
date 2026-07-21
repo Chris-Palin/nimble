@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "nimble-static",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [".claude/serve.mjs"],
+      "name": "nimble",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "serve"],
       "port": 8613
     }
   ]
