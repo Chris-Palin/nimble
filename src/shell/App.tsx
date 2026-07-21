@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { create } from 'zustand';
+import { Sidebar } from '@arabella/ui';
 import { Home } from '../home/Home';
 import './shell.css';
 
@@ -11,7 +12,7 @@ export type Tool = { id: string; name: string; meta: string; src: string };
 export const TOOLS: Tool[] = [
   { id: 'home',    name: 'Home',    meta: 'Studio overview',    src: '/arabella/home.html' },
   { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/tools/mesh-gradient/index.html' },
-  { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/tools/stage/index.html' },
+  { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/stage.html' },
   { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/tools/digit/index.html' },
   { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/tools/motion/index.html' },
   { id: 'stipple', name: 'Stipple', meta: 'Dither & halftone',  src: '/arabella/tools/dither/index.html' },
@@ -97,56 +98,16 @@ export function App() {
 
   return (
     <div className={'shell' + (collapsed ? ' collapsed' : '')}>
-      <aside>
-        <div className="brand">
-          <div className="mark aonic">A.</div>
-          <div className="name">
-            <b className="aonic">Arabella.</b>
-            <span>Creative tools</span>
-          </div>
-        </div>
-
-        <nav aria-label="Home">
-          <button className={'tool-btn' + (active === 'home' ? ' active' : '')} onClick={() => open('home')}>
-            <span className="ico-home" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3.5 10.8 12 3.5l8.5 7.3" />
-                <path d="M5.8 9.6V20a.6.6 0 0 0 .6.6h11.2a.6.6 0 0 0 .6-.6V9.6" />
-              </svg>
-            </span>
-            <span className="txt">Home<small>Studio overview</small></span>
-          </button>
-        </nav>
-
-        <div className="navlabel">Tools</div>
-        <nav aria-label="Tools">
-          {tools.map(t => (
-            <button key={t.id} className={'tool-btn' + (active === t.id ? ' active' : '')} onClick={() => open(t.id)}>
-              <span className="dot" aria-hidden="true" />
-              <span className="txt">{t.name}<small>{t.meta}</small></span>
-            </button>
-          ))}
-          <button className="tool-btn soon" tabIndex={-1}>
-            <span className="txt">More soon<small>New tools land here</small></span>
-          </button>
-        </nav>
-
-        <div className="spacer" />
-
-        <div className="side-foot">
-          <button className="foot-btn" onClick={toggleTheme}>
-            <span className="ico">{theme === 'dark' ? '☀' : '☾'}</span>
-            <span className="lbl">{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
-          </button>
-          <button className="foot-btn" onClick={toggleCollapsed}>
-            <span className="ico">{collapsed ? '⟩' : '⟨'}</span>
-            <span className="lbl">Collapse</span>
-          </button>
-          <a className="nimble-pill porkys" href="/index.html" style={{ ['--pill-c' as string]: pillColor }}>
-            <span className="pill-full">Nimble</span><span className="pill-mini">N</span>
-          </a>
-        </div>
-      </aside>
+      <Sidebar
+        tools={tools}
+        active={active}
+        onOpen={open}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        collapsed={collapsed}
+        onToggleCollapsed={toggleCollapsed}
+        pillColor={pillColor}
+      />
 
       <main>
         {opened.includes('home') && (

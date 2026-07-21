@@ -7,11 +7,19 @@ import { resolve } from 'node:path';
 // takes over /studio/ once it reaches parity; tools keep shipping untouched.
 export default defineConfig({
   plugins: [react()],
-  resolve: { alias: { '@ui': resolve(__dirname, 'src/ui') } },
+  resolve: {
+    alias: {
+      '@ui': resolve(__dirname, 'src/ui'),
+      '@arabella/ui': resolve(__dirname, 'packages/ui/src'),
+    },
+  },
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: { arabella: resolve(__dirname, 'arabella/index.html') },
+      input: {
+        arabella: resolve(__dirname, 'arabella/index.html'),
+        stage: resolve(__dirname, 'arabella/stage.html'),
+      },
     },
   },
 });
