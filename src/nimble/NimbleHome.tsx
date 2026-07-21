@@ -124,7 +124,7 @@ export function NimbleHome() {
       <nav id="nav" ref={navRef}>
         <a className="logo porkys" href="#" aria-label="Nimble"><Logo /></a>
         <div className="links">
-          <a href="#arabella">Arabella.</a>
+          <a href="#arabella">About</a>
           <a href="/poem.html">Poem</a>
           <a className="cta" href="/arabella/index.html">Visit Arabella. <span className="arr">→</span></a>
         </div>
@@ -158,7 +158,7 @@ export function NimbleHome() {
 
       <section className="overview reveal" id="overview">
         <div className="kicker" style={v({ '--kc': 'var(--pink)' })}>Overview</div>
-        <h2>Overview</h2>
+        <h2>Hey, what's nimble?</h2>
         <p className="lede">Nimble is a home for everything: every experiment, every idea worth chasing. No roadmap, no meetings, no uploads. I build small, handmade tools and share them freely, right here in your browser.</p>
         <div className="ovgrid">
           <div className="ov" style={v({ '--oc': 'var(--red)' })}><b>Small tools</b><span>Each one does a single thing properly, and stays out of your way.</span></div>

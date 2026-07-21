@@ -50,6 +50,15 @@
   }
   @media (prefers-reduced-motion:reduce){.vine{animation:none;}}
 
+  /* blue + orange flowers blooming on the vines */
+  .vine-flowers{position:fixed; top:0; left:0; right:0; height:260px; z-index:2; pointer-events:none;}
+  .vine-flowers svg{display:block; width:100%; height:100%; overflow:visible;
+    filter:drop-shadow(0 2px 3px rgba(40,30,10,.28));}
+  .fl{transform-box:fill-box; transform-origin:center;
+    animation:flBob var(--dur,7s) ease-in-out infinite; animation-delay:var(--d,0s);}
+  @keyframes flBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-3px) rotate(2deg);}}
+  @media (prefers-reduced-motion:reduce){.fl{animation:none;}}
+
   .home{
     position:fixed; top:56px; left:32px; z-index:2;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -96,7 +105,7 @@
     body{padding:120px 18px 60px;}
     main{padding:44px 24px 40px;}
     .poem{line-height:1.85;}
-    .vines{height:170px;}
+    .vines, .vine-flowers{height:170px;}
   }
 
 /* React mount: pass layout through to body's grid */

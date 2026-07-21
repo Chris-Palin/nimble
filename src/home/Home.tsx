@@ -46,7 +46,7 @@ export function Home({ onOpen }: { onOpen: (id: string) => void }) {
       <div className="sky" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className="wrap">
         <header className="hero">
-          <div className="kicker">All browser</div>
+          <div className="kicker">👋 Hello</div>
           <h1 className="aonic">Arabella.</h1>
           <p>A workbench of <b>small, playful, seriously capable</b> creative tools. Pick one on the left, or dive in below.</p>
         </header>
