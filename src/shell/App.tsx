@@ -11,11 +11,11 @@ import './shell.css';
 export type Tool = { id: string; name: string; meta: string; src: string };
 export const TOOLS: Tool[] = [
   { id: 'home',    name: 'Home',    meta: 'Studio overview',    src: '/arabella/home.html' },
-  { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/tools/mesh-gradient/index.html' },
+  { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/mash.html' },
   { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/stage.html' },
-  { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/tools/digit/index.html' },
-  { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/tools/motion/index.html' },
-  { id: 'stipple', name: 'Stipple', meta: 'Dither & halftone',  src: '/arabella/tools/dither/index.html' },
+  { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/digit.html' },
+  { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/motion.html' },
+  { id: 'stipple', name: 'Stipple', meta: 'Dither & halftone',  src: '/arabella/stipple.html' },
 ];
 const NIMBLE_PALETTE = ['#F42C04', '#FF6FAE', '#FCCA46', '#2DC7FF', '#645DD7', '#CBA0FF'];
 
@@ -67,7 +67,7 @@ function syncFrameTheme(frame: HTMLIFrameElement, theme: string) {
     if (!doc.getElementById('shell-css')) {
       const s = doc.createElement('style');
       s.id = 'shell-css';
-      s.textContent = '.tool-home-slot,#nimbleSplash,.tool-header .theme-toggle{display:none !important;}';
+      s.textContent = '#nimbleSplash,.tool-header .theme-toggle{display:none !important;}';
       doc.head.appendChild(s);
     }
   } catch { /* cross-origin frames stay as they are */ }

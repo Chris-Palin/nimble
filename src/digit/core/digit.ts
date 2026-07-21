@@ -1,302 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Digit — Arabella.</title>
-<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="../../assets/theme.css?v=8">
-<script src="../../assets/theme.js"></script>
-<style>
-    :root, :root[data-theme="dark"]{
-    --bg:#0c0c0d; --panel:#131315; --panel2:#1b1b1e; --line:#232326; --line2:#303034;
-    --ink:#f4f4f5; --text:#f4f4f5; --muted:#8f8f98; --faint:#5c5c66; --range-track:#2f2f37;
-    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46; --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF; --accent:#645DD7; --radius:9px;
-    color-scheme:dark;
-  }
-  :root[data-theme="light"]{
-    --bg:#ffffff; --panel:#fafafa; --panel2:#f1f1f3; --line:#e9e9e9; --line2:#d9d9d9;
-    --ink:#111111; --text:#111111; --muted:#71717a; --faint:#a1a1aa; --range-track:#d8d8df;
-    color-scheme:light;
-  }
-  @font-face{font-family:'Porkys';src:url('../../assets/PORKYS_.ttf') format('truetype');font-display:swap;}
-  *{box-sizing:border-box;}
-  html, body {
-    margin: 0; padding: 0; height: 100%;
-    background: var(--bg); color: var(--text);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    overflow: hidden;
-    font-size:13px; -webkit-font-smoothing:antialiased;
-  }
-  body { display: flex; flex-direction: column; }
-  .appwrap { flex: 1; display: flex; flex-direction: row; min-height: 0; }
+/* eslint-disable */
+// @ts-nocheck
+/* ==========================================================================
+ * Digit gesture-FX core — VERBATIM from the original tool
+ * (public/arabella/tools/digit/index.html). This is a real-time MediaPipe hand/
+ * face + camera + canvas-FX pipeline that can only be exercised with a live
+ * camera, so it is preserved unchanged to guarantee identical behaviour. The
+ * React layer renders the same DOM (ids/classes) and calls runDigit() on mount;
+ * the header/theme/slider chrome come from @arabella/ui. Do not refactor.
+ *
+ * MediaPipe Hands/Camera are loaded from the CDN before the core runs (the
+ * originals were <script> tags in <head>). A syncNimbleRangeFill shim paints the
+ * shared slider fill (previously provided by the static theme.js).
+ * ======================================================================== */
+declare const Hands: any, Camera: any, FaceMesh: any;
 
-  /* ---------- left sidebar ---------- */
-  aside#sidebar {
-    width: 300px; flex: 0 0 300px; overflow-y: auto;
-    background: var(--bg); border-right: 1px solid var(--line);
-    padding: 14px 14px 40px;
-    display: flex; flex-direction: column; gap: 16px;
-    z-index: 20;
-  }
-  aside#sidebar::-webkit-scrollbar { width: 8px; }
-  aside#sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+export async function runDigit() {
+  await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js');
+  await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');
 
-  /* ---------- buttons / chips (neutral, calm) ---------- */
-  button, .chip {
-    font-family: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-    border-radius: 9px; padding: 8px 11px; font-size: 12.5px; font-weight: 600; letter-spacing: -.01em;
-    cursor: pointer; white-space: nowrap;
-    transition: background .15s, border-color .15s, color .15s, filter .15s;
-  }
-  button:hover, .chip:hover { background: var(--panel2); border-color: var(--line2); }
-  .chip.active, button.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  // shared slider fill (theme.js used to provide this globally)
+  (window as any).syncNimbleRangeFill = (input) => {
+    const min = +input.min || 0, max = +input.max || 100, val = +input.value;
+    const p = max === min ? 0 : ((val - min) / (max - min)) * 100;
+    input.style.setProperty('--range-progress', Math.max(0, Math.min(100, p)) + '%');
+  };
+  document.querySelectorAll('input[type=range]').forEach((r) => (window as any).syncNimbleRangeFill(r));
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t && t.matches && t.matches('input[type=range]')) (window as any).syncNimbleRangeFill(t);
+  });
 
-  /* record = primary dark pill, full width at top of sidebar */
-  #recordBtn, .chip.primary {
-    width: 100%; background: var(--ink); color: var(--bg); border-color: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-  }
-  #recordBtn:hover, .chip.primary:hover { filter: brightness(1.1); background: var(--ink); border-color: var(--ink); }
-  #recordBtn.recording { background: var(--red); border-color: var(--red); color: #fff; }
-  #recordBtn .dot {
-    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-    background: currentColor; margin-right: 6px; vertical-align: middle;
-  }
-  #recordBtn.recording .dot { animation: pulse 1s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-  #macroRecordBtn.active { background: var(--red); border-color: var(--red); color: #fff; }
-
-  /* ---------- sidebar sections ---------- */
-  .control-card { display: flex; flex-direction: column; }
-  .step-title {
-    font-size: 9.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
-    color: var(--faint); margin-bottom: 11px;
-  }
-
-  #modeTabs { display: flex; flex-direction: column; gap: 8px; }
-  .mode-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
-  .mode-group-label {
-    width: auto; flex: 0 0 auto; min-width: 56px; color: var(--muted); font-size: 10px;
-    font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
-  }
-  #modeTabs button.modeTab { padding: 6px 9px; font-size: 11.5px; }
-  #modeHint { margin-top: 11px; line-height: 1.4; font-size: 11.5px; color: var(--muted); }
-  #modeHint b { color: var(--ink); }
-
-  /* effect picker */
-  #fxPicker { position: relative; }
-  #fxPicker summary {
-    list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel);
-    cursor: pointer; font-size: 12px; color: var(--muted);
-  }
-  #fxPicker summary:hover { border-color: var(--line2); background: var(--panel2); }
-  #fxPicker summary::-webkit-details-marker { display: none; }
-  #fxPicker summary::after { content: '⌄'; color: var(--muted); font-size: 16px; }
-  #fxPicker[open] summary::after { content: '⌃'; }
-  #currentFxLabel { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
-  #fxRow {
-    position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 50;
-    display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px;
-    max-height: 238px; overflow: auto; padding: 8px;
-    border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
-    box-shadow: 0 18px 45px rgba(0,0,0,.35);
-  }
-  #fxRow button.chip { overflow: hidden; text-overflow: ellipsis; font-size: 11.5px; padding: 7px 9px; }
-  .effect-help { font-size: 11px; line-height: 1.45; color: var(--muted); margin-top: 10px; }
-  .effect-help b { color: var(--ink); }
-
-  /* tune */
-  .tuning-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
-  label.inline {
-    font-size: 11px; color: var(--muted);
-    display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center;
-  }
-  label.inline input { grid-column: 1 / -1; width: 100%; }
-
-  .context-controls {
-    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .segmented {
-    display: flex; gap: 3px; background: var(--panel2); border: 1px solid var(--line);
-    border-radius: 9px; padding: 3px;
-  }
-  .segmented button.chip {
-    border: 1px solid transparent; background: transparent; flex: 1;
-    padding: 6px 8px; font-size: 11px; text-align: center;
-  }
-  .segmented button.chip:hover { background: var(--panel); border-color: transparent; }
-  .segmented button.chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  #macroControls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  #macroControls button.chip { flex: 1; font-size: 11px; }
-  #macroStatus { font-size: 11px; color: var(--muted); flex: 1 0 100%; }
-  .secondary-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .secondary-actions button.chip { flex: 1; color: var(--muted); font-size: 11px; }
-  .hidden { display: none !important; }
-
-  /* range sliders — theme.css paints the gradient fill */
-  input[type="range"] { width:100%; }   /* look comes from the shared theme.css slider */
-  input[type="range"]:disabled{opacity:.45;}
-
-  /* ---------- stage ---------- */
-  #stage {
-    position: relative;
-    flex: 1 1 auto; min-height: 0; min-width: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: #000;
-    transition: box-shadow 0.25s;
-  }
-  #stage[class*="mode-"] { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.10); }
-
-  canvas#output { max-width: 100%; max-height: 100%; }
-  video { display: none; }
-
-  #status {
-    position: absolute; left: 14px; bottom: 14px;
-    background: rgba(15,15,20,0.7);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 11px;
-    color: #9aa;
-    z-index: 10;
-  }
-  #status b { color: #f2f2f4; }
-
-  #kbdHint {
-    position: absolute; right: 14px; bottom: 14px;
-    background: rgba(15,15,20,0.55);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 999px;
-    padding: 5px 12px;
-    font-size: 10px;
-    color: #778;
-    z-index: 10;
-  }
-  #kbdHint kbd {
-    background: rgba(255,255,255,0.1); border-radius: 4px; padding: 1px 5px;
-    font-family: inherit; color: #bbb;
-  }
-
-  :root[data-theme="light"] #stage { background: #111; }
-  :root[data-theme="light"] #status b { color: #fff; }
-  :root[data-theme="light"] #nimbleSplash { background: var(--bg)!important; }
-
-  @media (max-width:760px){
-    .appwrap { flex-direction: column; }
-    aside#sidebar {
-      width: auto; flex: 0 0 auto; max-height: 54vh;
-      border-right: none; border-bottom: 1px solid var(--line);
-    }
-    #kbdHint { display: none; }
-  }
-</style>
-</head>
-<body>
-
-<header class="tool-header">
-  <div class="tool-home-slot">
-    <a class="nimble-home" href="../../index.html">Nimble</a>
-  </div>
-  <div class="tool-heading">
-    <h1 class="tool-title">Digit</h1>
-    <div class="tool-meta">Gesture FX</div>
-  </div>
-  <div class="tool-actions">
-    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record (R)">⏺ Record</button>
-    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
-  </div>
-</header>
-
-<div class="appwrap">
-<aside id="sidebar">
-  <button class="chip primary" id="recordBtn"><span class="dot"></span>Record</button>
-
-    <section class="control-card mode-card">
-      <div class="step-title">How to interact</div>
-      <div id="modeTabs">
-        <div class="mode-group"><span class="mode-group-label">Create</span><button class="chip modeTab active" data-activemode="shape">Shape</button><button class="chip modeTab" data-activemode="framer">Frame</button><button class="chip modeTab" data-activemode="facets">Facets</button></div>
-        <div class="mode-group"><span class="mode-group-label">Track</span><button class="chip modeTab" data-activemode="face">Face</button><button class="chip modeTab" data-activemode="zoneedit">Edit zones</button></div>
-        <div class="mode-group"><span class="mode-group-label">Automate</span><button class="chip modeTab" data-activemode="shortcuts">Shortcuts</button><button class="chip modeTab" data-activemode="macro">Macro</button></div>
-      </div>
-      <div id="modeHint">Fingertips paint the live effect shape. Pick a corner scheme below.</div>
-    </section>
-
-    <section class="control-card effect-card">
-      <div class="step-title">Effect</div>
-      <details id="fxPicker">
-        <summary><span>Current effect</span><strong id="currentFxLabel">Pixelate</strong></summary>
-        <div id="fxRow">
-          <button class="chip active" data-fx="pixelate">Pixelate</button>
-          <button class="chip" data-fx="blur">Blur</button>
-          <button class="chip" data-fx="invert">Invert</button>
-          <button class="chip" data-fx="grayscale">Grayscale</button>
-          <button class="chip" data-fx="sepia">Sepia</button>
-          <button class="chip" data-fx="duotone">Duotone</button>
-          <button class="chip" data-fx="posterize">Posterize</button>
-          <button class="chip" data-fx="thermal">Thermal</button>
-          <button class="chip" data-fx="edges">Edge Detect</button>
-          <button class="chip" data-fx="chroma">Chroma Shift</button>
-          <button class="chip" data-fx="kaleidoscope">Kaleidoscope</button>
-          <button class="chip" data-fx="rainbow">Rainbow</button>
-          <button class="chip" data-fx="neon">Neon Glow</button>
-          <button class="chip" data-fx="vhs">VHS</button>
-          <button class="chip" data-fx="solarize">Solarize</button>
-          <button class="chip" data-fx="halftone">Halftone</button>
-          <button class="chip" data-fx="echo">Echo Trail</button>
-          <button class="chip" data-fx="ascii">ASCII</button>
-          <button class="chip" data-fx="colorpop">Color Pop</button>
-          <button class="chip" data-fx="none">None</button>
-        </div>
-      </details>
-      <p class="effect-help">Open the picker to browse all effects. Use <b>[</b> and <b>]</b> to switch quickly.</p>
-    </section>
-
-    <section class="control-card tune-card">
-      <div class="step-title">Tune</div>
-      <div class="tuning-grid">
-        <label class="inline">Sensitivity <input id="sensitivity" type="range" min="1" max="100" value="50" /></label>
-        <label class="inline">Intensity <input id="intensity" type="range" min="1" max="100" value="50" /></label>
-      </div>
-      <div class="context-controls">
-        <div class="segmented" id="modeRow">
-          <button class="chip" data-mode="thumbIndex">Thumb + index</button>
-          <button class="chip active" data-mode="allTips">All fingertips</button>
-          <button class="chip" data-mode="pinchAny">Any pinch</button>
-        </div>
-        <div class="segmented hidden" id="faceRegionRow">
-          <button class="chip active" data-faceregion="oval">Face oval</button>
-          <button class="chip" data-faceregion="eyes">Eyes</button>
-          <button class="chip" data-faceregion="mouth">Mouth</button>
-        </div>
-        <div class="bar-row hidden" id="macroControls" style="gap:8px;">
-          <button class="chip" id="macroRecordBtn">● Record macro</button>
-          <button class="chip" id="macroPlayBtn">▶ Play macro</button>
-          <span id="macroStatus" style="font-size:11px;color:var(--muted);">no macro saved</span>
-        </div>
-        <div class="secondary-actions">
-          <button class="chip" id="distanceToggle" title="Spread your two hands apart to drive Intensity live instead of the slider">Hand distance: off</button>
-          <button class="chip" id="clearZones">Clear zones</button>
-        </div>
-      </div>
-    </section>
-</aside>
-
-<div id="stage" class="mode-shape">
-  <video id="webcam" autoplay playsinline muted></video>
-  <canvas id="output"></canvas>
-  <div id="status">Loading hand tracking…</div>
-  <div id="kbdHint"><kbd>Tab</kbd> mode · <kbd>[</kbd> <kbd>]</kbd> effect · <kbd>R</kbd> record · <kbd>C</kbd> clear</div>
-</div>
-</div><!-- /.appwrap -->
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-<script>
 const videoEl = document.getElementById('webcam');
 const canvas = document.getElementById('output');
 const ctx = canvas.getContext('2d');
@@ -1438,16 +1171,4 @@ function render() {
 }
 
 start();
-</script>
-
-<div id="nimbleSplash" style="position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;">
-  <div style="font-family:'Aonic','Inter',-apple-system,sans-serif;font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite">Arabella.</div>
-  <div style="font:700 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#5c5c66;letter-spacing:.26em;text-transform:uppercase">Opening Digit</div>
-</div>
-<style>@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}</style>
-<script>(function(){var s=document.getElementById('nimbleSplash'),done=false;
-function hide(){if(done)return;done=true;setTimeout(function(){s.style.opacity='0';s.style.pointerEvents='none';setTimeout(function(){s.remove()},500)},550)}
-if(document.readyState==='complete')hide();else window.addEventListener('load',hide);
-setTimeout(hide,2600);})();</script>
-</body>
-</html>
+}

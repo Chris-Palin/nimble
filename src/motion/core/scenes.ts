@@ -1,240 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motion — Arabella.</title>
-<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
-<link rel="stylesheet" href="../../assets/theme.css?v=8">
-<script src="../../assets/theme.js"></script>
-<style>
-  :root, :root[data-theme="dark"]{
-    --bg:#0c0c0d; --panel:#131315; --panel2:#1b1b1e; --line:#232326; --line2:#303034;
-    --ink:#f4f4f5; --text:#f4f4f5; --muted:#8f8f98; --faint:#5c5c66; --range-track:#2f2f37;
-    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46; --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF;
-    /* aliases so existing rules keep working, mapped to neutral chrome: */
-    --border:var(--line); --dim:var(--muted); --accent:var(--ink); --accent2:var(--ink); --danger:#e5484d; --radius:9px;
-  }
-  :root[data-theme="light"]{
-    --bg:#ffffff; --panel:#fafafa; --panel2:#f1f1f3; --line:#e9e9e9; --line2:#d9d9d9;
-    --ink:#111111; --text:#111111; --muted:#71717a; --faint:#a1a1aa; --range-track:#d8d8df;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 13px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ---------- buttons + selects ---------- */
-  button {
-    font-family: inherit; border: 1px solid var(--line); background: var(--panel);
-    color: var(--ink); border-radius: 9px; padding: 8px 11px; font-size: 12.5px;
-    font-weight: 600; letter-spacing: -.01em; cursor: pointer;
-    transition: background .15s, border-color .15s, color .15s, filter .15s;
-  }
-  button:hover { background: var(--panel2); border-color: var(--line2); }
-  button.primary, #recordBtn {
-    background: var(--ink); color: var(--bg); border-color: var(--ink);
-  }
-  button.primary:hover, #recordBtn:hover { filter: brightness(1.1); }
-  #recordBtn.recording {
-    background: var(--danger); border-color: var(--danger); color: #fff;
-    animation: recPulse 1s infinite;
-  }
-  @keyframes recPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(229,72,77,.6); } 50% { box-shadow: 0 0 0 8px rgba(229,72,77,0); } }
-  .timer { font-variant-numeric: tabular-nums; font-size: 11px; color: var(--muted); font-weight: 600; text-align: center; display: none; }
-  .timer.on { display: block; }
-
-  /* ---------- layout ---------- */
-  .main { flex: 1; display: flex; min-height: 0; width: 100%; }
-
-  aside {
-    width: 292px; flex-shrink: 0;
-    background: var(--bg);
-    border-right: 1px solid var(--line);
-    overflow-y: auto;
-    padding: 16px;
-    display: flex; flex-direction: column; gap: 20px;
-  }
-  aside::-webkit-scrollbar { width: 8px; }
-  aside::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
-
-  .section-label {
-    font-size: 9.5px; font-weight: 700; letter-spacing: .2em;
-    text-transform: uppercase; color: var(--faint); margin-bottom: 8px;
-  }
-  input[type=text], select {
-    width: 100%; background: var(--panel); color: var(--ink);
-    border: 1px solid var(--line); border-radius: 8px;
-    padding: 7px 9px; font-size: 13px; font-weight: 600; font-family: inherit;
-    outline: none; cursor: pointer;
-    transition: border-color .15s;
-  }
-  input[type=text]:focus, select:focus { border-color: var(--line2); }
-
-  /* ---------- export / record section ---------- */
-  .export-field { margin-bottom: 10px; }
-  .export-field .field-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
-  #recordBtn { width: 100%; margin-bottom: 8px; }
-  .export-actions { display: flex; gap: 8px; }
-  .export-actions button { flex: 1; }
-
-  .scene-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .scene-card {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 8px; cursor: pointer; text-align: center;
-    transition: background .15s, border-color .15s;
-  }
-  .scene-card:hover { border-color: var(--line2); background: var(--panel2); }
-  .scene-card.active {
-    border-color: var(--ink);
-    background: var(--panel2);
-    box-shadow: inset 0 0 0 1px var(--ink);
-  }
-  .scene-card .icon { font-size: 20px; margin-bottom: 4px; }
-  .scene-card .name { font-size: 11px; font-weight: 600; }
-
-  .palette-row { display: flex; flex-wrap: wrap; gap: 8px; }
-  .palette {
-    width: 60px; height: 26px; border-radius: 6px; cursor: pointer;
-    border: 2px solid transparent; overflow: hidden; display: flex;
-    box-shadow: 0 0 0 1px var(--line);
-    transition: box-shadow .15s;
-  }
-  .palette div { flex: 1; }
-  .palette.active { border-color: var(--bg); box-shadow: 0 0 0 2px var(--ink); }
-  .palette:hover { box-shadow: 0 0 0 1px var(--line2); }
-
-  .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .slider-row label { font-size: 12px; font-weight: 600; width: 62px; color: var(--muted); }
-  .slider-row output { font-size: 12px; font-weight: 600; width: 34px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
-  input[type=range] { flex: 1; }   /* look comes from the shared theme.css slider */
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-  .toggle-row label { font-size: 13px; font-weight: 600; }
-  input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); cursor: pointer; }
-
-  #randomBtn { width: 100%; padding: 12px; font-size: 13px; }
-
-  .stage {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 24px; min-width: 0; position: relative;
-    background: var(--bg);
-  }
-  canvas {
-    max-width: 100%; max-height: 100%;
-    border-radius: 10px;
-    box-shadow: 0 12px 60px rgba(0,0,0,.4), 0 0 0 1px var(--line);
-    background: #000;
-  }
-  .hint {
-    position: absolute; bottom: 8px; right: 20px;
-    font-size: 11px; color: var(--faint);
-  }
-</style>
-</head>
-<body>
-
-<header class="tool-header">
-  <div class="tool-home-slot">
-    <a class="nimble-home" href="../../index.html">Nimble</a>
-  </div>
-  <div class="tool-heading">
-    <h1 class="tool-title">Motion</h1>
-    <div class="tool-meta">Motion graphics</div>
-  </div>
-  <div class="tool-actions">
-    <button type="button" onclick="document.getElementById('snapBtn').click()" title="Save PNG frame">📸 Frame</button>
-    <button type="button" class="primary" onclick="document.getElementById('recordBtn').click()" title="Record clip">⏺ Record</button>
-    <button class="theme-toggle" data-theme-toggle type="button"><span class="theme-toggle__icon">☾</span></button>
-  </div>
-</header>
-
-<div class="main">
-  <aside>
-    <div>
-      <div class="section-label">Export</div>
-      <div class="export-field">
-        <div class="field-label">Resolution</div>
-        <select id="resSel" title="Resolution">
-          <option value="1280x720">720p</option>
-          <option value="1920x1080" selected>1080p</option>
-          <option value="1080x1920">Vertical (Shorts)</option>
-          <option value="1080x1080">Square</option>
-        </select>
-      </div>
-      <div class="export-field">
-        <div class="field-label">Clip length</div>
-        <select id="durSel" title="Recording length">
-          <option value="3">3s clip</option>
-          <option value="5" selected>5s clip</option>
-          <option value="10">10s clip</option>
-          <option value="15">15s clip</option>
-          <option value="0">Manual stop</option>
-        </select>
-      </div>
-      <button id="recordBtn" class="primary">⏺ Record</button>
-      <div class="export-actions">
-        <button id="snapBtn" title="Save PNG frame">📸 Save frame</button>
-        <button id="fsBtn" title="Fullscreen canvas">⛶ Fullscreen</button>
-      </div>
-      <div class="timer" id="timer">0.0s</div>
-    </div>
-
-    <div>
-      <div class="section-label">Title Text</div>
-      <input type="text" id="textInput" value="MOTION" maxlength="60">
-    </div>
-
-    <div>
-      <div class="section-label">Scene</div>
-      <div class="scene-grid" id="sceneGrid"></div>
-    </div>
-
-    <div>
-      <div class="section-label">Color Theme</div>
-      <div class="palette-row" id="paletteRow"></div>
-    </div>
-
-    <div>
-      <div class="section-label">Tweak It</div>
-      <div class="slider-row">
-        <label>Speed</label>
-        <input type="range" id="speedSlider" min="0.2" max="3" step="0.1" value="1">
-        <output id="speedOut">1.0</output>
-      </div>
-      <div class="slider-row">
-        <label>Intensity</label>
-        <input type="range" id="intSlider" min="0.2" max="2" step="0.1" value="1">
-        <output id="intOut">1.0</output>
-      </div>
-      <div class="toggle-row">
-        <label for="titleToggle">Show title overlay</label>
-        <input type="checkbox" id="titleToggle" checked>
-      </div>
-    </div>
-
-    <button id="randomBtn">🎲 SURPRISE ME</button>
-  </aside>
-
-  <div class="stage">
-    <canvas id="canvas"></canvas>
-    <div class="hint">Recordings download as .webm — drop straight into your editor / YouTube</div>
-  </div>
-</div>
-
-<script>
-"use strict";
+/* eslint-disable */
+// @ts-nocheck
+/* ==========================================================================
+ * Motion render core — VERBATIM scenes + helpers from the original Motion tool
+ * (public/arabella/tools/motion/index.html). Preserved unchanged so recorded /
+ * rendered output is identical. The React/Zustand layer feeds it via
+ * syncState() and drives it with setCanvas()/applyRes()/start(). Do not refactor.
+ * ======================================================================== */
 const TAU = Math.PI * 2;
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 let W = 1920, H = 1080;
+let canvas = null, ctx = null;
 
 const rand = (a = 1, b = 0) => b + Math.random() * (a - b);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -873,149 +647,30 @@ SCENES.rain = {
   },
 };
 
-// =====================================================================
-// UI wiring
-// =====================================================================
-const sceneGrid = document.getElementById("sceneGrid");
-for (const [id, s] of Object.entries(SCENES)) {
-  const el = document.createElement("div");
-  el.className = "scene-card" + (id === state.scene ? " active" : "");
-  el.dataset.id = id;
-  el.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}</div>`;
-  el.onclick = () => setScene(id);
-  sceneGrid.appendChild(el);
-}
-function setScene(id) {
-  state.scene = id;
-  document.querySelectorAll(".scene-card").forEach(c => c.classList.toggle("active", c.dataset.id === id));
-  resetScene();
-}
-
-const paletteRow = document.getElementById("paletteRow");
-PALETTES.forEach((p, i) => {
-  const el = document.createElement("div");
-  el.className = "palette" + (i === 0 ? " active" : "");
-  el.title = p.name;
-  el.innerHTML = p.colors.map(c => `<div style="background:${c}"></div>`).join("");
-  el.onclick = () => {
-    state.palette = p;
-    document.querySelectorAll(".palette").forEach(x => x.classList.remove("active"));
-    el.classList.add("active");
-  };
-  paletteRow.appendChild(el);
-});
-
-const textInput = document.getElementById("textInput");
-textInput.oninput = () => { state.text = textInput.value; };
-
-const speedSlider = document.getElementById("speedSlider");
-const intSlider = document.getElementById("intSlider");
-speedSlider.oninput = () => { state.speed = +speedSlider.value; document.getElementById("speedOut").textContent = state.speed.toFixed(1); };
-intSlider.oninput = () => { state.intensity = +intSlider.value; document.getElementById("intOut").textContent = state.intensity.toFixed(1); };
-
-document.getElementById("titleToggle").onchange = (e) => { state.showTitle = e.target.checked; };
-
-document.getElementById("randomBtn").onclick = () => {
-  const ids = Object.keys(SCENES);
-  setScene(ids[Math.floor(rand(ids.length))]);
-  const pi = Math.floor(rand(PALETTES.length));
-  state.palette = PALETTES[pi];
-  document.querySelectorAll(".palette").forEach((x, i) => x.classList.toggle("active", i === pi));
-  state.speed = +rand(1.8, 0.6).toFixed(1);
-  state.intensity = +rand(1.6, 0.6).toFixed(1);
-  speedSlider.value = state.speed;
-  intSlider.value = state.intensity;
-  document.getElementById("speedOut").textContent = state.speed.toFixed(1);
-  document.getElementById("intOut").textContent = state.intensity.toFixed(1);
-};
-
-// resolution
-const resSel = document.getElementById("resSel");
-function applyRes() {
-  const [w, h] = resSel.value.split("x").map(Number);
-  W = w; H = h;
-  canvas.width = W;
-  canvas.height = H;
-  canvas.style.aspectRatio = `${W} / ${H}`;
-  resetScene();
-}
-resSel.onchange = applyRes;
-
-function resetScene() {
-  SCENES[state.scene].init();
-  startTime = performance.now() / 1000;
-}
-
-// fullscreen
-document.getElementById("fsBtn").onclick = () => canvas.requestFullscreen?.();
-
-// snapshot
-document.getElementById("snapBtn").onclick = () => {
-  const a = document.createElement("a");
-  a.download = `motionforge-${state.scene}.png`;
-  a.href = canvas.toDataURL("image/png");
-  a.click();
-};
-
-// ---------- recording ----------
-const recordBtn = document.getElementById("recordBtn");
-const timerEl = document.getElementById("timer");
-let recorder = null, recTimeout = null, recStart = 0, timerInt = null;
-
-recordBtn.onclick = () => {
-  if (recorder) { stopRecording(); return; }
-  const mime = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
-    .find(m => MediaRecorder.isTypeSupported(m)) || "";
-  const stream = canvas.captureStream(60);
-  const chunks = [];
-  recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 14_000_000 });
-  recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
-  recorder.onstop = () => {
-    const blob = new Blob(chunks, { type: "video/webm" });
-    const a = document.createElement("a");
-    a.download = `motionforge-${state.scene}-${W}x${H}.webm`;
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-  };
-  recorder.start();
-  recStart = performance.now();
-  recordBtn.textContent = "⏹ Stop";
-  recordBtn.classList.add("recording");
-  timerEl.classList.add("on");
-  timerInt = setInterval(() => {
-    timerEl.textContent = ((performance.now() - recStart) / 1000).toFixed(1) + "s";
-  }, 100);
-  const dur = +document.getElementById("durSel").value;
-  if (dur > 0) recTimeout = setTimeout(stopRecording, dur * 1000);
-};
-
-function stopRecording() {
-  if (!recorder) return;
-  clearTimeout(recTimeout);
-  clearInterval(timerInt);
-  recorder.stop();
-  recorder = null;
-  recordBtn.textContent = "⏺ Record";
-  recordBtn.classList.remove("recording");
-  timerEl.classList.remove("on");
-}
-
-// ---------- main loop ----------
+/* ---- module glue for the React layer ---- */
 let startTime = performance.now() / 1000;
-let lastT = 0;
+let lastT = 0, rafId = 0, running = false;
+
+export function setCanvas(c) { canvas = c; ctx = c.getContext("2d"); }
+export function getCanvas() { return canvas; }
+export function getDims() { return { W, H }; }
+export function syncState(next) { Object.assign(state, next); }
+export function resetScene() { SCENES[state.scene].init(); startTime = performance.now() / 1000; }
+export function applyRes(w, h) {
+  W = w; H = h;
+  if (canvas) { canvas.width = W; canvas.height = H; canvas.style.aspectRatio = `${W} / ${H}`; }
+  resetScene();
+}
 function loop() {
+  if (!running) return;
   const now = performance.now() / 1000;
   const t = now - startTime;
   const dt = Math.min(now - lastT, 0.05) || 0.016;
   lastT = now;
-  SCENES[state.scene].draw(t, dt);
-  requestAnimationFrame(loop);
+  if (ctx) SCENES[state.scene].draw(t, dt);
+  rafId = requestAnimationFrame(loop);
 }
+export function start() { if (running) return; running = true; lastT = performance.now() / 1000; rafId = requestAnimationFrame(loop); }
+export function stop() { running = false; cancelAnimationFrame(rafId); }
 
-applyRes();
-lastT = performance.now() / 1000;
-requestAnimationFrame(loop);
-</script>
-</body>
-</html>
+export { state, PALETTES, SCENES };

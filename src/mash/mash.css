@@ -1,0 +1,126 @@
+/* Mash tool styling — ported from the original static tool. Shared chrome
+   (tool header, slider look, theme toggle) comes from @arabella/ui ui.css. */
+
+  :root, :root[data-theme="dark"]{
+    --bg:#0c0c0d; --panel:#131315; --panel2:#1b1b1e; --line:#232326; --line2:#303034;
+    --ink:#f4f4f5; --text:#f4f4f5; --muted:#8f8f98; --faint:#5c5c66; --range-track:#2f2f37;
+    --red:#F42C04; --pink:#FF6FAE; --yellow:#FCCA46; --blue:#2DC7FF; --indigo:#645DD7; --lavender:#CBA0FF; --accent:var(--ink); --accent2:var(--ink); --radius:9px;
+  }
+  :root[data-theme="light"]{
+    --bg:#ffffff; --panel:#fafafa; --panel2:#f1f1f3; --line:#e9e9e9; --line2:#d9d9d9;
+    --ink:#111111; --text:#111111; --muted:#71717a; --faint:#a1a1aa; --range-track:#d8d8df;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); display:flex; flex-direction:column;
+    overflow:hidden; font-size:13px; -webkit-font-smoothing:antialiased;
+  }
+  .app{flex:1; display:flex; min-height:0;}
+  /* ---------- sidebar ---------- */
+  aside{
+    width:312px; flex:0 0 312px; overflow-y:auto; background:var(--bg);
+    border-right:1px solid var(--line); padding:14px 14px 40px;
+  }
+  aside::-webkit-scrollbar{width:8px;}
+  aside::-webkit-scrollbar-thumb{background:#2c2c33; border-radius:4px;}
+  :root[data-theme="light"] aside::-webkit-scrollbar-thumb{background:#c9c7c0;}
+  section{margin-bottom:18px;}
+  section h2{
+    font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.2em; color:var(--faint);
+    margin-bottom:10px; display:flex; align-items:center; gap:8px;
+  }
+  .row{display:flex; gap:8px; align-items:center; margin-bottom:8px;}
+  .row label{flex:0 0 auto; color:var(--muted); min-width:86px;}
+  .row .val{margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; min-width:38px; text-align:right;}
+  .meta{color:var(--muted); font-size:11.5px; font-variant-numeric:tabular-nums; margin-top:2px;}
+  input[type=number], select{
+    background:var(--panel); border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; padding:7px 9px; font-size:13px; width:100%;
+  }
+  input[type=number]:focus, select:focus{outline:none; border-color:var(--line2);}
+  input[type=range]{flex:1;}   /* look comes from the shared theme.css slider */
+  input[type=color]{
+    -webkit-appearance:none; appearance:none; width:34px; height:28px; border:1px solid var(--line);
+    border-radius:6px; background:none; padding:0; cursor:pointer;
+  }
+  input[type=color]::-webkit-color-swatch-wrapper{padding:2px;}
+  input[type=color]::-webkit-color-swatch{border:none; border-radius:4px;}
+  button{
+    font-family:inherit; border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    border-radius:9px; padding:8px 11px; font-size:12.5px; font-weight:600; letter-spacing:-.01em;
+    cursor:pointer; transition:background .15s,border-color .15s,color .15s,filter .15s;
+  }
+  button:hover{background:var(--panel2); border-color:var(--line2);}
+  button.primary{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  button.primary:hover{filter:brightness(1.1);}
+  button.theme-toggle{border-radius:999px; padding:8px 12px;}
+  button.small{padding:6px 9px; font-size:11.5px;}
+  button.danger:hover{border-color:var(--line2); color:var(--red);}
+  .btnrow{display:flex; gap:8px; flex-wrap:wrap;}
+  .btnrow button{flex:1;}
+  /* palettes */
+  .strip{flex:1; height:22px; border-radius:6px; display:flex; overflow:hidden; border:1px solid var(--line);}
+  .strip span{flex:1;}
+  /* custom palette chips */
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;}
+  .chip{position:relative;}
+  .chip .rm{
+    position:absolute; top:-6px; right:-6px; width:16px; height:16px; border-radius:50%;
+    background:#1a1a1f; border:1px solid var(--line); color:var(--muted); font-size:10px;
+    line-height:13px; text-align:center; padding:0; display:none;
+  }
+  .chip:hover .rm{display:block;}
+  /* point list */
+  .points{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;}
+  .pt-chip{
+    width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.18); cursor:pointer; padding:0;
+  }
+  .pt-chip.sel{border-color:#fff; box-shadow:0 0 0 2px var(--accent);}
+  .selpoint{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:6px;}
+  .selpoint .row label{min-width:64px;}
+  /* ---------- stage ---------- */
+  main{flex:1; display:flex; align-items:center; justify-content:center; min-width:0; padding:28px; position:relative;
+    background:var(--panel);
+  }
+  :root[data-theme="light"] #nimbleSplash{background:#fff!important;}
+  #stage{position:relative; box-shadow:0 18px 50px -24px rgba(0,0,0,.6), 0 0 0 1px var(--line); border-radius:6px;}
+  #glcanvas{display:block; width:100%; height:100%; border-radius:6px;}
+  #handles{position:absolute; inset:0; border-radius:6px;}
+  .handle{
+    position:absolute; width:18px; height:18px; border-radius:50%;
+    border:2.5px solid #fff; box-shadow:0 1px 6px #0009, inset 0 0 0 1px #0003;
+    transform:translate(-50%,-50%); cursor:grab; touch-action:none;
+  }
+  .handle.sel{width:24px; height:24px; border-width:3px; box-shadow:0 0 0 3px #ffffffd9, 0 2px 10px #000b;}
+  .handle:active{cursor:grabbing;}
+  #hint{
+    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+    color:#ffffff88; font-size:11px; background:#0007; padding:4px 10px; border-radius:20px;
+    pointer-events:none; white-space:nowrap; backdrop-filter:blur(4px);
+  }
+  .toast{
+    position:fixed; bottom:24px; right:24px; background:var(--panel2); border:1px solid var(--line);
+    padding:10px 16px; border-radius:8px; box-shadow:0 10px 34px rgba(0,0,0,.6); opacity:0;
+    transition:opacity .25s, transform .25s; transform:translateY(8px); pointer-events:none; z-index:50;
+  }
+  .toast.show{opacity:1; transform:none;}
+  .hide-handles #handles{display:none;}
+  .note{color:var(--muted); font-size:11.5px; line-height:1.45; margin-top:6px;}
+/* React mount + shared Slider (@arabella/ui) laid out via .row */
+#root{height:100%; display:flex; flex-direction:column;}
+.row input[type=range]{flex:1;}
+.selpoint .row label{min-width:64px;}
+/* the @arabella/ui Slider's numeric box (the input right after the range) is compact */
+.row input[type=range].ui-range + input[type=number]{
+  width:52px; flex:none; text-align:right;
+  background:var(--panel); border:1px solid var(--line); color:var(--ink);
+  border-radius:6px; padding:5px 6px; font-size:12px; font-variant-numeric:tabular-nums; font-family:inherit;
+}
+/* opening splash */
+#nimbleSplash{position:fixed;inset:0;z-index:99999;background:#0a0a0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease;}
+#nimbleSplash .splash-mark{font-weight:500;font-size:34px;letter-spacing:-.01em;color:#f4f4f5;animation:abPulse 1.6s ease-in-out infinite;}
+#nimbleSplash.hide{opacity:0;pointer-events:none;}
+@keyframes abPulse{0%,100%{opacity:.45}50%{opacity:1}}
+:root[data-theme="light"] #nimbleSplash{background:#fff;}

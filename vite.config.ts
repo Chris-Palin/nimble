@@ -19,6 +19,10 @@ export default defineConfig({
       input: {
         arabella: resolve(__dirname, 'arabella/index.html'),
         stage: resolve(__dirname, 'arabella/stage.html'),
+        motion: resolve(__dirname, 'arabella/motion.html'),
+        stipple: resolve(__dirname, 'arabella/stipple.html'),
+        mash: resolve(__dirname, 'arabella/mash.html'),
+        digit: resolve(__dirname, 'arabella/digit.html'),
       },
     },
   },
