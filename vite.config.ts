@@ -22,6 +22,7 @@ export default defineConfig({
         motion: resolve(__dirname, 'arabella/motion.html'),
         stipple: resolve(__dirname, 'arabella/stipple.html'),
         mash: resolve(__dirname, 'arabella/mash.html'),
+        digit: resolve(__dirname, 'arabella/digit.html'),
       },
     },
   },

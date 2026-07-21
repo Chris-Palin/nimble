@@ -13,7 +13,7 @@ export const TOOLS: Tool[] = [
   { id: 'home',    name: 'Home',    meta: 'Studio overview',    src: '/arabella/home.html' },
   { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/mash.html' },
   { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/stage.html' },
-  { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/tools/digit/index.html' },
+  { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/digit.html' },
   { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/motion.html' },
   { id: 'stipple', name: 'Stipple', meta: 'Dither & halftone',  src: '/arabella/stipple.html' },
 ];
