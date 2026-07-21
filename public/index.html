@@ -543,35 +543,47 @@
     const rnd = (a,b) => a + Math.random()*(b-a);
     const ss  = t => { t = Math.max(0, Math.min(1, t)); return t*t*(3-2*t); };  // smoothstep
     const seg = (a,b,t) => a + (b-a)*ss(t);
+    // ease-out-back: shoots a little past the target then springs back — the elastic feel
+    const back = t => { t = Math.max(0, Math.min(1, t)); const c1 = 2.0, c3 = c1 + 1; return 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2); };
+    const segB = (a,b,t) => a + (b-a)*back(t);
     const perm = () => { const a=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
 
-    // one continuous weaving path per letter: it rises, then keeps bobbing and swaying
-    // the whole way through the shuffle slots (never setting flat mid-air), then floats home.
-    function keyframes(i, off, p1, p2){
+    // one continuous weaving path per letter: it rises, springs through three shuffle slots,
+    // hovers a beat at its correct place, then floats down with a little bounce.
+    function keyframes(i, off, p1, p2, p3){
       const dx1 = off[p1[i]] - off[i];
       const dx2 = off[p2[i]] - off[i];
+      const dx3 = off[p3[i]] - off[i];
       const yUp = -56 + rnd(-8,8);
-      const amp = 16 + Math.random()*10;          // vertical bob while aloft
+      const amp = 15 + Math.random()*9;           // vertical bob while aloft
       const rot = 7 + Math.random()*5;            // gentle sway
       const ph  = Math.random()*Math.PI*2;        // per-letter phase, so none move in sync
       const dir = i % 2 ? 1 : -1;
-      const STEPS = 24, kf = [];
+      const HOLD = .86;                            // shuffle + pause ends, descent begins
+      const STEPS = 36, kf = [];
       for (let s=0; s<=STEPS; s++){
         const t = s/STEPS;
-        // horizontal: glide home -> slot1 -> slot2 -> back over the correct place, then hold
+        // horizontal: rise, then spring through slot1 -> slot2 -> slot3 -> correct place
         let x;
-        if      (t < .14) x = 0;
-        else if (t < .36) x = seg(0,   dx1, (t-.14)/.22);
-        else if (t < .55) x = seg(dx1, dx2, (t-.36)/.19);
-        else if (t < .70) x = seg(dx2, 0,   (t-.55)/.15);
+        if      (t < .12) x = 0;
+        else if (t < .28) x = segB(0,   dx1, (t-.12)/.16);
+        else if (t < .44) x = segB(dx1, dx2, (t-.28)/.16);
+        else if (t < .60) x = segB(dx2, dx3, (t-.44)/.16);
+        else if (t < .74) x = segB(dx3, 0,   (t-.60)/.14);
         else              x = 0;   // found their final place; holds through the pause below
-        // calm: the bob & sway fade out as they land their spots, so they hover still (the pause)
-        const calm = t < .62 ? 1 : t < .72 ? ss((.72 - t)/.10) : 0;
-        // envelope 0→1→0: aloft through the shuffle and the pause, then floats down at the end
-        const env = t < .14 ? ss(t/.14) : t > .86 ? ss((1-t)/.14) : 1;
-        const y  = env * (yUp + Math.sin(t*Math.PI*4 + ph) * amp * calm);
-        const rz = env * calm * Math.sin(t*Math.PI*3 + ph) * rot * dir;
-        const sc = 1 + env * calm * (0.05 + Math.sin(t*Math.PI*4 + ph) * 0.03);
+        // calm: bob & sway fade out as they land their spots, so they hover still (the pause)
+        const calm = t < .66 ? 1 : t < .76 ? ss((.76 - t)/.10) : 0;
+        let y, rz, sc;
+        if (t <= HOLD){
+          const env = t < .12 ? ss(t/.12) : 1;    // rise, then stay aloft through the pause
+          y  = env * (yUp + Math.sin(t*Math.PI*5 + ph) * amp * calm);
+          rz = env * calm * Math.sin(t*Math.PI*4 + ph) * rot * dir;
+          sc = 1 + env * calm * (0.05 + Math.sin(t*Math.PI*5 + ph) * 0.03);
+        } else {
+          const p = (t - HOLD)/(1 - HOLD);          // descent dips a touch below home, springs up
+          y = yUp * (1 - back(p));
+          rz = 0; sc = 1;
+        }
         kf.push({ offset:+t.toFixed(3), transform:`translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rz.toFixed(1)}deg) scale(${sc.toFixed(3)})` });
       }
       return kf;
@@ -580,10 +592,10 @@
     async function run(){
       if (running) return; running = true;
       const off = letters.map(l => l.offsetLeft);
-      const p1 = perm(), p2 = perm();
+      const p1 = perm(), p2 = perm(), p3 = perm();
       letters.forEach(l => l.style.willChange = 'transform');
-      const anims = letters.map((l,i) => l.animate(keyframes(i, off, p1, p2),
-        { duration: 4700, delay: i*80, easing:'linear', fill:'none' }));   // linear: the path itself carries the ease
+      const anims = letters.map((l,i) => l.animate(keyframes(i, off, p1, p2, p3),
+        { duration: 6000, delay: i*80, easing:'linear', fill:'none' }));   // linear: the path itself carries the ease
       await Promise.allSettled(anims.map(a => a.finished));
       letters.forEach(l => l.style.willChange = '');
       running = false;
