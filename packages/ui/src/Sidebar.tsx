@@ -49,8 +49,7 @@ export function Sidebar({
           </button>
         ))}
         <button className="tool-btn soon" tabIndex={-1}>
-          <span className="tool-ico" aria-hidden="true" />
-          <span className="txt">More soon<small>New tools land here</small></span>
+          <span className="txt">More soon…<small>New tools land here</small></span>
         </button>
       </nav>
 

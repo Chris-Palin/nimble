@@ -14,13 +14,15 @@
   border-radius:50%;filter:blur(90px);opacity:.32;
 }
 :root[data-theme="light"] .home .sky i{opacity:.2;}
-.home .sky i:nth-child(1){background:var(--ab-purple);left:-8vw;top:-16vw;animation:hDrift1 26s ease-in-out infinite alternate;}
-.home .sky i:nth-child(2){background:var(--ab-green);left:34vw;top:-22vw;animation:hDrift2 31s ease-in-out infinite alternate;}
-.home .sky i:nth-child(3){background:var(--ab-purple);right:-12vw;top:-10vw;animation:hDrift3 24s ease-in-out infinite alternate;}
-.home .sky i:nth-child(4){background:var(--ab-green);left:52vw;top:2vw;width:20vw;height:20vw;min-width:220px;min-height:220px;opacity:.16;animation:hDrift1 36s ease-in-out infinite alternate-reverse;}
+.home .sky i:nth-child(1){background:var(--ab-purple);left:-8vw;top:-16vw;animation:hDrift1 26s ease-in-out infinite alternate, hBreathe 9s ease-in-out infinite;}
+.home .sky i:nth-child(2){background:var(--ab-green);left:34vw;top:-22vw;animation:hDrift2 31s ease-in-out infinite alternate, hBreathe 12s ease-in-out infinite -3s;}
+.home .sky i:nth-child(3){background:var(--ab-purple);right:-12vw;top:-10vw;animation:hDrift3 24s ease-in-out infinite alternate, hBreathe 8s ease-in-out infinite -2s;}
+.home .sky i:nth-child(4){background:var(--ab-green);left:52vw;top:2vw;width:20vw;height:20vw;min-width:220px;min-height:220px;opacity:.16;animation:hDrift1 36s ease-in-out infinite alternate-reverse, hBreathe 14s ease-in-out infinite -5s;}
 @keyframes hDrift1{to{transform:translate(6vw,4vw) scale(1.12);}}
 @keyframes hDrift2{to{transform:translate(-5vw,5vw) scale(.94);}}
 @keyframes hDrift3{to{transform:translate(-4vw,6vw) scale(1.08);}}
+/* subtle "breathing" — the individual scale property composes with the drift transform */
+@keyframes hBreathe{0%,100%{scale:1;}50%{scale:1.06;}}
 @media (prefers-reduced-motion:reduce){.home .sky i{animation:none !important;}}
 
 .home .wrap{position:relative;max-width:1060px;margin:0 auto;padding:0 32px 80px;}

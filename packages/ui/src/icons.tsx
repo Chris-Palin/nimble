@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
    (the active button already inverts, so they still read as selected). */
 export type ToolIcon = (filled: boolean) => ReactNode;
 
-function Svg({ filled, sw = 2, size = 20, children }: { filled: boolean; sw?: number; size?: number; children: ReactNode }) {
+function Svg({ filled, sw = 2, size = 23, children }: { filled: boolean; sw?: number; size?: number; children: ReactNode }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true"
       fill={filled ? 'currentColor' : 'none'}
@@ -58,14 +58,14 @@ export const TOOL_ICONS: Record<string, ToolIcon> = {
 };
 
 /** Footer: sun (in dark mode → switch to light) / moon (in light mode → switch to dark). */
-export function SunMoon({ dark, size = 18 }: { dark: boolean; size?: number }) {
+export function SunMoon({ dark, size = 21 }: { dark: boolean; size?: number }) {
   return dark
     ? <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="currentColor"><path d="M12 19a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1m-4.95-2.05a1 1 0 0 1 0 1.414l-1.414 1.414a1 1 0 1 1-1.414-1.414l1.414-1.414a1 1 0 0 1 1.414 0m11.314 0l1.414 1.414a1 1 0 0 1-1.414 1.414l-1.414-1.414a1 1 0 0 1 1.414-1.414m-5.049-9.836a5 5 0 1 1-2.532 9.674a5 5 0 0 1 2.532-9.674M4 11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm18 0a1 1 0 0 1 0 2h-2a1 1 0 0 1 0-2zM5.636 4.222L7.05 5.636A1 1 0 0 1 5.636 7.05L4.222 5.636a1 1 0 0 1 1.414-1.414m14.142 0a1 1 0 0 1 0 1.414L18.364 7.05a1 1 0 0 1-1.414-1.414l1.414-1.414a1 1 0 0 1 1.414 0M12 1a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1" /></svg>
     : <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="currentColor"><path d="M12 1.992a10 10 0 1 0 9.236 13.838c.341-.82-.476-1.644-1.298-1.31a6.5 6.5 0 0 1-6.864-10.787l.077-.08c.551-.63.113-1.653-.758-1.653h-.266l-.068-.006z" /></svg>;
 }
 
 /** Footer: badge arrow — outline pointing left to collapse, filled pointing right (flipped) to expand. */
-export function CollapseArrow({ collapsed, size = 18 }: { collapsed: boolean; size?: number }) {
+export function CollapseArrow({ collapsed, size = 26 }: { collapsed: boolean; size?: number }) {
   return collapsed
     ? <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="currentColor" style={{ transform: 'scaleX(-1)' }}><path d="M17 6h-6a1 1 0 0 0-.78.375l-4 5a1 1 0 0 0 0 1.25l4 5A1 1 0 0 0 11 18h6l.112-.006a1 1 0 0 0 .669-1.619L14.28 12l3.5-4.375A1 1 0 0 0 17 6" /></svg>
     : <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 17h6l-4-5l4-5h-6l-4 5z" /></svg>;
