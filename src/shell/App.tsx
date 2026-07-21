@@ -11,7 +11,7 @@ import './shell.css';
 export type Tool = { id: string; name: string; meta: string; src: string };
 export const TOOLS: Tool[] = [
   { id: 'home',    name: 'Home',    meta: 'Studio overview',    src: '/arabella/home.html' },
-  { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/tools/mesh-gradient/index.html' },
+  { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/mash.html' },
   { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/stage.html' },
   { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/tools/digit/index.html' },
   { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/motion.html' },

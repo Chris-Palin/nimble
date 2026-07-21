@@ -21,6 +21,7 @@ export default defineConfig({
         stage: resolve(__dirname, 'arabella/stage.html'),
         motion: resolve(__dirname, 'arabella/motion.html'),
         stipple: resolve(__dirname, 'arabella/stipple.html'),
+        mash: resolve(__dirname, 'arabella/mash.html'),
       },
     },
   },
