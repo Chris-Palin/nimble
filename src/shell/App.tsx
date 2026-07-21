@@ -67,7 +67,7 @@ function syncFrameTheme(frame: HTMLIFrameElement, theme: string) {
     if (!doc.getElementById('shell-css')) {
       const s = doc.createElement('style');
       s.id = 'shell-css';
-      s.textContent = '.tool-home-slot,#nimbleSplash,.tool-header .theme-toggle{display:none !important;}';
+      s.textContent = '#nimbleSplash,.tool-header .theme-toggle{display:none !important;}';
       doc.head.appendChild(s);
     }
   } catch { /* cross-origin frames stay as they are */ }

@@ -5,23 +5,20 @@ import type { Theme } from './theme';
 type Props = {
   title: string;
   meta?: ReactNode;
-  /** link back to the Nimble marketing site (hidden by the shell when embedded) */
-  homeHref?: string;
   /** action buttons rendered before the theme toggle */
   actions?: ReactNode;
   theme: Theme;
   onToggleTheme: () => void;
 };
 
-/** The three-column tool header (home · title/meta · actions) shared by tools.
- *  When embedded in the studio shell, the shell hides the home pill and the
- *  theme toggle since it supplies its own. */
-export function ToolHeader({ title, meta, homeHref = '../../index.html', actions, theme, onToggleTheme }: Props) {
+/** The three-column tool header: an empty spacer · centred title/meta · actions.
+ *  The 1fr/auto/1fr grid keeps the title dead-centre and the actions hard-right,
+ *  whether standalone or embedded in the studio shell (which hides only the
+ *  theme toggle, since it supplies its own). */
+export function ToolHeader({ title, meta, actions, theme, onToggleTheme }: Props) {
   return (
     <header className="tool-header">
-      <div className="tool-home-slot">
-        <a className="nimble-home" href={homeHref}>Nimble</a>
-      </div>
+      <div className="tool-spacer" aria-hidden="true" />
       <div className="tool-heading">
         <h1 className="tool-title">{title}</h1>
         {meta != null && <div className="tool-meta">{meta}</div>}
