@@ -101,7 +101,7 @@ input[type="range"].ui-range:focus-visible{outline:2px solid var(--slider-fill);
 .navlabel{padding:14px 18px 8px;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);white-space:nowrap;}
 .shell nav{display:flex;flex-direction:column;gap:2px;padding:0 10px;flex:none;}
 .tool-btn{
-  display:flex;align-items:center;gap:11px;padding:9px;border:0;border-radius:9px;
+  display:flex;align-items:center;gap:11px;padding:9px;border:0;border-radius:12px;
   background:transparent;color:var(--muted);font-family:inherit;font-size:13.5px;font-weight:600;
   letter-spacing:-.01em;text-align:left;cursor:pointer;white-space:nowrap;
   transition:background .15s,color .15s;
@@ -132,7 +132,8 @@ input[type="range"].ui-range:focus-visible{outline:2px solid var(--slider-fill);
   cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s,transform .15s;
 }
 .foot-btn:hover{background:var(--panel);color:var(--ink);border-color:var(--ink);transform:translateY(-1px);}
-.foot-btn .ico{font-size:15px;line-height:1;flex:none;display:flex;align-items:center;justify-content:center;}
+.foot-btn .ico{line-height:1;flex:none;display:flex;align-items:center;justify-content:center;}
+.foot-btn .ico svg{display:block;}
 
 .nimble-pill{
   display:flex;align-items:center;justify-content:center;height:42px;

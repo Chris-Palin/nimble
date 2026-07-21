@@ -1,5 +1,5 @@
 import { ThemeToggle } from './ThemeToggle';
-import { TOOL_ICONS } from './icons';
+import { TOOL_ICONS, SunMoon, CollapseArrow } from './icons';
 import type { Theme } from './theme';
 
 export type SidebarTool = { id: string; name: string; meta: string };
@@ -58,11 +58,11 @@ export function Sidebar({
 
       <div className="side-foot">
         <button className="foot-btn" onClick={onToggleTheme}>
-          <span className="ico">{theme === 'dark' ? '☀' : '☾'}</span>
+          <span className="ico"><SunMoon dark={theme === 'dark'} /></span>
           <span className="lbl">{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
         </button>
         <button className="foot-btn" onClick={onToggleCollapsed}>
-          <span className="ico">{collapsed ? '⟩' : '⟨'}</span>
+          <span className="ico"><CollapseArrow collapsed={collapsed} /></span>
           <span className="lbl">Collapse</span>
         </button>
         <a className="nimble-pill porkys" href={homeHref} style={{ ['--pill-c' as string]: pillColor }}>
