@@ -191,6 +191,17 @@ export function NimbleHome() {
             </div>
           </div>
         </div>
+
+        <div className="cover-wrap reveal">
+          <div className="cover teaser">
+            <div>
+              <div className="kicker">01 - Project Lazarus</div>
+              <h2>Coming soon.</h2>
+              <p className="lede">Something new is waking up on the workbench. No details yet — check back soon.</p>
+            </div>
+            <div className="mock-empty" aria-hidden="true"><span>Coming soon</span></div>
+          </div>
+        </div>
       </div>
 
       <footer>
