@@ -14,7 +14,7 @@ export const TOOLS: Tool[] = [
   { id: 'mash',    name: 'Mash',    meta: 'Mesh gradients',     src: '/arabella/tools/mesh-gradient/index.html' },
   { id: 'stage',   name: 'Stage',   meta: 'Screenshot mockups', src: '/arabella/stage.html' },
   { id: 'digit',   name: 'Digit',   meta: 'Gesture FX',         src: '/arabella/tools/digit/index.html' },
-  { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/tools/motion/index.html' },
+  { id: 'motion',  name: 'Motion',  meta: 'Motion graphics',    src: '/arabella/motion.html' },
   { id: 'stipple', name: 'Stipple', meta: 'Dither & halftone',  src: '/arabella/tools/dither/index.html' },
 ];
 const NIMBLE_PALETTE = ['#F42C04', '#FF6FAE', '#FCCA46', '#2DC7FF', '#645DD7', '#CBA0FF'];
