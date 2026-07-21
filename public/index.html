@@ -558,18 +558,20 @@
       const STEPS = 24, kf = [];
       for (let s=0; s<=STEPS; s++){
         const t = s/STEPS;
-        // horizontal: glide home -> slot1 -> slot2 -> home, passing through, never pausing
+        // horizontal: glide home -> slot1 -> slot2 -> back over the correct place, then hold
         let x;
-        if      (t < .15) x = 0;
-        else if (t < .42) x = seg(0,   dx1, (t-.15)/.27);
-        else if (t < .66) x = seg(dx1, dx2, (t-.42)/.24);
-        else if (t < .85) x = seg(dx2, 0,   (t-.66)/.19);
-        else              x = 0;
-        // envelope 0→1→0 so the bob only flattens at home, staying continuous in between
-        const env = t < .15 ? ss(t/.15) : t > .85 ? ss((1-t)/.15) : 1;
-        const y  = env * (yUp + Math.sin(t*Math.PI*4 + ph) * amp);
-        const rz = env * Math.sin(t*Math.PI*3 + ph) * rot * dir;
-        const sc = 1 + env * (0.05 + Math.sin(t*Math.PI*4 + ph) * 0.03);
+        if      (t < .14) x = 0;
+        else if (t < .36) x = seg(0,   dx1, (t-.14)/.22);
+        else if (t < .55) x = seg(dx1, dx2, (t-.36)/.19);
+        else if (t < .70) x = seg(dx2, 0,   (t-.55)/.15);
+        else              x = 0;   // found their final place; holds through the pause below
+        // calm: the bob & sway fade out as they land their spots, so they hover still (the pause)
+        const calm = t < .62 ? 1 : t < .72 ? ss((.72 - t)/.10) : 0;
+        // envelope 0→1→0: aloft through the shuffle and the pause, then floats down at the end
+        const env = t < .14 ? ss(t/.14) : t > .86 ? ss((1-t)/.14) : 1;
+        const y  = env * (yUp + Math.sin(t*Math.PI*4 + ph) * amp * calm);
+        const rz = env * calm * Math.sin(t*Math.PI*3 + ph) * rot * dir;
+        const sc = 1 + env * calm * (0.05 + Math.sin(t*Math.PI*4 + ph) * 0.03);
         kf.push({ offset:+t.toFixed(3), transform:`translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rz.toFixed(1)}deg) scale(${sc.toFixed(3)})` });
       }
       return kf;
@@ -581,7 +583,7 @@
       const p1 = perm(), p2 = perm();
       letters.forEach(l => l.style.willChange = 'transform');
       const anims = letters.map((l,i) => l.animate(keyframes(i, off, p1, p2),
-        { duration: 4200, delay: i*80, easing:'linear', fill:'none' }));   // linear: the path itself carries the ease
+        { duration: 4700, delay: i*80, easing:'linear', fill:'none' }));   // linear: the path itself carries the ease
       await Promise.allSettled(anims.map(a => a.finished));
       letters.forEach(l => l.style.willChange = '');
       running = false;
